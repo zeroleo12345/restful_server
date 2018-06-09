@@ -1,0 +1,48 @@
+version: '3.5'
+
+services:
+  web:
+    build:
+       context: .
+       dockerfile: ./docker/Dockerfile
+    depends_on:
+      - redis
+      - mysql
+    #container_name: restful_server
+    ports:      # 外部端口:docker内部端口
+      - "8000:80"       # 只限于使用docker-compse up时, 会映射到8000端口, 而生产会映射到80端口
+    env_file:
+      - env_file
+
+    #entrypoint: /app/bin/run_restful_server.sh      # docker启动期执行程序
+    #entrypoint: sh      # 用于调试
+    volumes:        # 挂载盘(多用于输出程序文件, 日志等)
+      - .:/app     # 机路径:docker内部路径.(把主机下的src目录挂在到docker下, 实现边开发, 边调试)
+      #- ./runtest:/bin/runtest
+    command: []
+    tty: true
+    networks:
+      - pppoe_system
+
+  redis:
+    image: redis:alpine
+    networks:
+      - pppoe_system
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'trade'
+    ports:
+      - "3306:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+    networks:
+      - pppoe_system
+
+networks:
+  pppoe_system:
+    name: pppoe_system_network_name
