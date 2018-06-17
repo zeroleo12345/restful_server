@@ -26,6 +26,15 @@ class User(models.Model):
     role = models.CharField(max_length=32, choices=ROLE, default='user')
 
 
+class Token(models.Model):
+    class Meta:
+        db_table = 'token'
+
+    key = models.UUIDField(unique=True, default=uuid.uuid4)
+    user = models.OneToOneField(User, related_name='auth_token', on_delete=models.CASCADE, verbose_name="User")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
 # 免费资源
 class Resource(models.Model):
     class Meta:

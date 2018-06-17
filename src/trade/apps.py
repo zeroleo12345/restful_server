@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from trade.utils import create_mp_menu
+from trade.utils.mp import create_mp_menu
 
 
 class TradeConfig(AppConfig):

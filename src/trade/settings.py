@@ -132,14 +132,26 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# 'DEFAULT_AUTHENTICATION_CLASSES': (
+#     'rest_framework.authentication.SessionAuthentication',
+#     'rest_framework.authentication.BasicAuthentication'
+# )
+# # Use Django's standard `django.contrib.auth` permissions,
+# # or allow read-only access for unauthenticated users.
+# 'DEFAULT_PERMISSION_CLASSES': [
+#     'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+# ],
 REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ],
-    'DEFAULT_RENDERER_CLASSES': ('trade.framework.NewJSONRenderer',),
-    # 'DEFAULT_PAGINATION_CLASS': 'trade.framework.NewPageNumberPagination',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'trade.user.auth.TokenAuth',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'trade.user.auth.UserPermission',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'trade.framework.MyJSONRenderer',
+    ),
+    # 'DEFAULT_PAGINATION_CLASS': 'trade.framework.MyPageNumberPagination',
 }
 
 # 微信公众平台

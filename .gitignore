@@ -1,6 +1,20 @@
-# Docker
-env_file
+# Vim
+*.swp
 
+# IDE
+.idea
+
+# docker
+/*.env
+/env_file
+
+# django
+*.log
+.media/
+local_settings.py
+*.sqlite3
+
+#####
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -11,6 +25,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+env/
 build/
 develop-eggs/
 dist/
@@ -26,7 +41,6 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -48,7 +62,6 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
-.pytest_cache/
 
 # Translations
 *.mo
@@ -57,7 +70,6 @@ coverage.xml
 # Django stuff:
 *.log
 local_settings.py
-db.sqlite3
 
 # Flask stuff:
 instance/
@@ -76,21 +88,24 @@ target/
 .ipynb_checkpoints
 
 # pyenv
-.python-version
+venv
+
+dev_settings.py
+.DS_Store
+.vscode/
+
 
 # celery beat schedule file
+celerybeat.pid
 celerybeat-schedule
 
 # SageMath parsed files
 *.sage.py
 
-# Environments
+# virtualenv
 .venv
-env/
 venv/
 ENV/
-env.bak/
-venv.bak/
 
 # Spyder project settings
 .spyderproject
