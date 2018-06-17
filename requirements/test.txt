@@ -1,0 +1,6 @@
+-r base.txt
+pytest
+pytest-cov
+pytest-django
+flake8
+factory_boy
