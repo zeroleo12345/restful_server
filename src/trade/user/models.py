@@ -8,22 +8,35 @@ class User(models.Model):
         db_table = 'user'
 
     ROLE = (
-        ('admin', '管理员'),
+        ('vip', 'VIP用户'),
         ('user', '用户'),
         ('guest', '访客'),
     )
 
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     openid = models.CharField(max_length=255, null=False, unique=True)
     nickname = models.CharField(max_length=255)
-    headimgurl = models.CharField(max_length=255)
+    headimgurl = models.URLField(max_length=512)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 
-    account = models.CharField(max_length=255, unique=True, null=True)
+    username = models.CharField(max_length=255, unique=True, null=True)
     password = models.CharField(max_length=255)
     is_enable = models.BooleanField(default=True)
     role = models.CharField(max_length=32, choices=ROLE, default='user')
+
+
+class Token(models.Model):
+    class Meta:
+        db_table = 'token'
+
+    key = models.UUIDField(unique=True, default=uuid.uuid4)
+    user = models.OneToOneField(User, related_name='auth_token', on_delete=models.CASCADE, verbose_name="User")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        # Auto Convert To uuid.hex
+        return self.key.hex
 
 
 # 免费资源
@@ -31,11 +44,6 @@ class Resource(models.Model):
     class Meta:
         db_table = 'resource'
 
-    ROLE = (
-        ('admin', '管理员'),
-        ('user', '用户'),
-        ('guest', '访客'),
-    )
     user = models.ForeignKey(User)
     amount = models.IntegerField(default=0)     # 单位条
     expired_at = models.DateTimeField(auto_now_add=True)
@@ -49,9 +57,9 @@ class TradeHistory(models.Model):
         db_table = 'trade_history'
 
     STATUS = (
-        'unpaid', '未支付',
-        'paid', '已支付',
-        'expired', '已过期',
+        ('unpaid', '未支付'),
+        ('paid', '已支付'),
+        ('expired', '已过期'),
     )
     openid = models.CharField(max_length=255)
     out_trade_no = models.CharField(max_length=255, unique=True)     # 商家订单号

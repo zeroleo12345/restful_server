@@ -8,7 +8,7 @@ ADD requirements /app/requirements/
 RUN echo "http://mirrors.aliyun.com/alpine/v3.6/main/" > /etc/apk/repositories
 RUN apk add --no-cache --virtual .build-deps mariadb-dev curl-dev build-base \
     gcc musl-dev python3-dev libffi-dev \
-     && pip3 install --no-cache-dir -r /app/requirements/production.txt --trusted-host mirrors.aliyun.com --index-url http://mirrors.aliyun.com/pypi/simple \
+     && pip3 install --no-cache-dir -r /app/requirements/requirements.txt --trusted-host mirrors.aliyun.com --index-url http://mirrors.aliyun.com/pypi/simple \
      && apk del .build-deps \
      && export PYCURL_SSL_LIBRARY=openssl \
      && apk add --no-cache mariadb-client-libs libcurl

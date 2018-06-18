@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 if [ "$DEBUG" == "True" ]; then
     python manage.py migrate

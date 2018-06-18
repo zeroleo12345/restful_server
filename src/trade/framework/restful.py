@@ -5,7 +5,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 
-class NewJSONRenderer(JSONRenderer):
+class MyJSONRenderer(JSONRenderer):
     def get_indent(self, accepted_media_type, renderer_context):
         return 2
 
@@ -22,7 +22,7 @@ class NewJSONRenderer(JSONRenderer):
         return super().render(data, *args, **kwargs)
 
 
-class NewPageNumberPagination(PageNumberPagination):
+class MyPageNumberPagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'per_page'
 
