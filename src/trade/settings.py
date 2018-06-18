@@ -149,9 +149,9 @@ REST_FRAMEWORK = {
         'trade.user.auth.UserPermission',
     ),
     'DEFAULT_RENDERER_CLASSES': (
-        'trade.framework.MyJSONRenderer',
+        'trade.framework.restful.MyJSONRenderer',
     ),
-    # 'DEFAULT_PAGINATION_CLASS': 'trade.framework.MyPageNumberPagination',
+    # 'DEFAULT_PAGINATION_CLASS': 'trade.framework.restful.MyPageNumberPagination',
 }
 
 # 微信公众平台
