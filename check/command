@@ -1,0 +1,5 @@
+
+docker-compose exec web sh
+
+pytest trade/user/tests.py -k  test_user
+

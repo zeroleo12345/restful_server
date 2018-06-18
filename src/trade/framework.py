@@ -3,7 +3,6 @@ from collections import OrderedDict
 from rest_framework.renderers import JSONRenderer
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework import exceptions
 
 
 class MyJSONRenderer(JSONRenderer):
@@ -32,10 +31,3 @@ class MyPageNumberPagination(PageNumberPagination):
             ('total_count', self.page.paginator.count),
             ('results', data)
         ]))
-
-
-def get_authorization_header(request):
-    key = request.META.get('HTTP_88_TOKEN')
-    if not key:
-        raise exceptions.NotAuthenticated()
-    return key

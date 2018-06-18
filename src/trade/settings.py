@@ -173,3 +173,23 @@ SUB_MCHID = config('SUB_MCHID', default=None)   # 可选. 子商户号, 受理�
 # KF_ACCOUNT = config('KF_ACCOUNT')
 # KF_NICKNAME = config('KF_NICKNAME')
 # KF_PASSWORD = config('KF_PASSWORD')
+
+
+class VERSION(object):
+    """
+        production:
+         - 创建公众号菜单
+    """
+    version = config('VERSION', default='production')
+
+    @classmethod
+    def is_production(cls):
+        return cls.version == 'production'
+
+    @classmethod
+    def is_qa(cls):
+        return cls.version == 'qa'
+
+    @classmethod
+    def is_dev(cls):
+        return cls.version == 'dev'

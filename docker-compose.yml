@@ -12,7 +12,7 @@ services:
     ports:      # 外部端口:docker内部端口
       - "8000:80"       # 只限于使用docker-compse up时, 会映射到8000端口, 而生产会映射到80端口
     env_file:
-      - env_file
+      - docker.env
 
     #entrypoint: /app/bin/run_restful_server.sh      # docker启动期执行程序
     #entrypoint: sh      # 用于调试

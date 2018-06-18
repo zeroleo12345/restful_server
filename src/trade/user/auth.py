@@ -2,8 +2,19 @@ from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.permissions import BasePermission
 
-from trade.framework import get_authorization_header
 from trade.user.models import User, Token
+
+
+def get_http_token_name():
+    return 'HTTP_88_TOKEN'
+
+
+def get_authorization_header(request):
+    http_token = get_http_token_name()
+    key = request.META.get(http_token)
+    if not key:
+        raise exceptions.NotAuthenticated()
+    return key
 
 
 class TokenAuth(BaseAuthentication):
@@ -11,7 +22,7 @@ class TokenAuth(BaseAuthentication):
         key = get_authorization_header(request)
 
         try:
-            token = Token.objects.get(key=key)
+            token = Token.objects.select_related('user').get(key=key)
         except Token.DoesNotExist:
             raise exceptions.AuthenticationFailed('token not exist')
 
