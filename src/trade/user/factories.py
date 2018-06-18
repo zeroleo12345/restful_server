@@ -14,7 +14,7 @@ class UserFactory(factory.DjangoModelFactory):
     username = factory.Sequence(lambda n: f'username:{n}')
     password = factory.Sequence(lambda n: make_password(f'password:{n}'))
     is_enable = True
-    role = factory.Iterator(['vip', 'user', 'guest'])
+    role = factory.Iterator([role[0] for role in User.ROLE])
 
 
 class TokenFactory(factory.DjangoModelFactory):
