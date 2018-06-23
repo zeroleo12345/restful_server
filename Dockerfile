@@ -19,4 +19,4 @@ ADD src /app/src/
 
 ADD bin /app/bin/
 # docker-compose.yml 会覆盖 entrypoint
-ENTRYPOINT ["/app/bin/run_restful_server.sh"]
+ENTRYPOINT ["/app/bin/restful_server_deamon.sh"]
