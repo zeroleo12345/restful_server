@@ -18,7 +18,7 @@ from django.contrib import admin
 from trade.views import EchoStrView
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^echostr?', EchoStrView.as_view()),
-    url(r'^user', include('trade.user.urls')),
+    url(r'^api/admin/', admin.site.urls),
+    url(r'^api/echostr', EchoStrView.as_view()),
+    url(r'^api/user', include('trade.user.urls')),
 ]

@@ -7,11 +7,11 @@ dj-database-url==0.4.2
 django-hvad<2
 django-filter<2
 django-redis<5
-django-crontab==0.7.1
-whitenoise<4
+#django-crontab==0.7.1
+#whitenoise<4
 requests<3
 python-decouple
 pytz
 gunicorn
-celery==4.0.2
+#celery==4.0.2
 pycurl

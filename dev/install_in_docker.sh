@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
-docker-compose exec web pip install -r ../requirements/requirements.txt
+set -o verbose
+
+docker-compose exec web pip install -r ../requirements/test.txt
 
