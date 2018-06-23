@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+set -o verbose
+
+pip3 install tox
+
+shelldir=$(cd "$(dirname "$0")"; pwd)
+tox -c $shelldir/tox.ini
