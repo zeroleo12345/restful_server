@@ -12,9 +12,11 @@ g_wechat_client = WeChatClient(appid=settings.APPID,
                                secret=settings.APPSECRET,
                                session=RedisStorage(redis_client, prefix="_wechatpy"))
 
+redirect_uri = urljoin(settings.HTML_URL, 'oauth2')
+print(redirect_uri)
 g_wechat_oauth = WeChatOAuth(app_id=settings.APPID,
                              secret=settings.APPSECRET,
-                             redirect_uri=f'{settings.HTML_URL}/oauth2/index.html',
+                             redirect_uri=redirect_uri,
                              # snsapi_base-不需授权; snsapi_userinfo-需授权
                              scope='snsapi_userinfo',
                              state='1')
@@ -22,7 +24,6 @@ g_wechat_oauth = WeChatOAuth(app_id=settings.APPID,
 
 def create_mp_menu():
     # 创建公众号-自定义菜单: https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141013
-    redirect_uri = urljoin(settings.HTML_URL, 'index.html')
     menu_data = {"button": [
         {
             "name": '个人中心',

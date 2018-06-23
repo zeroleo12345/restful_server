@@ -13,7 +13,7 @@ class EchoStrView(APIView):
     renderer_classes = (StaticHTMLRenderer,)
 
     def get(self, request):
-        # {URL}/api/echostr?signature=40lenString&echostr=16809769573550014143&timestamp=1527776959&nonce=1011789502
+        # {URL}/echostr?signature=40lenString&echostr=16809769573550014143&timestamp=1527776959&nonce=1011789502
         signature = request.GET.get('signature')
         timestamp = request.GET.get('timestamp')
         nonce = request.GET.get('nonce')
