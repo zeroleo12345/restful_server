@@ -24,7 +24,7 @@ g_wechat_oauth = WeChatOAuth(app_id=settings.APPID,
 class MP(object):
     @staticmethod
     def create_mp_menu():
-        # TODO 防止多次创建菜单
+        # TODO: 防止多次创建菜单
         # 创建公众号-自定义菜单: https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141013
         menu_data = {"button": [
             {
@@ -36,3 +36,20 @@ class MP(object):
         ]}
         print(menu_data)
         g_wechat_client.menu.create(menu_data)
+
+    @staticmethod
+    def get_user_info_from_wechat(code):
+        """ 使用code通过微信OAUTH2接口, 获取openid.
+        返回数据请参考: http://www.cnblogs.com/txw1958/p/weixin76-user-info.html
+        fetch_access_token:
+        {
+            u'access_token': u'vX1lcBkeRY6WZUylVyZA9XPeoA92_15iBAXHHRtBD1dtbAtWe9e3i-DyHR9PBtP6L......',
+            u'openid': u'ovj3E0l9vffwBuqz_PNu25yL_is4', u'expires_in': 7200,
+            u'refresh_token': u'LSaCEeS8m-18_njiAN8Jm11V4QIeWxwOSsjEV9cM1ra5zkL......', u'scope': u'snsapi_userinfo'
+        }
+        """
+        # TODO: token 针对每个用户2小时内有效, 不需要每次都通过code获取新的token!!!
+        # https://wohugb.gitbooks.io/wechat/content/qrconnent/refresh_token.html
+        g_wechat_oauth.fetch_access_token(code)
+        user_info = g_wechat_oauth.get_user_info()
+        return user_info
