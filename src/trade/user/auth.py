@@ -6,7 +6,7 @@ from trade.user.models import User, Token
 
 
 def get_http_token_name():
-    return 'HTTP_88_TOKEN'
+    return 'HTTP_TOKEN'
 
 
 def get_authorization_header(request):

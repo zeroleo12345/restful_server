@@ -16,9 +16,10 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from trade.views import EchoStrView
+from trade.user.urls import UserUrl
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^echostr', EchoStrView.as_view()),
-    url(r'^user', include('trade.user.urls')),
+    url(r'^user', include(UserUrl)),
 ]
