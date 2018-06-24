@@ -4,7 +4,6 @@ from rest_framework.views import APIView
 from rest_framework.renderers import StaticHTMLRenderer
 from rest_framework.response import Response
 # 第三方库
-from wechatpy import parse_message
 from wechatpy.utils import check_signature
 
 
@@ -24,6 +23,7 @@ class EchoStrView(APIView):
 
     def post(self, request):
         # 公众号平台事件通知. (使用平台自带的自定义菜单时平台不会下发消息)
-        xml = request.body
-        msg = parse_message(xml)
+        # from wechatpy import parse_message
+        # xml = request.body
+        # msg = parse_message(xml)
         return Response("success")
