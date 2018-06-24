@@ -1,6 +1,5 @@
-from django.conf import settings
 from django.apps import AppConfig
-from trade.utils.mp import create_mp_menu
+from trade.utils.mp import MP
 
 
 class TradeConfig(AppConfig):
@@ -8,5 +7,4 @@ class TradeConfig(AppConfig):
 
     def ready(self):
         # startup code here
-        if settings.VERSION.is_production():
-            create_mp_menu()
+        MP.create_mp_menu()
