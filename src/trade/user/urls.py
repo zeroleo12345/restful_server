@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from .views import UserView
 
-UserUrl = [
+user_urls = [
     url(r'^$', UserView.as_view()),
 ]
