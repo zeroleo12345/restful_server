@@ -12,8 +12,7 @@ g_wechat_client = WeChatClient(appid=settings.APPID,
                                secret=settings.APPSECRET,
                                session=RedisStorage(redis_client, prefix="_wechatpy"))
 
-redirect_uri = urljoin(settings.HTML_URL, 'index.html')
-print(redirect_uri)
+redirect_uri = urljoin(settings.HTML_URL, '')
 g_wechat_oauth = WeChatOAuth(app_id=settings.APPID,
                              secret=settings.APPSECRET,
                              redirect_uri=redirect_uri,
