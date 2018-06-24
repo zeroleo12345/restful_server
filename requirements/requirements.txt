@@ -2,6 +2,7 @@ cryptography --no-binary cryptography
 wechatpy
 django<2
 djangorestframework<4
+djangorestframework-xml
 mysqlclient<2
 dj-database-url==0.4.2
 django-hvad<2

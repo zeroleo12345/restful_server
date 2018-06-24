@@ -1,6 +1,10 @@
 import pytest
+from unittest.mock import MagicMock
 from rest_framework import status
 from trade.framework.tests import get_token_and_user, UnitTestAPIClient
+from trade.utils import mp
+
+mp.create_mp_menu = MagicMock()
 
 
 @pytest.mark.django_db

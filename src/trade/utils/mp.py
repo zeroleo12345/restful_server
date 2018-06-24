@@ -12,7 +12,7 @@ g_wechat_client = WeChatClient(appid=settings.APPID,
                                secret=settings.APPSECRET,
                                session=RedisStorage(redis_client, prefix="_wechatpy"))
 
-redirect_uri = urljoin(settings.HTML_URL, 'oauth2')
+redirect_uri = urljoin(settings.HTML_URL, 'index.html')
 print(redirect_uri)
 g_wechat_oauth = WeChatOAuth(app_id=settings.APPID,
                              secret=settings.APPSECRET,
@@ -22,14 +22,18 @@ g_wechat_oauth = WeChatOAuth(app_id=settings.APPID,
                              state='1')
 
 
-def create_mp_menu():
-    # 创建公众号-自定义菜单: https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141013
-    menu_data = {"button": [
-        {
-            "name": '个人中心',
-            "type": 'view',
-            "url": f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.APPID}'
-                   f'&redirect_uri={redirect_uri}&response_type=code&scope=snsapi_userinfo'
-        },
-    ]}
-    g_wechat_client.menu.create(menu_data)
+class MP(object):
+    @staticmethod
+    def create_mp_menu():
+        # TODO 防止多次创建菜单
+        # 创建公众号-自定义菜单: https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141013
+        menu_data = {"button": [
+            {
+                "name": '个人中心',
+                "type": 'view',
+                "url": f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.APPID}'
+                       f'&redirect_uri={redirect_uri}&response_type=code&scope=snsapi_userinfo'
+            },
+        ]}
+        print(menu_data)
+        g_wechat_client.menu.create(menu_data)
