@@ -48,6 +48,14 @@ class MP(object):
             u'refresh_token': u'LSaCEeS8m-18_njiAN8Jm11V4QIeWxwOSsjEV9cM1ra5zkL......', u'scope': u'snsapi_userinfo'
         }
         """
+        if settings.DEBUG:
+            return {
+                u'province': u'\u5e7f\u4e1c', u'openid': u'ovj3E0l9vffwBuqz_PNu25yL_is4',
+                u'headimgurl': u'http://wx.qlogo.cn/mmhead/Q3auHgzwzM7AianZsHE6LefhQuSmwibx4KZ9LYkRmIibrFKmSbAVjlpBg/0',
+                u'language': u'zh_CN', u'city': u'\u5e7f\u5dde', u'country': u'\u4e2d\u56fd', u'sex': 1,
+                u'privilege': [], u'nickname': u'\u5468\u793c\u6b23'
+            }
+
         # TODO: token 针对每个用户2小时内有效, 不需要每次都通过code获取新的token!!!
         # https://wohugb.gitbooks.io/wechat/content/qrconnent/refresh_token.html
         g_wechat_oauth.fetch_access_token(code)
