@@ -28,10 +28,8 @@ class UserView(generics.RetrieveAPIView):
         code = self.request.GET.get('code', '')
         if not code:
             raise exceptions.ValidationError('code字段不能为空', 'invalid_code')
-        print(code)
 
         user_info = MP.get_user_info_from_wechat(code)
-        print(user_info)
 
         serializer = UserInfoFromWechatFormSerializer(data=user_info)
         serializer.is_valid(raise_exception=True)
