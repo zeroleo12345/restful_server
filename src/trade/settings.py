@@ -185,16 +185,16 @@ class VERSION(object):
         production:
          - 创建公众号菜单
     """
-    version = config('VERSION', default='production')
+    enviorment = config('ENVIORMENT', default='production')
 
     @classmethod
     def is_production(cls):
-        return cls.version == 'production'
+        return cls.enviorment == 'production'
 
     @classmethod
     def is_qa(cls):
-        return cls.version == 'qa'
+        return cls.enviorment == 'qa'
 
     @classmethod
-    def is_dev(cls):
-        return cls.version == 'dev'
+    def is_development(cls):
+        return cls.enviorment == 'development'
