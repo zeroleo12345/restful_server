@@ -84,6 +84,7 @@ WSGI_APPLICATION = 'trade.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+# DATABASE_ROUTERS = ['trade.framework.db_route.Router']
 DATABASES = {
     'default': dj_database_url.parse(config("DATABASE_URI")),
 }

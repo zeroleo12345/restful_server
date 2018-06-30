@@ -18,11 +18,12 @@ class User(models.Model):
     nickname = models.CharField(max_length=255)
     headimgurl = models.URLField(max_length=512)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
 
     username = models.CharField(max_length=255, unique=True, null=True)
     password = models.CharField(max_length=255)
     is_enable = models.BooleanField(default=True)
+    expired_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
     role = models.CharField(max_length=32, choices=ROLE, default='user')
 
 
@@ -37,18 +38,6 @@ class Token(models.Model):
     def __str__(self):
         # Auto Convert To uuid.hex
         return self.key.hex
-
-
-# 免费资源
-class Resource(models.Model):
-    class Meta:
-        db_table = 'resource'
-
-    user = models.ForeignKey(User)
-    amount = models.IntegerField(default=0)     # 单位条
-    expired_at = models.DateTimeField(auto_now_add=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
 
 
 # 交易历史
