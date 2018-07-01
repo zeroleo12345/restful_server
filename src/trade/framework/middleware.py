@@ -7,13 +7,22 @@ class CORSMiddleware(object):
         self.get_response = get_response
 
     def __call__(self, request):
-        # request.method = OPTIONS 为什么会不同?
-        response = self.get_response(request)
+        if request.method == 'OPTIONS':
+            response = HttpResponse(status=204)
+            CORSMiddleware.set_cors_header(response)
+            return response
+        else:
+            response = self.get_response(request)
+            CORSMiddleware.set_cors_header(response)
+            return response
+
+    @staticmethod
+    def set_cors_header(response):
         response['Access-Control-Allow-Origin'] = '*'
+        response['Access-Control-Max-Age'] = 1800    # 只对 OPTIONS 生效
         response['Access-Control-Allow-Methods'] = 'GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE'
         response['Access-Control-Allow-Headers'] = 'Content-Type, Origin, Authorization'
         response['Access-Control-Expose-Headers'] = 'Content-Type, Origin, Authorization'
-        return response
 
 
 class TokenSetMiddleware(object):
