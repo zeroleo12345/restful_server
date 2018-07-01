@@ -15,6 +15,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 
 import dj_database_url
+import datetime
 from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -47,14 +48,19 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'trade.framework.middleware.CORSMiddleware',
+    'trade.framework.middleware.TokenSetMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+if DEBUG:
+    MIDDLEWARE += [
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    ]
 
 ROOT_URLCONF = 'trade.urls'
 
@@ -80,6 +86,7 @@ WSGI_APPLICATION = 'trade.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+# DATABASE_ROUTERS = ['trade.framework.db_route.Router']
 DATABASES = {
     'default': dj_database_url.parse(config("DATABASE_URI")),
 }
@@ -143,15 +150,35 @@ STATIC_URL = '/static/'
 # ],
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'trade.user.auth.TokenAuth',
+        'trade.framework.authorization.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'trade.user.auth.UserPermission',
+        'trade.framework.authorization.UserPermission',
     ),
     'DEFAULT_RENDERER_CLASSES': (
         'trade.framework.restful.MyJSONRenderer',
     ),
     # 'DEFAULT_PAGINATION_CLASS': 'trade.framework.restful.MyPageNumberPagination',
+}
+
+JWT_AUTH = {
+    'JWT_SECRET_KEY': SECRET_KEY,
+    'JWT_GET_USER_SECRET_KEY': None,
+    'JWT_PUBLIC_KEY': None,
+    'JWT_PRIVATE_KEY': None,
+    'JWT_ALGORITHM': 'HS256',
+    'JWT_VERIFY': True,
+    'JWT_VERIFY_EXPIRATION': True,
+    'JWT_LEEWAY': 0,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=300),
+    'JWT_AUDIENCE': None,
+    'JWT_ISSUER': None,
+
+    'JWT_ALLOW_REFRESH': False,
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
+
+    'JWT_AUTH_HEADER_PREFIX': 'JWT',
+    'JWT_AUTH_COOKIE': None,
 }
 
 # 微信公众平台
@@ -180,16 +207,16 @@ class VERSION(object):
         production:
          - 创建公众号菜单
     """
-    version = config('VERSION', default='production')
+    enviorment = config('ENVIORMENT', default='production')
 
     @classmethod
     def is_production(cls):
-        return cls.version == 'production'
+        return cls.enviorment == 'production'
 
     @classmethod
     def is_qa(cls):
-        return cls.version == 'qa'
+        return cls.enviorment == 'qa'
 
     @classmethod
-    def is_dev(cls):
-        return cls.version == 'dev'
+    def is_development(cls):
+        return cls.enviorment == 'development'

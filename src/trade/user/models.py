@@ -1,9 +1,22 @@
 import uuid
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser
 
 
-# 微信号, 账号, 密码
-class User(models.Model):
+# 微信号
+class Weixin(models.Model):
+    class Meta:
+        db_table = 'weixin'
+
+    openid = models.CharField(max_length=255, null=False, unique=True)
+    nickname = models.CharField(max_length=255)
+    headimgurl = models.URLField(max_length=512)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+# 账户, 密码
+class User(AbstractBaseUser):
     class Meta:
         db_table = 'user'
 
@@ -13,42 +26,17 @@ class User(models.Model):
         ('guest', '访客'),
     )
 
-    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
-    openid = models.CharField(max_length=255, null=False, unique=True)
-    nickname = models.CharField(max_length=255)
-    headimgurl = models.URLField(max_length=512)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
-
+    weixin = models.OneToOneField(Weixin, on_delete=models.CASCADE, null=False)
     username = models.CharField(max_length=255, unique=True, null=True)
     password = models.CharField(max_length=255)
-    is_enable = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
     role = models.CharField(max_length=32, choices=ROLE, default='user')
 
-
-class Token(models.Model):
-    class Meta:
-        db_table = 'token'
-
-    key = models.UUIDField(unique=True, default=uuid.uuid4)
-    user = models.OneToOneField(User, related_name='auth_token', on_delete=models.CASCADE, verbose_name="User")
-    created_at = models.DateTimeField(auto_now_add=True)
+    expired_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        # Auto Convert To uuid.hex
-        return self.key.hex
-
-
-# 免费资源
-class Resource(models.Model):
-    class Meta:
-        db_table = 'resource'
-
-    user = models.ForeignKey(User)
-    amount = models.IntegerField(default=0)     # 单位条
-    expired_at = models.DateTimeField(auto_now_add=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+        return self.username
 
 
 # 交易历史
@@ -61,6 +49,8 @@ class TradeHistory(models.Model):
         ('paid', '已支付'),
         ('expired', '已过期'),
     )
+
+    uuid = models.UUIDField(editable=False, default=uuid.uuid4)
     openid = models.CharField(max_length=255)
     out_trade_no = models.CharField(max_length=255, unique=True)     # 商家订单号
     attach = models.CharField(max_length=255)           # 附加信息

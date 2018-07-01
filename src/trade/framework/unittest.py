@@ -1,18 +1,22 @@
 from rest_framework.test import APIClient
-from trade.user.auth import get_http_token_name
-from trade.user.factories import UserFactory, TokenFactory
+
+from trade.user.factories import UserFactory
+from trade.framework.authorization import JWTAuthentication
 
 
-def get_token_and_user():
+def get_user_and_token():
     user = UserFactory()
-    token = TokenFactory(user=user)
-    return token, user
+    token = JWTAuthentication.jwt_encode_handler(user)
+    return user, token
 
 
 class UnitTestAPIClient(APIClient):
     def __init__(self, token=None):
+        http_token = 'HTTP_AUTHORIZATION'
+        token = str(token) if token else None
+
         super().__init__(**{
-            get_http_token_name(): str(token) if token else None
+            http_token: token
         })
 
     def post(self, *args, **kwargs):

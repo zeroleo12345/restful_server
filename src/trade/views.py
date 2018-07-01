@@ -22,7 +22,7 @@ class EchoStrView(APIView):
         return Response(echostr)
 
     def post(self, request):
-        # 公众号平台事件通知. (使用平台自带的自定义菜单时平台不会下发消息)
+        # TODO: 公众号平台事件通知. (使用平台自带的自定义菜单时平台不会下发消息)
         # from wechatpy import parse_message
         # xml = request.body
         # msg = parse_message(xml)
