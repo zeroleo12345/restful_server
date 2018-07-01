@@ -3,8 +3,7 @@ wechatpy==1.7.0
 django<2
 djangorestframework<4
 djangorestframework-xml==1.3.0
-# 因为 jwt 不兼容 cryptography > 2 的版本, 所以安装 djangorestframwork-jwt
-djangorestframework-jwt==1.11.0
+PyJWT==1.6.4
 mysqlclient<2
 dj-database-url==0.4.2
 django-hvad<2
