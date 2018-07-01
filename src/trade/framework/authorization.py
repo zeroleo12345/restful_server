@@ -9,18 +9,15 @@ from rest_framework.settings import APISettings
 import jwt
 
 from trade.user.models import User
+from trade.user.serializer import UserWeixinSerializer
 
 jwt_settings = APISettings(user_settings=settings.JWT_AUTH, defaults=settings.JWT_AUTH)
-
-
-def get_http_token_name():
-    return 'HTTP_AUTHORIZATION'
 
 
 # 收到请求时, 先验证 Token, 再验证 User
 class JWTAuthentication(BaseAuthentication):
     def authenticate(self, request):
-        token = request.META.get(get_http_token_name())
+        token = request.META.get('HTTP_AUTHORIZATION')
         if not token:
             raise exceptions.NotAuthenticated()
 
@@ -33,8 +30,29 @@ class JWTAuthentication(BaseAuthentication):
         :param jwt_token: 解密后的字典
         :return: User Model
         """
+        user = JWTAuthentication.jwt_decode_handler(jwt_token)
+        return user
+
+    @staticmethod
+    def jwt_decode_handler(jwt_token):
+        """
+        :param jwt_token: JWT Token String
+        :return: User Model
+        """
+        options = {
+            'verify_exp': jwt_settings.JWT_VERIFY_EXPIRATION,
+        }
         try:
-            payload = self.jwt_decode_handler(jwt_token)
+            payload = jwt.decode(
+                jwt_token,
+                jwt_settings.JWT_PUBLIC_KEY or jwt_settings.JWT_SECRET_KEY,
+                jwt_settings.JWT_VERIFY,
+                options=options,
+                leeway=jwt_settings.JWT_LEEWAY,
+                audience=jwt_settings.JWT_AUDIENCE,
+                issuer=jwt_settings.JWT_ISSUER,
+                algorithms=[jwt_settings.JWT_ALGORITHM]
+            )
         except jwt.ExpiredSignature:
             raise exceptions.AuthenticationFailed('Token has expired.')
         except jwt.DecodeError:
@@ -42,37 +60,18 @@ class JWTAuthentication(BaseAuthentication):
         except jwt.InvalidTokenError:
             raise exceptions.AuthenticationFailed('Invalid Token.')
 
-        user_fields = {
-            'username': payload['username'],
-            'password': payload['password'],
-            'is_active': payload['is_active'],
-            'role': payload['role'],
-            'expired_at': payload['expired_at'],
-            'updated_at': payload['updated_at'],
-            'weixin': payload['weixin'],
-        }
-        return User(**user_fields)
-
-    @staticmethod
-    def jwt_decode_handler(jwt_token):
-        options = {
-            'verify_exp': jwt_settings.JWT_VERIFY_EXPIRATION,
-        }
-        return jwt.decode(
-            jwt_token,
-            jwt_settings.JWT_PUBLIC_KEY or jwt_settings.JWT_SECRET_KEY,
-            jwt_settings.JWT_VERIFY,
-            options=options,
-            leeway=jwt_settings.JWT_LEEWAY,
-            audience=jwt_settings.JWT_AUDIENCE,
-            issuer=jwt_settings.JWT_ISSUER,
-            algorithms=[jwt_settings.JWT_ALGORITHM]
-        )
+        username = payload['user']['username']
+        user = User.objects.filter(username=username).select_related('weixin').first()
+        return user
 
     @staticmethod
     def jwt_encode_handler(user):
+        """
+        :param user: User Model
+        :return: JWT Token String
+        """
         payload = {
-            'user_id': user.pk,
+            'user': UserWeixinSerializer(user).data,
             'exp': datetime.utcnow() + jwt_settings.JWT_EXPIRATION_DELTA
         }
 

@@ -4,7 +4,7 @@ from django.utils import timezone
 from trade.user.models import Weixin, User
 
 
-class UserInfoValidator(serializers.Serializer):
+class WeixinInfoValidator(serializers.Serializer):
     openid = serializers.CharField()
     nickname = serializers.CharField()
     headimgurl = serializers.CharField()

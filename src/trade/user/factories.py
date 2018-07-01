@@ -9,8 +9,8 @@ class WeixinFactory(factory.DjangoModelFactory):
     class Meta:
         model = Weixin
 
-    openid = factory.Sequence(lambda n: f'openid:{n}')
-    nickname = factory.Sequence(lambda n: f'nickname:{n}')
+    openid = factory.Sequence(lambda n: f'openid_{n}')
+    nickname = factory.Sequence(lambda n: f'nickname_{n}')
     headimgurl = factory.Sequence(lambda n: f'http://www.headimgurl.com/{n}')
 
     created_at = timezone.localtime()
@@ -20,8 +20,8 @@ class UserFactory(factory.DjangoModelFactory):
     class Meta:
         model = User
 
-    username = factory.Sequence(lambda n: f'username:{n}')
-    password = factory.Sequence(lambda n: make_password(f'password:{n}'))
+    username = factory.Sequence(lambda n: f'username_{n}')
+    password = factory.Sequence(lambda n: make_password(f'password_{n}'))
     is_active = True
     role = factory.Iterator([role[0] for role in User.ROLE])
     expired_at = timezone.localtime()

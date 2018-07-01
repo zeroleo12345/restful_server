@@ -1,5 +1,5 @@
 from django.http.response import HttpResponse
-from trade.framework.authorization import get_http_token_name, UserPermission, JWTAuthentication
+from trade.framework.authorization import UserPermission, JWTAuthentication
 
 
 class CORSMiddleware(object):
@@ -32,8 +32,7 @@ class TokenSetMiddleware(object):
     def __call__(self, request):
         response = self.get_response(request)
 
-        _HTTP_AUTHORIZATION = get_http_token_name()
-        token = request.META.get(_HTTP_AUTHORIZATION, '')
+        token = request.META.get('HTTP_AUTHORIZATION', '')
         if UserPermission.is_user(request.user) and not token:
             response['Authorization'] = JWTAuthentication.jwt_encode_handler(request.user)
 
