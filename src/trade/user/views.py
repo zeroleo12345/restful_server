@@ -9,11 +9,16 @@ from trade.user.serializer import UserWeixinSerializer, WeixinInfoValidator
 from trade.utils.mp import MP
 
 
-class UnusedView(APIView):
+class TestView(APIView):
     authentication_classes = ()
     permission_classes = ()
 
     def get(self, request):
+        token = self.request.META.get('HTTP_AUTHORIZATION', '')
+        if token:
+            print(f'11111111111111111: {token}')
+            user = JWTAuthentication.jwt_decode_handler(token)
+            print(f'22222222222222222: {user}')
         return Response()
 
     def post(self, request):

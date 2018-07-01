@@ -8,21 +8,21 @@ class CORSMiddleware(object):
 
     def __call__(self, request):
         if request.method == 'OPTIONS':
-            response = HttpResponse()
-            response.status_code = 204
-
-            response['Access-Control-Max-Age'] = 600
-            response['Access-Control-Allow-Origin'] = '*'
-            response['Access-Control-Allow-Methods'] = 'GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE'
-            response['Access-Control-Allow-Headers'] = 'Content-Type, Origin, Authorization'
-
+            response = HttpResponse(status=204)
+            CORSMiddleware.set_cors_header(response)
+            return response
+        else:
+            response = self.get_response(request)
+            CORSMiddleware.set_cors_header(response)
             return response
 
-        response = self.get_response(request)
+    @staticmethod
+    def set_cors_header(response):
         response['Access-Control-Allow-Origin'] = '*'
+        response['Access-Control-Max-Age'] = 1800    # 只对 OPTIONS 生效
         response['Access-Control-Allow-Methods'] = 'GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE'
         response['Access-Control-Allow-Headers'] = 'Content-Type, Origin, Authorization'
-        return response
+        response['Access-Control-Expose-Headers'] = 'Content-Type, Origin, Authorization'
 
 
 class TokenSetMiddleware(object):
