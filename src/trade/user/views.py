@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework import exceptions
 
-from trade.user.models import User
-from trade.user.serializer import UserSerializer, UserInfoFromWechatFormSerializer
+from trade.user.models import Weixin, User
+from trade.user.serializer import UserWeixinSerializer, UserInfoValidator
 from trade.utils.mp import MP
 
 
@@ -22,7 +22,7 @@ class UnusedView(APIView):
 class UserView(generics.RetrieveAPIView):
     authentication_classes = ()
     permission_classes = ()
-    serializer_class = UserSerializer
+    serializer_class = UserWeixinSerializer
 
     def get_object(self):
         code = self.request.GET.get('code', '')
@@ -31,20 +31,30 @@ class UserView(generics.RetrieveAPIView):
 
         user_info = MP.get_user_info_from_wechat(code)
 
-        serializer = UserInfoFromWechatFormSerializer(data=user_info)
+        serializer = UserInfoValidator(data=user_info)
         serializer.is_valid(raise_exception=True)
 
         openid = serializer.validated_data['openid']
         nickname = serializer.validated_data['nickname']
         headimgurl = serializer.validated_data['headimgurl']
-        defaults = {
+
+        user = User.objects.filter(weixin__openid=openid).first()
+        if not user:
+            user = self.create_new_user(openid, nickname, headimgurl)
+
+        self.request.user = user
+        return user
+
+    def create_new_user(self, openid, nickname, headimgurl):
+        weixin_fields = {
+            'openid': openid,
             'nickname': nickname,
             'headimgurl': headimgurl,
+        }
+        user_fields = {
+            'weixin': Weixin.objects.create(**weixin_fields),
             'username': 'username',
             'password': 'password',
-            'is_enable': True,
             'role': 'user',
         }
-        user, is_created = User.objects.get_or_create(openid=openid, defaults=defaults)
-
-        return user
+        return User.objects.create(**user_fields)
