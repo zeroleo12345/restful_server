@@ -1,0 +1,52 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  unittest:
+    working_directory: ~/app
+    docker:
+      - image: circleci/python:3.6
+      - image: circleci/mysql:5.7
+      - image: redis:alpine
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "requirements/requirements.txt" }}
+            - v2-dependencies-
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -U pip mycli
+            pip install -U -r requirements/test.txt
+      - save_cache:
+          paths:
+            - ./venv
+          key: v2-dependencies-{{ checksum "requirements/requirements.txt" }}
+      - run:
+          name: Wait for db
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m
+      - run:
+          name: create database
+          command: |
+            . venv/bin/activate
+            mycli -u root -h 127.0.0.1 -e 'CREATE DATABASE trade;'
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            flake8 src/ --show-source --exclude=migrations,*_pb2.py,*_pb2_grpc.py --max-line-length=120
+            pytest src/
+          environment:
+            REDIS_URI: "redis://localhost:6379/0"
+            DATABASE_URI: "mysql://root:@127.0.0.1:3306/trade"
+
+workflows:
+  version: 2
+  UnitTest-DockerBuild-Deploy:
+    jobs:
+      - unittest
