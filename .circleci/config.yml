@@ -39,7 +39,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            flake8 src/ --show-source --exclude=migrations,*_pb2.py,*_pb2_grpc.py --max-line-length=120
+            flake8 src --config=src/tox.ini
             pytest src/
           environment:
             REDIS_URI: "redis://localhost:6379/0"
