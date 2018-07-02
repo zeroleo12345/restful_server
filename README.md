@@ -1,4 +1,6 @@
 # 系统简介
+
+[![CircleCI](https://circleci.com/gh/zeroleo12345/restful_server.svg?style=svg)](https://circleci.com/gh/zeroleo12345/restful_server)
 pppoe用户充值系统
 
 ## 环境
