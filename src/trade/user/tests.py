@@ -5,9 +5,9 @@ from rest_framework import status
 import pytest
 
 from trade.framework.unittest import get_user_and_token, UnitTestAPIClient
-from trade.utils import mp
+from trade.utils.mp import MediaPlatform
 
-mp.create_mp_menu = MagicMock()
+MediaPlatform.create_mp_menu = MagicMock()
 
 
 @pytest.mark.django_db

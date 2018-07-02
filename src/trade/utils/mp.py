@@ -21,7 +21,7 @@ g_wechat_oauth = WeChatOAuth(app_id=settings.APPID,
                              state='1')
 
 
-class MP(object):
+class MediaPlatform(object):
     @staticmethod
     def create_mp_menu():
         # TODO: 防止多次创建菜单
