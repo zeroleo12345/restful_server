@@ -25,9 +25,9 @@ class UserWeixinSerializer(serializers.ModelSerializer):
     status = serializers.SerializerMethodField()
 
     def get_status(self, obj):
-        # 已过期; 使用中; 已停用
+        # expired: 已过期; working: 使用中; inactive: 已停用
         if not obj.is_active:
-            return 'disabled'
+            return 'inactive'
 
         if obj.expired_at > timezone.localtime():
             return 'working'
