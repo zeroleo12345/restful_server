@@ -10,8 +10,7 @@ python3 + django 1 + docker
 ## 启动充值系统
 
 ```bash
-8->7
-$ decrypt docker.env
+$ decrypt docker.env                    # 8->7
 $ docker-compose build --no-cache
 $ docker-compose up -d redis mysql
 $ docker-compose up web
