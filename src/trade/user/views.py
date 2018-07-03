@@ -6,7 +6,7 @@ from rest_framework import exceptions
 from trade.framework.authorization import JWTAuthentication
 from trade.user.models import Weixin, User
 from trade.user.serializer import UserWeixinSerializer, WeixinInfoValidator
-from trade.utils.mp import MP
+from trade.utils.mp import MediaPlatform
 
 
 class TestView(APIView):
@@ -38,7 +38,7 @@ class UserView(generics.RetrieveAPIView):
             code = self.request.GET.get('code', '')
             if not code:
                 raise exceptions.ValidationError('code字段不能为空', 'invalid_code')
-            weixin_info = MP.get_user_info_from_wechat(code)
+            weixin_info = MediaPlatform.get_user_info_from_wechat(code)
 
             serializer = WeixinInfoValidator(data=weixin_info)
             serializer.is_valid(raise_exception=True)

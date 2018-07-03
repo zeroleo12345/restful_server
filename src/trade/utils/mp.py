@@ -21,9 +21,12 @@ g_wechat_oauth = WeChatOAuth(app_id=settings.APPID,
                              state='1')
 
 
-class MP(object):
+class MediaPlatform(object):
     @staticmethod
     def create_mp_menu():
+        if settings.ENVIORMENT.is_unittest():
+            return
+
         # TODO: 防止多次创建菜单
         # 创建公众号-自定义菜单: https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141013
         menu_data = {"button": [

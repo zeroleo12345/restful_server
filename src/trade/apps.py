@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from trade.utils.mp import MP
+from trade.utils.mp import MediaPlatform
 
 
 class TradeConfig(AppConfig):
@@ -7,4 +7,4 @@ class TradeConfig(AppConfig):
 
     def ready(self):
         # startup code here
-        MP.create_mp_menu()
+        MediaPlatform.create_mp_menu()
