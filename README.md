@@ -14,7 +14,7 @@ python3 + django 1 + docker
     decrypt docker.env                    # 8->7
     docker-compose build --no-cache
     docker-compose up -d redis mysql
-    docker-compose up web
+    docker-compose up web                 # 生产运行覆盖参数 DEBUG=False
 
 # 本地验证:
     因为Dockerfile内定义了8000端口映射到docker内部的80端口,

@@ -7,6 +7,7 @@ from trade.framework.authorization import JWTAuthentication
 from trade.user.models import Weixin, User
 from trade.user.serializer import UserWeixinSerializer, WeixinInfoValidator
 from trade.utils.mp import MediaPlatform
+from trade.utils.myrandom import MyRandom
 
 
 class TestView(APIView):
@@ -62,7 +63,7 @@ class UserView(generics.RetrieveAPIView):
         }
         user_fields = {
             'weixin': Weixin.objects.create(**weixin_fields),
-            'username': 'username',
+            'username': MyRandom.random_string(length=8),
             'password': 'password',
             'role': 'user',
         }
