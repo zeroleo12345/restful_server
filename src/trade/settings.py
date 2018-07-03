@@ -214,8 +214,8 @@ class ENVIORMENT(object):
         return cls.enviorment == 'production'
 
     @classmethod
-    def is_circleci(cls):
-        return cls.enviorment == 'circleci'
+    def is_unittest(cls):
+        return cls.enviorment == 'unittest'
 
     @classmethod
     def is_development(cls):
