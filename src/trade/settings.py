@@ -202,7 +202,7 @@ SUB_MCHID = config('SUB_MCHID', default=None)   # 可选. 子商户号, 受理�
 # KF_PASSWORD = config('KF_PASSWORD')
 
 
-class VERSION(object):
+class ENVIORMENT(object):
     """
         production:
          - 创建公众号菜单
@@ -214,8 +214,8 @@ class VERSION(object):
         return cls.enviorment == 'production'
 
     @classmethod
-    def is_qa(cls):
-        return cls.enviorment == 'qa'
+    def is_circleci(cls):
+        return cls.enviorment == 'circleci'
 
     @classmethod
     def is_development(cls):
