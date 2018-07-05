@@ -52,12 +52,15 @@ class MediaPlatform(object):
         }
         """
         if settings.DEBUG:
-            return {
+            user_info = {
                 u'province': u'\u5e7f\u4e1c', u'openid': u'ovj3E0l9vffwBuqz_PNu25yL_is4',
                 u'headimgurl': u'http://wx.qlogo.cn/mmhead/Q3auHgzwzM7AianZsHE6LefhQuSmwibx4KZ9LYkRmIibrFKmSbAVjlpBg/0',
                 u'language': u'zh_CN', u'city': u'\u5e7f\u5dde', u'country': u'\u4e2d\u56fd', u'sex': 1,
                 u'privilege': [], u'nickname': u'\u5468\u793c\u6b23'
             }
+            pass
+            user_info['openid'] = code
+            return user_info
 
         # TODO: token 针对每个用户2小时内有效, 不需要每次都通过code获取新的token!!!
         # https://wohugb.gitbooks.io/wechat/content/qrconnent/refresh_token.html
