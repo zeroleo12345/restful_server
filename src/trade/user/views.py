@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics
@@ -55,6 +56,7 @@ class UserView(generics.RetrieveAPIView):
         return user
 
     @staticmethod
+    @transaction.atomic
     def create_new_user(openid, nickname, headimgurl):
         weixin_fields = {
             'openid': openid,
