@@ -11,23 +11,57 @@ services:
     #container_name: restful_server
     ports:      # 外部端口:docker内部端口
       - "8000:8000"       # 只限于使用docker-compse up时, 会映射到8000端口, 而生产会映射到80端口
-    env_file:
-      - docker.env
+    #env_file:
+      #- docker.env
+    environment:
+      DJANGO_SETTINGS_MODULE: "${DJANGO_SETTINGS_MODULE}"
+      REDIS_URI: "${REDIS_URI}"
+      DATABASE_URI: "${DATABASE_URI}"
+      DEBUG: "${DEBUG}"
+      ENVIORMENT: "${ENVIORMENT}"
+      # 微信公众平台
+      HTML_URL: "${HTML_URL}"
+      # 开发者ID
+      APPID: "${APPID}"
+      # 开发者密码
+      APPSECRET: "${APPSECRET}"
+      # 令牌
+      TOKEN: "${TOKEN}"
+      # 消息加解密密钥
+      AESKEY: "${AESKEY}"
+      # 微信商户平台
+      # API密钥
+      APPKEY: "${APPKEY}"
+      # 商户号
+      MCHID: "${MCHID}"
+      # 商户证书路径
+      MCHCERT: "${MCHCERT}"
+      # 商户证书私钥路径
+      MCHKEY: "${MCHKEY}"
+      # 未确定哪里获取
+      # 可选. 子商户号, 受理模式下必填
+      SUB_MCHID: "${SUB_MCHID}"
+      # 公众号客服
+      #KF_ACCOUNT: "${KF_ACCOUNT}"
+      #KF_NICKNAME: "${KF_NICKNAME}"
+      #KF_PASSWORD: "${KF_PASSWORD}"
 
-    #entrypoint: /app/bin/restful_server_deamon.sh      # docker启动期执行程序
-    #entrypoint: sh      # 用于调试
     volumes:        # 挂载盘(多用于输出程序文件, 日志等)
       - .:/app     # 机路径:docker内部路径.(把主机下的src目录挂在到docker下, 实现边开发, 边调试)
       #- ./runtest:/bin/runtest
+    #entrypoint: /app/bin/restful_server_deamon.sh      # docker启动期执行程序
+    #entrypoint: sh      # 用于调试
     command: []
     tty: true
     networks:
       - pppoe_system
 
+
   redis:
     image: redis:alpine
     networks:
       - pppoe_system
+
 
   mysql:
     image: mysql:5.7
@@ -43,6 +77,7 @@ services:
       - --default_time_zone=Asia/Shanghai
     networks:
       - pppoe_system
+
 
 networks:
   pppoe_system:
