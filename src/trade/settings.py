@@ -34,6 +34,20 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = ['*']
 
 
+# Internationalization
+# https://docs.djangoproject.com/en/1.11/topics/i18n/
+
+LANGUAGE_CODE = 'zh-hans'
+
+TIME_ZONE = 'Asia/Shanghai'
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -88,7 +102,10 @@ WSGI_APPLICATION = 'trade.wsgi.application'
 
 # DATABASE_ROUTERS = ['trade.framework.db_route.Router']
 DATABASES = {
-    'default': dj_database_url.parse(config("DATABASE_URI")),
+    'default': {
+        **dj_database_url.parse(config("DATABASE_URI")),
+        **{'TIME_ZONE': TIME_ZONE}
+    },
 }
 CACHES = {
     "default": {
@@ -118,20 +135,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
-
-LANGUAGE_CODE = 'zh-hans'
-
-TIME_ZONE = 'Asia/Shanghai'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
