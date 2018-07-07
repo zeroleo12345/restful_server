@@ -45,7 +45,6 @@ services:
       #KF_ACCOUNT: "${KF_ACCOUNT}"
       #KF_NICKNAME: "${KF_NICKNAME}"
       #KF_PASSWORD: "${KF_PASSWORD}"
-
     volumes:        # 挂载盘(多用于输出程序文件, 日志等)
       - .:/app     # 机路径:docker内部路径.(把主机下的src目录挂在到docker下, 实现边开发, 边调试)
       #- ./runtest:/bin/runtest
