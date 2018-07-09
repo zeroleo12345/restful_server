@@ -192,8 +192,9 @@ TOKEN = config('TOKEN')     # 令牌
 AESKEY = config('AESKEY')   # 消息加解密密钥
 
 # 微信商户平台
-APPKEY = config('APPKEY')   # API密钥
 MCHID = config('MCHID')     # 商户号
+APPKEY = config('APPKEY')   # API密钥
+
 MCHCERT = config('MCHCERT', default=None)   # 商户证书路径
 MCHKEY = config('MCHKEY', default=None)     # 商户证书私钥路径
 # 未确定哪里获取
@@ -223,3 +224,6 @@ class ENVIORMENT(object):
     @classmethod
     def is_development(cls):
         return cls.enviorment == 'development'
+
+
+SILENCED_SYSTEM_CHECKS = ['urls.W002']
