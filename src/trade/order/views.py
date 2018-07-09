@@ -12,12 +12,16 @@ class OrderView(APIView):
         notify_url = 'https://api.lynatgz.cn/order/notify'
         result = WeixinPay.cashier(total_fee=1, title='test', attach=None, notify_url=None)
         # TODO 测试 notify_url 回调通知是否血袋 attach ?
+        redirect_url = ''
         if result:
-            print(result.redirect)         # 要跳转到的收银台网址
+            redirect_url = result.redirect         # 要跳转到的收银台网址
         else:
             print(result.error_msg)        # 错误信息
             print(result)
-        return Response()
+        data = {
+            'redirect_url': redirect_url
+        }
+        return Response(data)
 
 
 class OrderNotifyView(APIView):
