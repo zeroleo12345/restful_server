@@ -7,8 +7,8 @@ services:
        context: .
        dockerfile: ./Dockerfile
     depends_on:
-      - redis
       - mysql
+      - redis
     ports:      # 外部端口:docker内部端口
       - "8000:8000"       # 只限于使用docker-compse up时, 会映射到8000端口, 而生产会映射到80端口
     #env_file:
@@ -50,7 +50,7 @@ services:
       #- ./runtest:/bin/runtest
     #entrypoint: /app/bin/restful_server_deamon.sh      # docker启动期执行程序
     #entrypoint: sh      # 用于调试
-    command: []
+    #command: dockerize -wait tcp://mysql:3306 -timeout 10s
     tty: true
     networks:
       - pppoe_system
