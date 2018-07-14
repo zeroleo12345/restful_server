@@ -75,7 +75,7 @@ services:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --skip-character-set-client-handshake
-      #- --default-time-zone=Asia/Shanghai      # 导致不能启动. 由django连接时, 制定时区
+      - --default-time-zone=+08:00      # 同时在django连接时, 指定时区
     networks:
       - pppoe_system
 
