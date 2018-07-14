@@ -2,13 +2,13 @@ version: '3.5'
 
 services:
   web:
+    container_name: restful_server_web
     build:
        context: .
        dockerfile: ./Dockerfile
     depends_on:
       - redis
       - mysql
-    #container_name: restful_server
     ports:      # 外部端口:docker内部端口
       - "8000:8000"       # 只限于使用docker-compse up时, 会映射到8000端口, 而生产会映射到80端口
     #env_file:
@@ -57,12 +57,14 @@ services:
 
 
   redis:
+    container_name: restful_server_redis
     image: redis:alpine
     networks:
       - pppoe_system
 
 
   mysql:
+    container_name: restful_server_mysql
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: 'root'
@@ -73,7 +75,7 @@ services:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --skip-character-set-client-handshake
-      - --default_time_zone=Asia/Shanghai
+      #- --default-time-zone=Asia/Shanghai      # 导致不能启动. 由django连接时, 制定时区
     networks:
       - pppoe_system
 
