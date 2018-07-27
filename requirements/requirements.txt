@@ -17,4 +17,5 @@ pytz==2018.4
 gunicorn==19.7.1
 #celery==4.0.2
 pycurl==7.43.0.1
-payjs
+payjs==1.1.4
+django-cors-headers==2.4.0
