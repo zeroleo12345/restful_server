@@ -8,7 +8,9 @@ from trade.utils.payjs import Payjs
 
 def test_payjs():
     callback_url = urljoin(settings.MP_WEB_URL, 'pay_success_callback')
-    response = Payjs.Cashier(total_fee=100, body='用户支付提示', callback_url=callback_url)
+    data = Payjs.Cashier(total_fee=100, title='用户支付提示', callback_url=callback_url)
+    url = data['url']
+    response = Payjs._post(data, url)
     assert response.status_code == status.HTTP_200_OK
     assert "<!DOCTYPE html>\n<html>\n    <head>\n" in response.text
     assert "请在微信客户端打开链接" in response.text
