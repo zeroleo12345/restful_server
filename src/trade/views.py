@@ -13,12 +13,14 @@ class EchoStrView(APIView):
     renderer_classes = (StaticHTMLRenderer,)    # response的content-type方式
 
     def get(self, request):
-        # {URL}/echostr?signature=40lenString&echostr=16809769573550014143&timestamp=1527776959&nonce=1011789502
+        """
+        URL样例:  {URL}/echostr?signature=40lenString&echostr=16809769573550014143&timestamp=1527776959&nonce=1011789502
+        """
         signature = request.GET.get('signature')
         timestamp = request.GET.get('timestamp')
         nonce = request.GET.get('nonce')
         echostr = request.GET.get('echostr')
-        check_signature(settings.TOKEN, signature, timestamp, nonce)
+        check_signature(settings.MP_TOKEN, signature, timestamp, nonce)
         return Response(echostr)
 
     def post(self, request):

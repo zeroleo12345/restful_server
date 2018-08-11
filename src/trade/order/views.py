@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from trade.utils.mp import WeixinPay
+from trade.utils.payjs import Payjs
 
 
 class OrderView(APIView):
@@ -10,7 +10,7 @@ class OrderView(APIView):
 
     def post(self, request):
         notify_url = 'https://api.lynatgz.cn/order/notify'
-        result = WeixinPay.cashier(total_fee=1, title='test', attach=None, notify_url=None)
+        result = Payjs.cashier(total_fee=1, title='test', attach=None, notify_url=None)
         # TODO 测试 notify_url 回调通知是否血袋 attach ?
         redirect_url = ''
         if result:

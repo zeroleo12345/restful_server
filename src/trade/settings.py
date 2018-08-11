@@ -185,45 +185,46 @@ JWT_AUTH = {
 }
 
 # 微信公众平台
-HTML_URL = config('HTML_URL')
-APPID = config('APPID')     # 开发者ID
-APPSECRET = config('APPSECRET')     # 开发者密码
-TOKEN = config('TOKEN')     # 令牌
-AESKEY = config('AESKEY')   # 消息加解密密钥
+MP_WEB_URL = config('MP_WEB_URL')
+MP_APP_ID = config('MP_APP_ID')             # 开发者ID
+MP_APP_SECRET = config('MP_APP_SECRET')     # 开发者密码
+MP_TOKEN = config('MP_TOKEN')               # 令牌
+MP_AES_KEY = config('MP_AES_KEY')           # 消息加解密密钥
+# # 微信商户平台
+MP_MERCHANT_ID = config('MP_MERCHANT_ID')   # 商户号
+MP_APP_KEY = config('MP_APP_KEY')           # API密钥
+MP_MERCHANT_CERT = config('MP_MERCHANT_CERT', default=None)         # 商户证书路径
+MP_MERCHANT_KEY = config('MP_MERCHANT_KEY', default=None)           # 商户证书私钥路径
+# # 未确定哪里获取
+MP_SUB_MERCHANT_ID = config('MP_SUB_MERCHANT_ID', default=None)     # 可选. 子商户号, 受理模式下必填
+# # 公众号客服
+# MP_KF_ACCOUNT = config('MP_KF_ACCOUNT')
+# MP_KF_NICKNAME = config('MP_KF_NICKNAME')
+# MP_KF_PASSWORD = config('MP_KF_PASSWORD')
 
-# 微信商户平台
-MCHID = config('MCHID')     # 商户号
-APPKEY = config('APPKEY')   # API密钥
-
-MCHCERT = config('MCHCERT', default=None)   # 商户证书路径
-MCHKEY = config('MCHKEY', default=None)     # 商户证书私钥路径
-# 未确定哪里获取
-SUB_MCHID = config('SUB_MCHID', default=None)   # 可选. 子商户号, 受理模式下必填
-
-# 公众号客服
-# KF_ACCOUNT = config('KF_ACCOUNT')
-# KF_NICKNAME = config('KF_NICKNAME')
-# KF_PASSWORD = config('KF_PASSWORD')
+# PayJS
+PAYJS_MERCHANT_ID = config('PAYJS_MERCHANT_ID')     # payjs 商户号
+PAYJS_MERCHANT_KEY = config('PAYJS_MERCHANT_KEY')   # payjs API密钥
 
 
-class ENVIORMENT(object):
+class ENVIRONMENT(object):
     """
         production:
          - 创建公众号菜单
     """
-    enviorment = config('ENVIORMENT', default='production')
+    environment = config('ENVIRONMENT', default='production')
 
     @classmethod
     def is_production(cls):
-        return cls.enviorment == 'production'
+        return cls.environment == 'production'
 
     @classmethod
     def is_unittest(cls):
-        return cls.enviorment == 'unittest'
+        return cls.environment == 'unittest'
 
     @classmethod
     def is_development(cls):
-        return cls.enviorment == 'development'
+        return cls.environment == 'development'
 
 
 SILENCED_SYSTEM_CHECKS = ['urls.W002']

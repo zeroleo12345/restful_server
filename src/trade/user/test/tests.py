@@ -1,9 +1,9 @@
 from unittest.mock import MagicMock
-
+# 第三方库
 from django.conf import settings
 from rest_framework import status
 import pytest
-
+# 自己的库
 from trade.framework.unittest import get_user_and_token, UnitTestAPIClient
 from trade.utils.mp import MediaPlatform
 

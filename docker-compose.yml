@@ -18,33 +18,28 @@ services:
       REDIS_URI: "${REDIS_URI}"
       DATABASE_URI: "${DATABASE_URI}"
       DEBUG: "${DEBUG}"
-      ENVIORMENT: "${ENVIORMENT}"
-      # 微信公众平台
-      HTML_URL: "${HTML_URL}"
-      # 开发者ID
-      APPID: "${APPID}"
-      # 开发者密码
-      APPSECRET: "${APPSECRET}"
-      # 令牌
-      TOKEN: "${TOKEN}"
-      # 消息加解密密钥
-      AESKEY: "${AESKEY}"
+      ENVIRONMENT: "${ENVIRONMENT}"
+      MP_WEB_URL: "${MP_WEB_URL}"   # 微信公众平台
+      MP_APP_ID: "${MP_APP_ID}"     # 开发者ID
+      MP_APP_SECRET: "${MP_APP_SECRET}"     # 开发者密码
+      MP_TOKEN: "${MP_TOKEN}"   # 令牌
+      MP_AES_KEY: "${MP_AES_KEY}"   # 消息加解密密钥
+
       # 微信商户平台
-      # API密钥
-      APPKEY: "${APPKEY}"
-      # 商户号
-      MCHID: "${MCHID}"
-      # 商户证书路径
-      MCHCERT: "${MCHCERT}"
-      # 商户证书私钥路径
-      MCHKEY: "${MCHKEY}"
-      # 未确定哪里获取
-      # 可选. 子商户号, 受理模式下必填
-      SUB_MCHID: "${SUB_MCHID}"
+      MP_APP_KEY: "${MP_APP_KEY}"   # API密钥
+      MP_MERCHANT_ID: "${MP_MERCHANT_ID}"   # 商户号
+      MP_MERCHANT_CERT: "${MP_MERCHANT_CERT}"   # 商户证书路径
+      MP_MERCHANT_KEY: "${MP_MERCHANT_KEY}"     # 商户证书私钥路径
+      ## 未确定哪里获取
+      MP_SUB_MERCHANT_ID: "${MP_SUB_MERCHANT_ID}"   # 可选. 子商户号, 受理模式下必填
+
       # 公众号客服
-      #KF_ACCOUNT: "${KF_ACCOUNT}"
-      #KF_NICKNAME: "${KF_NICKNAME}"
-      #KF_PASSWORD: "${KF_PASSWORD}"
+      #MP_KF_ACCOUNT: "${MP_KF_ACCOUNT}"
+      #MP_KF_NICKNAME: "${MP_KF_NICKNAME}"
+      #MP_KF_PASSWORD: "${MP_KF_PASSWORD}"
+      
+      PAYJS_MERCHANT_ID: "${PAYJS_MERCHANT_ID}"     # PAYJS 商户号
+      PAYJS_MERCHANT_KEY: "${PAYJS_MERCHANT_KEY}"   # PAYJS 密码
     volumes:        # 挂载盘(多用于输出程序文件, 日志等)
       - .:/app     # 机路径:docker内部路径.(把主机下的src目录挂在到docker下, 实现边开发, 边调试)
       #- ./runtest:/bin/runtest
