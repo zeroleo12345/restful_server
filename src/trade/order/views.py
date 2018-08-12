@@ -1,3 +1,5 @@
+from urllib.parse import urljoin
+# 第三方库
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.conf import settings
@@ -12,7 +14,8 @@ class OrderView(APIView):
     def post(self, request):
         total_fee = 1
         notify_url = f'{settings.MP_WEB_URL}/order/notify'
-        redirect_url = Payjs.Cashier(total_fee=total_fee, title='test', attach=None, notify_url=notify_url)
+        title = '用户支付提示'
+        redirect_url, param = Payjs.Cashier(total_fee=total_fee, title=title, attach=None, notify_url=notify_url)
         data = {'redirect_url': redirect_url}
         # TODO 测试 notify_url 回调通知是否携带 attach ?
         return Response(data)

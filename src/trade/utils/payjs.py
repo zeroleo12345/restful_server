@@ -113,7 +113,8 @@ class Payjs(object):
         # 清理空值
         param = {k: v for k, v in param.items() if v}
         param['sign'] = Payjs.get_sign(param)
-        return param
+        url = url_join_param(Payjs.CASHIER_URL, param)
+        return url, param
 
     @staticmethod
     def Query(payjs_order_id):
