@@ -3,4 +3,5 @@ set -o verbose
 
 docker-compose exec web ./runtest
 
-# docker-compose exec web pytest trade/user/tests.py -k  test_user
+# docker-compose exec web pytest  trade/user/tests.py
+# docker-compose exec web pytest  -k  test_payjs_post

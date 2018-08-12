@@ -1,6 +1,6 @@
 import time
 import hashlib
-from urllib.parse import urlencode, unquote_plus
+from urllib.parse import urlencode, unquote_plus, urlparse, parse_qsl, urlunparse
 # 第三方库
 import requests
 from django.conf import settings
@@ -8,6 +8,19 @@ from django.conf import settings
 from trade.utils.myrandom import MyRandom
 
 # 参考:   https://gist.github.com/motord/c0d6979d7685708b02950216290e255f
+
+
+def url_join_param(host, params):
+    """
+    :param host: 域名
+    :param params: url参数, 类型为字典
+    :return: 以"?"连接参数后的url
+    """
+    url_parts = list(urlparse(host))
+    query = dict(parse_qsl(url_parts[4]))
+    query.update(params)
+    url_parts[4] = urlencode(query)
+    return urlunparse(url_parts)
 
 
 def ksort(d):
@@ -19,11 +32,19 @@ def ksort(d):
 class Payjs(object):
     MERCHANT_ID = settings.PAYJS_MERCHANT_ID      # 商户号
     MERCHANT_KEY = settings.PAYJS_MERCHANT_KEY    # 密码
-    # CASHIER_URL = 'https://payjs.cn/api/cashier'    # 收银台地址
+    CASHIER_URL = 'https://payjs.cn/api/cashier'  # 收银台URL
 
     @staticmethod
-    def _post(data, url):
-        data['sign'] = Payjs.sign(data)
+    def _get(url, data):
+        data = {k: v for k, v in data.items() if v}
+        data['sign'] = Payjs.get_sign(data)
+        full_url = url_join_param(url, data)
+        return requests.get(full_url)
+
+    @staticmethod
+    def _post(url, data):
+        data = {k: v for k, v in data.items() if v}
+        data['sign'] = Payjs.get_sign(data)
         return requests.post(url, data=data)
 
     @staticmethod
@@ -34,7 +55,7 @@ class Payjs(object):
         ))
 
     @staticmethod
-    def sign(attributes):
+    def get_sign(attributes):
         """
         PAYJS 签名算法与微信官方签名算法一致, 签名生成的通用步骤如下：
         第一步，设所有发送或者接收到的数据为集合M，将集合M内非空参数值的参数按照参数名ASCII码从小到大排序（字典序），
@@ -68,7 +89,7 @@ class Payjs(object):
         data['total_fee'] = total_fee
         data['body'] = title
         data['notify_url'] = notify_url
-        return Payjs._post(data, url)
+        return Payjs._post(url, data)
 
     @staticmethod
     def Cashier(total_fee, title, attach=None, notify_url=None, callback_url=None):
@@ -80,19 +101,20 @@ class Payjs(object):
         :param notify_url: 接收微信支付异步通知的回调地址。必须为可直接访问的URL，不能带参数、session验证、csrf验证。留空则不通知
         :param callback_url: 用户支付成功后，前端跳转地址。留空则支付后关闭webview
         :return:
-            返回字典, 由前端发起 GET请求 到 PayJS收银台
+            返回PayJS收银台URL, 由前端发起 GET请求 重定向到 PayJS收银台
         """
-        data = dict()
-        data['url'] = "https://payjs.cn/api/cashier"
-        data['out_trade_no'] = Payjs.create_out_trade_no()     # 商户自定义交易号
-        data['mchid'] = Payjs.MERCHANT_ID
-        data['total_fee'] = total_fee
-        data['body'] = title
-        data['attach'] = attach
-        data['notify_url'] = notify_url
+        param = dict()
+        param['out_trade_no'] = Payjs.create_out_trade_no()     # 商户自定义交易号
+        param['mchid'] = Payjs.MERCHANT_ID
+        param['total_fee'] = total_fee
+        param['body'] = title
+        param['attach'] = attach
+        param['notify_url'] = notify_url
         if callback_url:
-            data['callback_url'] = callback_url
-        return data
+            param['callback_url'] = callback_url
+        return param
+        # param['sign'] = Payjs.get_sign(param)
+        # return url_join_param(url, param)
 
     @staticmethod
     def Query(payjs_order_id):
@@ -100,4 +122,4 @@ class Payjs(object):
         url = 'https://payjs.cn/api/check'
         data = dict()
         data['payjs_order_id'] = payjs_order_id
-        return Payjs._post(data, url)
+        return Payjs._post(url, data)
