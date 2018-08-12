@@ -35,16 +35,11 @@ class Payjs(object):
     CASHIER_URL = 'https://payjs.cn/api/cashier'  # 收银台URL
 
     @staticmethod
-    def _get(url, data):
-        data = {k: v for k, v in data.items() if v}
-        data['sign'] = Payjs.get_sign(data)
-        full_url = url_join_param(url, data)
-        return requests.get(full_url)
+    def _get(url):
+        return requests.get(url)
 
     @staticmethod
     def _post(url, data):
-        data = {k: v for k, v in data.items() if v}
-        data['sign'] = Payjs.get_sign(data)
         return requests.post(url, data=data)
 
     @staticmethod
@@ -89,6 +84,9 @@ class Payjs(object):
         data['total_fee'] = total_fee
         data['body'] = title
         data['notify_url'] = notify_url
+        # 清理空值, 计算签名
+        data = {k: v for k, v in data.items() if v}
+        data['sign'] = Payjs.get_sign(data)
         return Payjs._post(url, data)
 
     @staticmethod
@@ -112,9 +110,10 @@ class Payjs(object):
         param['notify_url'] = notify_url
         if callback_url:
             param['callback_url'] = callback_url
+        # 清理空值
+        param = {k: v for k, v in param.items() if v}
+        param['sign'] = Payjs.get_sign(param)
         return param
-        # param['sign'] = Payjs.get_sign(param)
-        # return url_join_param(url, param)
 
     @staticmethod
     def Query(payjs_order_id):
@@ -122,4 +121,7 @@ class Payjs(object):
         url = 'https://payjs.cn/api/check'
         data = dict()
         data['payjs_order_id'] = payjs_order_id
+        # 清理空值, 计算签名
+        data = {k: v for k, v in data.items() if v}
+        data['sign'] = Payjs.get_sign(data)
         return Payjs._post(url, data)
