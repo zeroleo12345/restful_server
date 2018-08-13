@@ -184,6 +184,9 @@ JWT_AUTH = {
     'JWT_AUTH_COOKIE': None,
 }
 
+# API服务器域名
+API_SERVER_URL = config('API_SERVER_URL')
+
 # 微信公众平台
 MP_WEB_URL = config('MP_WEB_URL')
 MP_APP_ID = config('MP_APP_ID')             # 开发者ID

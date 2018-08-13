@@ -19,6 +19,9 @@ services:
       DATABASE_URI: "${DATABASE_URI}"
       DEBUG: "${DEBUG}"
       ENVIRONMENT: "${ENVIRONMENT}"
+
+      API_SERVER_URL: "${API_SERVER_URL}"   # API服务器域名
+
       MP_WEB_URL: "${MP_WEB_URL}"   # 微信公众平台
       MP_APP_ID: "${MP_APP_ID}"     # 开发者ID
       MP_APP_SECRET: "${MP_APP_SECRET}"     # 开发者密码
