@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from django.conf import settings
 # 自己的库
 from trade.utils.payjs import Payjs
-from trade.order.models import Order
+from trade.order.models import Orders
 
 
 class OrderView(APIView):
@@ -25,7 +25,7 @@ class OrderView(APIView):
         )
         print(redirect_url)
         # 订单入库
-        Order.objects.create(
+        Orders.objects.create(
             openid='testuser',
             out_trade_no=param['out_trade_no'],
             attach=param['attach'],
@@ -56,8 +56,13 @@ class OrderNotifyView(APIView):
         }
         :return:
         """
-        out_trade_no = request.POST.get('out_trade_no')
+        openid = request.POST.get('openid')
         total_fee = request.POST.get('total_fee')
+        out_trade_no = request.POST.get('out_trade_no')
+        payjs_order_id = request.POST.get('payjs_order_id')
         transaction_id = request.POST.get('transaction_id')
+        attach = request.POST.get('attach')
+        mchid = request.POST.get('mchid')
+        sign = request.POST.get('sign')
 
         return Response()

@@ -2,10 +2,10 @@ import uuid
 from django.db import models
 
 
-# 订单历史
-class Order(models.Model):
+# 订单
+class Orders(models.Model):
     class Meta:
-        db_table = 'order'
+        db_table = 'orders'
 
     STATUS = (
         ('unpaid', '未支付'),

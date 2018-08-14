@@ -1,7 +1,5 @@
 import pytest
-from urllib.parse import urljoin
 # 第三方库
-from django.conf import settings
 from rest_framework import status
 # 自己的库
 from trade.framework.unittest import get_user_and_token, UnitTestAPIClient
@@ -20,3 +18,4 @@ def test_payjs_notify():
         'transaction_id': ['4200000149201808138100178561'], 'sign': ['3BB0F5C8843A16DEE422012A28CB3D47']
     }
     response = client.post('/order/notify', data=data, format=None)
+    assert response.status_code == status.HTTP_200_OK

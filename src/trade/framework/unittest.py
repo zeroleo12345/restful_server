@@ -24,8 +24,8 @@ class UnitTestAPIClient(APIClient):
         :param path:
         :param data:
         :param format:
-         json - request.data.get;
-         None - request.POST.get;
+             json - request.data.get
+             None - request.POST.get
         :return:
         """
         return super().post(path, data, format=format, *args, **kwargs)
