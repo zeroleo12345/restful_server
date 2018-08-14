@@ -3,6 +3,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.conf import settings
+from rest_framework import exceptions
 # 自己的库
 from trade.utils.payjs import Payjs
 from trade.order.models import Orders
@@ -55,6 +56,8 @@ class OrderNotifyView(APIView):
              'transaction_id': ['4200000149201808138100178561'], 'sign': ['3BB0F5C8843A16DEE422012A28CB3D47']
         }
         :return:
+            APIException(500):     {'detail': ErrorDetail(string='signature not match!', code='invalid_signature')}
+            ValidationError(400):  [ErrorDetail(string='signature not match!', code='invalid_signature')]
         """
         openid = request.POST.get('openid')
         total_fee = request.POST.get('total_fee')
@@ -64,5 +67,10 @@ class OrderNotifyView(APIView):
         attach = request.POST.get('attach')
         mchid = request.POST.get('mchid')
         sign = request.POST.get('sign')
+
+        # 校验签名. 错误时返回: 400
+        cal_sign = Payjs.get_sign(request.POST.dict())
+        if sign != cal_sign:
+            raise exceptions.ValidationError(detail='signature not match!', code='invalid_signature')
 
         return Response()

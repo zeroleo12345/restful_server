@@ -152,6 +152,7 @@ STATIC_URL = '/static/'
 #     'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
 # ],
 REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'trade.framework.restful.custom_exception_handler',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'trade.framework.authorization.JWTAuthentication',
     ),

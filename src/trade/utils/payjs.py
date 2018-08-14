@@ -57,9 +57,11 @@ class Payjs(object):
             使用URL键值对的格式（即key1=value1&key2=value2…）拼接成字符串stringA。
         第二步，在stringA最后拼接上 &key=密钥 得到stringSignTemp字符串，并对stringSignTemp进行MD5运算，
             再将得到的字符串所有字符转换为大写，得到sign值
-        :param attributes:
+
+        :param attributes: 属性字典
         :return:
         """
+        attributes.pop('sign', None)
         attributes = ksort(attributes)
         m = hashlib.md5()
         m.update((unquote_plus(urlencode(attributes)) + '&key=' + Payjs.MERCHANT_KEY).encode(encoding='utf-8'))
