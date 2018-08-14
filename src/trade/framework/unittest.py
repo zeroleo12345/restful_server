@@ -19,11 +19,19 @@ class UnitTestAPIClient(APIClient):
             http_token: token
         })
 
-    def post(self, *args, **kwargs):
-        return super().post(format='json', *args, **kwargs)
+    def post(self, path, data=None, format='json', *args, **kwargs):
+        """
+        :param path:
+        :param data:
+        :param format:
+         json - request.data.get;
+         None - request.POST.get;
+        :return:
+        """
+        return super().post(path, data, format=format, *args, **kwargs)
 
-    def put(self, *args, **kwargs):
-        return super().put(format='json', *args, **kwargs)
+    def put(self, path, data=None, format='json', *args, **kwargs):
+        return super().put(path, data=None, format=format, *args, **kwargs)
 
-    def patch(self, *args, **kwargs):
-        return super().patch(format='json', *args, **kwargs)
+    def patch(self, path, data=None, format='json', *args, **kwargs):
+        return super().patch(path, data, format=format, *args, **kwargs)

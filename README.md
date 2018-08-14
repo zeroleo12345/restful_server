@@ -24,3 +24,19 @@ pppoe用户充值系统 (基于 python3 + django 1 + docker)
 ``` bash
 sh dev/runtest_in_docker.sh
 ```
+
+## 连接MySQL
+``` bash
+mycli -h 127.0.0.1 -u root --password=root -D trade
+```
+
+## Migration
+``` bash
+docker-compose exec web  python manage.py makemigrations
+docker-compose exec web  python manage.py migrate --database=default
+
+# 清理历史migrations文件, 并重新生成表结构
+  - 清理目录文件:  rm -rf migrations/*
+  - 清理数据库:    drop database trade; create database trade;
+  - 执行上面的Migration动作
+```

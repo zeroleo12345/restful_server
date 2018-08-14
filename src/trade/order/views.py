@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from django.conf import settings
 # 自己的库
 from trade.utils.payjs import Payjs
+from trade.order.models import Order
 
 
 class OrderView(APIView):
@@ -23,6 +24,16 @@ class OrderView(APIView):
             total_fee=total_fee, title=title, attach=attach, notify_url=notify_url, callback_url=callback_url
         )
         print(redirect_url)
+        # 订单入库
+        Order.objects.create(
+            openid='testuser',
+            out_trade_no=param['out_trade_no'],
+            attach=param['attach'],
+            total_fee=param['total_fee'],
+            appid='payjs',
+            mch_id=param['mchid'],
+            status='unpaid',
+        )
         data = {'redirect_url': redirect_url}
         return Response(data)
 
@@ -34,7 +45,10 @@ class OrderNotifyView(APIView):
     def post(self, request):
         """
         :param request:
-        request.POST: {
+        request.path:  不包含域名 /order/notify
+        url参数 request.GET: {}
+        form参数 request.POST:
+        {
             'attach': ['{"tariff_id": "month1"}'], 'mchid': ['1511573911'], 'openid': ['o7LFAwUGHPZxyNahwjoNQtKh8EME'],
             'out_trade_no': ['1534167177710ovfltv6a8v7BsFAH0'], 'payjs_order_id': ['2018081321325600636471374'],
             'return_code': ['1'], 'time_end': ['2018-08-13 21:33:02'], 'total_fee': ['1'],
@@ -42,6 +56,8 @@ class OrderNotifyView(APIView):
         }
         :return:
         """
-        print(request.path)     # 不包含域名: /order/notify
-        print(request.POST)
+        out_trade_no = request.POST.get('out_trade_no')
+        total_fee = request.POST.get('total_fee')
+        transaction_id = request.POST.get('transaction_id')
+
         return Response()
