@@ -3,7 +3,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.conf import settings
-from rest_framework import exceptions
+from django.db import transaction
 from rest_framework.renderers import StaticHTMLRenderer
 # 自己的库
 from trade.utils.payjs import Payjs
@@ -47,6 +47,7 @@ class OrderNotifyView(APIView):
     permission_classes = ()
     renderer_classes = (StaticHTMLRenderer,)    # response的content-type方式, 会使用指定类序列化body
 
+    @transaction.atomic
     def post(self, request):
         """
         :param request:
@@ -77,4 +78,12 @@ class OrderNotifyView(APIView):
         if sign != cal_sign:
             return Response(data='invalid_signature', status=400)
 
+        # 根据out_trade_no检查数据库订单
+        order = Orders.objects.filter(out_trade_no=out_trade_no, total_fee=total_fee).first()
+        if not order:
+            return Response(data='invalid_order', status=400)
+
+        # TODO 增加使用时长
+        order.status = 'paid'
+        order.save()
         return Response('success')
