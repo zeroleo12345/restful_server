@@ -8,7 +8,7 @@ from trade.utils.payjs import Payjs
 
 def test_payjs_post():
     callback_url = urljoin(settings.MP_WEB_URL, 'pay_success_callback')
-    param = Payjs.Cashier(total_fee=100, title='用户支付提示', callback_url=callback_url)
+    url, param = Payjs.Cashier(total_fee=100, title='用户支付提示', callback_url=callback_url)
     response = Payjs._post(Payjs.CASHIER_URL, data=param)
     assert response.status_code == status.HTTP_200_OK
     assert "<!DOCTYPE html>\n<html>\n    <head>\n" in response.text
