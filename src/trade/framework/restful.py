@@ -54,5 +54,10 @@ def custom_exception_handler(exc, context):
                 'code': detail.code,
                 'message': detail.__str__(),
             }
+        else:
+            response.data = {
+                'code': 'unknown_error',
+                'message': 'Unknown Error',
+            }
 
     return response
