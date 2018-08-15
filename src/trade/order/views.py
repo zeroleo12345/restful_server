@@ -15,12 +15,14 @@ class OrderView(APIView):
     permission_classes = ()
 
     def post(self, request):
+        # 获取参数
         tariff_id = request.GET.get('tariff_id')
+        #
         attach = json.dumps({'tariff_id': tariff_id})
         print(f'tariff_id: {tariff_id}, attach: {attach}')
         total_fee = 1
-        notify_url = f'{settings.API_SERVER_URL}/order/notify'      # 充值后回调地址
-        callback_url = settings.MP_WEB_URL
+        notify_url = f'{settings.API_SERVER_URL}/order/notify'      # 充值状态通知地址
+        callback_url = settings.MP_WEB_URL      # 充值后用户跳转地址
         title = '用户支付提示'
         redirect_url, param = Payjs.Cashier(
             total_fee=total_fee, title=title, attach=attach, notify_url=notify_url, callback_url=callback_url

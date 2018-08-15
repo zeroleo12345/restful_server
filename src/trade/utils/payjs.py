@@ -94,7 +94,7 @@ class Payjs(object):
     @staticmethod
     def Cashier(total_fee, title, attach=None, notify_url=None, callback_url=None):
         """
-        用户跳转到收银台支付
+        用户跳转到收银台支付. (Note: 并没有实际调用接口)
         :param total_fee: 支付金额, 单位分
         :param title: 订单标题
         :param attach: 用户自定义数据，在notify的时候会原样返回

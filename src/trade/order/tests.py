@@ -8,6 +8,19 @@ from trade.framework.unittest import get_user_and_token, UnitTestAPIClient
 pytestmark = pytest.mark.django_db
 
 
+def test_order_create():
+    user, token = get_user_and_token()
+    client = UnitTestAPIClient(token=token)
+    data = {
+        'tariff_id': "month1",
+    }
+    response = client.post('/order', data=data)
+    assert response.status_code == status.HTTP_200_OK
+    json_response = response.json()
+    assert json_response['code'] == 'ok'
+    assert 'redirect_url' in json_response['data']
+
+
 def test_payjs_notify_success():
     user, token = get_user_and_token()
     client = UnitTestAPIClient(token=token)
