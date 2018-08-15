@@ -32,6 +32,4 @@ def test_payjs_notify_sign_error():
     }
     response = client.post('/order/notify', data=data, format=None)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    json_response = response.json()
-    assert json_response['code'] == 'invalid_signature'
-    assert 'message' in json_response
+    assert response.data == 'invalid_signature'

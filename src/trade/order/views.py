@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.conf import settings
 from rest_framework import exceptions
+from rest_framework.renderers import StaticHTMLRenderer
 # 自己的库
 from trade.utils.payjs import Payjs
 from trade.order.models import Orders
@@ -42,6 +43,7 @@ class OrderView(APIView):
 class OrderNotifyView(APIView):
     authentication_classes = ()
     permission_classes = ()
+    renderer_classes = (StaticHTMLRenderer,)    # response的content-type方式, 会使用指定类序列化body
 
     def post(self, request):
         """
@@ -71,6 +73,6 @@ class OrderNotifyView(APIView):
         # 校验签名. 错误时返回: 400
         cal_sign = Payjs.get_sign(request.POST.dict())
         if sign != cal_sign:
-            raise exceptions.ValidationError(detail='signature not match!', code='invalid_signature')
+            return Response(data='invalid_signature', status=400)
 
-        return Response()
+        return Response('success')
