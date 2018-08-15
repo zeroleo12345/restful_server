@@ -10,8 +10,8 @@ pytestmark = pytest.mark.django_db
 
 
 def test_order_create():
-    user, token = get_user_and_token()
-    client = UnitTestAPIClient(token=token)
+    user, jwt_token = get_user_and_token()
+    client = UnitTestAPIClient(token=jwt_token)
     data = {
         'tariff_id': "month1",
     }
@@ -32,6 +32,7 @@ def test_payjs_notify_success():
     }
     # 插入订单
     OrdersFactory(
+        user=user,
         openid=user.weixin.openid,
         out_trade_no=data['out_trade_no'],
         attach=data['attach'],

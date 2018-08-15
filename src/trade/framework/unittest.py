@@ -6,8 +6,8 @@ from trade.framework.authorization import JWTAuthentication
 
 def get_user_and_token():
     user = UserFactory()
-    token = JWTAuthentication.jwt_encode_handler(user)
-    return user, token
+    jwt_token = JWTAuthentication.jwt_encode_handler(user)
+    return user, jwt_token
 
 
 class UnitTestAPIClient(APIClient):

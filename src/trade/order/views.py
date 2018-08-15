@@ -8,14 +8,16 @@ from rest_framework.renderers import StaticHTMLRenderer
 # 自己的库
 from trade.utils.payjs import Payjs
 from trade.order.models import Orders
+from trade.framework.authorization import JWTAuthentication, UserPermission
 
 
 class OrderView(APIView):
-    authentication_classes = ()
-    permission_classes = ()
+    authentication_classes = (JWTAuthentication, )      # 默认配置
+    permission_classes = (UserPermission, )             # 默认配置
 
     def post(self, request):
         # 获取参数
+        user = request.user
         tariff_id = request.GET.get('tariff_id')
         #
         attach = json.dumps({'tariff_id': tariff_id})
@@ -30,6 +32,7 @@ class OrderView(APIView):
         print(redirect_url)
         # 订单入库
         Orders.objects.create(
+            user=user,
             openid='testuser',
             out_trade_no=param['out_trade_no'],
             attach=param['attach'],
@@ -47,7 +50,6 @@ class OrderNotifyView(APIView):
     permission_classes = ()
     renderer_classes = (StaticHTMLRenderer,)    # response的content-type方式, 会使用指定类序列化body
 
-    @transaction.atomic
     def post(self, request):
         """
         :param request:
@@ -83,7 +85,10 @@ class OrderNotifyView(APIView):
         if not order:
             return Response(data='invalid_order', status=400)
 
-        # TODO 增加使用时长
-        order.status = 'paid'
-        order.save()
+        user = order.user
+
+        with transaction.atomic():
+            # TODO 增加使用时长
+            order.status = 'paid'
+            order.save()
         return Response('success')

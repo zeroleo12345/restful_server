@@ -1,5 +1,7 @@
-from django.db import models
+from django.db import models, transaction
 from django.contrib.auth.models import AbstractBaseUser
+# 自己的库
+from trade.utils.myrandom import MyRandom
 
 
 # 微信号
@@ -36,3 +38,23 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.username
+
+    @staticmethod
+    @transaction.atomic
+    def get_or_create_user(openid, nickname='', headimgurl=''):
+        user = User.objects.filter(weixin__openid=openid).first()
+        if not user:
+            weixin_fields = {
+                'openid': openid,
+                'nickname': nickname,
+                'headimgurl': headimgurl,
+            }
+            user_fields = {
+                'weixin': Weixin.objects.create(**weixin_fields),
+                'username': MyRandom.random_string(length=8),
+                'password': 'password',
+                'role': 'user',
+            }
+            user = User.objects.create(**user_fields)   # create 返回 Model 实例
+
+        return user

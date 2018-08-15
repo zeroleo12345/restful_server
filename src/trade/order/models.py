@@ -1,5 +1,7 @@
 import uuid
 from django.db import models
+# 自己的库
+from trade.user.models import User
 
 
 # 订单
@@ -14,6 +16,7 @@ class Orders(models.Model):
     )
 
     uuid = models.UUIDField(editable=False, default=uuid.uuid4)
+    user = models.ForeignKey(User, null=False)
     openid = models.CharField(max_length=255)
     out_trade_no = models.CharField(max_length=255, unique=True)     # 商家订单号
     attach = models.CharField(max_length=255)           # 附加信息

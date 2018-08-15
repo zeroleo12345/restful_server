@@ -1,14 +1,12 @@
-from django.db import transaction
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework import exceptions
 
 from trade.framework.authorization import JWTAuthentication
-from trade.user.models import Weixin, User
+from trade.user.models import User
 from trade.user.serializer import UserWeixinSerializer, WeixinInfoValidator
 from trade.utils.mp import MediaPlatform
-from trade.utils.myrandom import MyRandom
 
 
 class TestView(APIView):
@@ -48,25 +46,7 @@ class UserView(generics.RetrieveAPIView):
             nickname = serializer.validated_data['nickname']
             headimgurl = serializer.validated_data['headimgurl']
 
-            user = User.objects.filter(weixin__openid=openid).first()
-            if not user:
-                user = self.create_new_user(openid, nickname, headimgurl)
+            user = User.get_or_create_user(openid, nickname, headimgurl)
 
-        self.request.user = user
+        self.request.user = user    # 用于Response时, 设置JsonWebToken
         return user
-
-    @staticmethod
-    @transaction.atomic
-    def create_new_user(openid, nickname, headimgurl):
-        weixin_fields = {
-            'openid': openid,
-            'nickname': nickname,
-            'headimgurl': headimgurl,
-        }
-        user_fields = {
-            'weixin': Weixin.objects.create(**weixin_fields),
-            'username': MyRandom.random_string(length=8),
-            'password': 'password',
-            'role': 'user',
-        }
-        return User.objects.create(**user_fields)
