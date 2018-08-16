@@ -57,6 +57,6 @@ def test_payjs_notify_sign_error():
         'return_code': ['1'], 'time_end': ['2018-08-13 21:33:02'], 'total_fee': ['1'],
         'transaction_id': ['4200000149201808138100178561'], 'sign': ['this is error sign']
     }
-    response = client.post('/order/notify', data=data, format=None)
+    response = client.post('/order/notify', data=data, format=None)     # 以 Form 形式
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.data == 'invalid_signature'

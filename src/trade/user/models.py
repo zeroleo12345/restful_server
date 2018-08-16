@@ -33,9 +33,6 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     role = models.CharField(max_length=32, choices=ROLE, default='user')
 
-    expired_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
-
     def __str__(self):
         return self.username
 
@@ -58,3 +55,13 @@ class User(AbstractBaseUser):
             user = User.objects.create(**user_fields)   # create 返回 Model 实例
 
         return user
+
+
+# 用户免费资源
+class Resource(models.Model):
+    class Meta:
+        db_table = 'resource'
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
+    expired_at = models.DateTimeField(auto_now_add=True)    # ﻿auto_now_add only generated on 新创建
+    updated_at = models.DateTimeField(auto_now=True)        # ﻿auto_now is generated on 每次修改

@@ -81,7 +81,7 @@ class OrderNotifyView(APIView):
             return Response(data='invalid_signature', status=400)
 
         # 根据out_trade_no检查数据库订单
-        order = Orders.objects.filter(out_trade_no=out_trade_no, total_fee=total_fee).first()
+        order = Orders.objects.filter(out_trade_no=out_trade_no, total_fee=total_fee).select_related('user').first()
         if not order:
             return Response(data='invalid_order', status=400)
 

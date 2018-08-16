@@ -20,11 +20,8 @@ class UserFactory(factory.DjangoModelFactory):
     class Meta:
         model = User
 
+    weixin = factory.SubFactory(WeixinFactory)
     username = factory.Sequence(lambda n: f'username_{n}')
     password = factory.Sequence(lambda n: make_password(f'password_{n}'))
     is_active = True
     role = factory.Iterator([role[0] for role in User.ROLE])
-    expired_at = timezone.localtime()
-    updated_at = timezone.localtime()
-
-    weixin = factory.SubFactory(WeixinFactory)

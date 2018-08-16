@@ -2,10 +2,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework import exceptions
-
-from trade.framework.authorization import JWTAuthentication
-from trade.user.models import User
-from trade.user.serializer import UserWeixinSerializer, WeixinInfoValidator
+# 自己的库
+from trade.framework.authorization import JWTAuthentication, UserPermission
+from trade.user.models import User, Resource
+from trade.user.serializer import UserWeixinSerializer, WeixinInfoValidator, ResourceSerializer
 from trade.utils.mp import MediaPlatform
 
 
@@ -50,3 +50,14 @@ class UserView(generics.RetrieveAPIView):
 
         self.request.user = user    # 用于Response时, 设置JsonWebToken
         return user
+
+
+class UserResourceView(generics.RetrieveAPIView):
+    authentication_classes = (JWTAuthentication, )      # 默认配置
+    permission_classes = (UserPermission, )             # 默认配置
+    serializer_class = ResourceSerializer
+
+    def get_object(self):
+        user = self.request.user
+        resource, is_created = Resource.objects.get_or_create(user=user)
+        return resource

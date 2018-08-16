@@ -1,7 +1,8 @@
 from django.conf.urls import url
-from .views import UserView, TestView
+from trade.user import views
 
 user_urls = [
-    url(r'$', UserView.as_view()),
-    url(r'test', TestView.as_view()),
+    url(r'^$', views.UserView.as_view()),
+    url(r'^/resource', views.UserResourceView.as_view()),
+    url(r'^/test', views.TestView.as_view()),
 ]
