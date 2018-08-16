@@ -62,7 +62,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'trade.framework.middleware.CORSMiddleware',
+    'trade.framework.middleware.CORSMiddleware',    # TODO 使用开源的: 'corsheaders.middleware.CorsMiddleware'
     'trade.framework.middleware.TokenSetMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
