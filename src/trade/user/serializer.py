@@ -1,8 +1,6 @@
 from rest_framework import serializers
-from django.utils import timezone
-
+# 自己的库
 from trade.user.models import Weixin, User
-from trade.resource.models import Resource
 
 
 class WeixinInfoValidator(serializers.Serializer):
@@ -23,21 +21,3 @@ class UserWeixinSerializer(serializers.ModelSerializer):
         exclude = ('password',)
 
     weixin = WeixinSerializer()
-
-
-class ResourceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Resource
-        exclude = ('user',)
-
-    status = serializers.SerializerMethodField()
-
-    def get_status(self, obj):
-        # expired: 已过期; working: 使用中; inactive: 已停用
-        if not obj.user.is_active:
-            return 'inactive'
-
-        if obj.expired_at > timezone.localtime():
-            return 'working'
-
-        return 'expired'

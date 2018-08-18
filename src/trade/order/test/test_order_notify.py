@@ -38,7 +38,7 @@ def test_payjs_notify_success():
     assert response.status_code == status.HTTP_200_OK
 
     # 检查用户时长是否已经叠加
-    response = client.get('/user/resource')
+    response = client.get('/resource')
     assert response.status_code == status.HTTP_200_OK
     """
     {

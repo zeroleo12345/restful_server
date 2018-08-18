@@ -56,5 +56,5 @@ class TestUser:
         settings.DEBUG = True
         user, token = get_user_and_token()
         client = UnitTestAPIClient(token=token)
-        response = client.get('/user/resource')
+        response = client.get('/resource')
         assert response.status_code == status.HTTP_200_OK
