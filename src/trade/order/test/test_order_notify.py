@@ -1,6 +1,9 @@
 import pytest
 # 第三方库
 from rest_framework import status
+from django.utils.dateparse import parse_datetime
+from django.utils import timezone
+from dateutil.relativedelta import relativedelta
 # 自己的库
 from trade.framework.unittest import get_user_and_token, UnitTestAPIClient
 from trade.order.factories import OrdersFactory
@@ -33,8 +36,22 @@ def test_payjs_notify_success():
     client = UnitTestAPIClient(token=token)
     response = client.post('/order/notify', data=data, format=None)
     assert response.status_code == status.HTTP_200_OK
-    # TODO 检查用户时长是否已经叠加
-    pass
+
+    # 检查用户时长是否已经叠加
+    response = client.get('/user/resource')
+    assert response.status_code == status.HTTP_200_OK
+    """
+    {
+        'code': 'ok', 'data': {
+            'id': 1, 'status': 'working', 'expired_at': '2018-09-18T12:28:50.649466+08:00',
+            'updated_at': '2018-08-18T12:28:50.650826+08:00'
+         }
+    }
+    """
+    json_resposne = response.json()
+    assert json_resposne['data']['status'] == 'working'
+    expired_at = timezone.localtime(parse_datetime(json_resposne['data']['expired_at']))
+    assert expired_at >= timezone.localtime() + relativedelta(months=1) - relativedelta(hours=1)
 
 
 def test_payjs_notify_order_not_exist():

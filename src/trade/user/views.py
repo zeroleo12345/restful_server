@@ -58,6 +58,7 @@ class UserResourceView(generics.RetrieveAPIView):
     serializer_class = ResourceSerializer
 
     def get_object(self):
+        # TODO webstorm 未改造
         user = self.request.user
         resource, is_created = Resource.objects.get_or_create(user=user)
         return resource
