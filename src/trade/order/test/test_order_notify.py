@@ -9,19 +9,6 @@ from trade.order.factories import OrdersFactory
 pytestmark = pytest.mark.django_db
 
 
-def test_order_create():
-    user, jwt_token = get_user_and_token()
-    client = UnitTestAPIClient(token=jwt_token)
-    data = {
-        'tariff_name': 'month1',
-    }
-    response = client.post('/order', data=data)
-    assert response.status_code == status.HTTP_200_OK
-    json_response = response.json()
-    assert json_response['code'] == 'ok'
-    assert 'redirect_url' in json_response['data']
-
-
 def test_payjs_notify_success():
     user, token = get_user_and_token()
     data = {
@@ -46,6 +33,8 @@ def test_payjs_notify_success():
     client = UnitTestAPIClient(token=token)
     response = client.post('/order/notify', data=data, format=None)
     assert response.status_code == status.HTTP_200_OK
+    # TODO 检查用户时长是否已经叠加
+    pass
 
 
 def test_payjs_notify_order_not_exist():
