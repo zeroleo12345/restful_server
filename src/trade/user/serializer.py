@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from django.utils import timezone
 
-from trade.user.models import Weixin, User, Resource
+from trade.user.models import Weixin, User
+from trade.resource.models import Resource
 
 
 class WeixinInfoValidator(serializers.Serializer):

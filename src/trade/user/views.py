@@ -4,7 +4,8 @@ from rest_framework import generics
 from rest_framework import exceptions
 # 自己的库
 from trade.framework.authorization import JWTAuthentication, UserPermission
-from trade.user.models import User, Resource
+from trade.user.models import User
+from trade.resource.models import Resource
 from trade.user.serializer import UserWeixinSerializer, WeixinInfoValidator, ResourceSerializer
 from trade.utils.mp import MediaPlatform
 
@@ -58,7 +59,6 @@ class UserResourceView(generics.RetrieveAPIView):
     serializer_class = ResourceSerializer
 
     def get_object(self):
-        # TODO webstorm 未改造
         user = self.request.user
         resource, is_created = Resource.objects.get_or_create(user=user)
         return resource

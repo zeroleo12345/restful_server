@@ -8,7 +8,7 @@ from rest_framework.renderers import StaticHTMLRenderer
 # 自己的库
 from trade.utils.payjs import Payjs
 from trade.order.models import Orders, Tariff
-from trade.user.models import Resource
+from trade.resource.models import Resource, ResourceChange
 from trade.framework.authorization import JWTAuthentication, UserPermission
 
 
@@ -94,10 +94,13 @@ class OrderNotifyView(APIView):
         user = order.user
         resource, is_created = Resource.objects.get_or_create(user=user)
         tariff = Tariff.attach_to_tariff(attach)
+        before = resource.expired_at
+        after = tariff.increase_duration(before)
 
         with transaction.atomic():
-            resource.expired_at = tariff.increase_duration(resource.expired_at)
+            resource.expired_at = after
             resource.save()
             order.status = 'paid'
             order.save()
+            ResourceChange.objects.create(user=user, orders=order, before=before, after=after)
         return Response('success')
