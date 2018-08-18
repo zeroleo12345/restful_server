@@ -68,7 +68,7 @@ services:
       MYSQL_ROOT_PASSWORD: 'root'
       MYSQL_DATABASE: 'trade'
     ports:
-      - "3306:3306"     # 用于sequel pro连接
+      - "33333:3306"     # 用于sequel pro连接
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
