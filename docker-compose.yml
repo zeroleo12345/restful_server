@@ -14,6 +14,7 @@ services:
     #env_file:
       #- docker.env
     environment:
+      SECRET_KEY: "${SECRET_KEY}"
       DJANGO_SETTINGS_MODULE: "${DJANGO_SETTINGS_MODULE}"
       REDIS_URI: "${REDIS_URI}"
       DATABASE_URI: "${DATABASE_URI}"
