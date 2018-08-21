@@ -185,15 +185,16 @@ JWT_AUTH = {
     'JWT_AUTH_COOKIE': None,
 }
 
-# API服务器域名
+# API服务器域名, 如: 'http://api.xxx.cn'
 API_SERVER_URL = config('API_SERVER_URL')
 
-# 微信公众平台
+# 微信公众平台, 如: 'http://www.xxx.cn'
 MP_WEB_URL = config('MP_WEB_URL')
 MP_APP_ID = config('MP_APP_ID')             # 开发者ID
 MP_APP_SECRET = config('MP_APP_SECRET')     # 开发者密码
 MP_TOKEN = config('MP_TOKEN')               # 令牌
 MP_AES_KEY = config('MP_AES_KEY')           # 消息加解密密钥
+"""
 # # 微信商户平台
 MP_MERCHANT_ID = config('MP_MERCHANT_ID')   # 商户号
 MP_APP_KEY = config('MP_APP_KEY')           # API密钥
@@ -205,6 +206,7 @@ MP_SUB_MERCHANT_ID = config('MP_SUB_MERCHANT_ID', default=None)     # 可选. �
 # MP_KF_ACCOUNT = config('MP_KF_ACCOUNT')
 # MP_KF_NICKNAME = config('MP_KF_NICKNAME')
 # MP_KF_PASSWORD = config('MP_KF_PASSWORD')
+"""
 
 # PayJS
 PAYJS_MERCHANT_ID = config('PAYJS_MERCHANT_ID')     # payjs 商户号
