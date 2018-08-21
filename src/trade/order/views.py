@@ -1,4 +1,3 @@
-import json
 # 第三方库
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -59,9 +58,10 @@ class OrderNotifyView(APIView):
         url参数 request.GET: {}
         form参数 request.POST:
         {
-            'attach': ['{"tariff_name": "month1"}'], 'mchid': ['1511573911'], 'openid': ['o7LFAwUGHPZxyNahwjoNQtKh8EME'],
-            'out_trade_no': ['1534167177710ovfltv6a8v7BsFAH0'], 'payjs_order_id': ['2018081321325600636471374'],
-            'return_code': ['1'], 'time_end': ['2018-08-13 21:33:02'], 'total_fee': ['1'],
+             'attach': ['{"tariff_name": "month1"}'], 'mchid': ['1511573911'],
+             'openid': ['o7LFAwUGHPZxyNahwjoNQtKh8EME'],
+             'out_trade_no': ['1534167177710ovfltv6a8v7BsFAH0'], 'payjs_order_id': ['2018081321325600636471374'],
+             'return_code': ['1'], 'time_end': ['2018-08-13 21:33:02'], 'total_fee': ['1'],
              'transaction_id': ['4200000149201808138100178561'], 'sign': ['3BB0F5C8843A16DEE422012A28CB3D47']
         }
         :return:
@@ -69,13 +69,13 @@ class OrderNotifyView(APIView):
             APIException(500):     {'detail': ErrorDetail(string='signature not match!', code='invalid_signature')}
             ValidationError(400):  [ErrorDetail(string='signature not match!', code='invalid_signature')]
         """
-        openid = request.POST.get('openid')
+        # openid = request.POST.get('openid')
         total_fee = request.POST.get('total_fee')
         out_trade_no = request.POST.get('out_trade_no')
-        payjs_order_id = request.POST.get('payjs_order_id')
-        transaction_id = request.POST.get('transaction_id')
+        # payjs_order_id = request.POST.get('payjs_order_id')
+        # transaction_id = request.POST.get('transaction_id')
         attach = request.POST.get('attach')
-        mchid = request.POST.get('mchid')
+        # mchid = request.POST.get('mchid')
         sign = request.POST.get('sign')
 
         # 校验签名. 错误时返回: 400

@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework import exceptions
 # 自己的库
-from trade.framework.authorization import JWTAuthentication, UserPermission
+from trade.framework.authorization import JWTAuthentication
 from trade.user.models import User
 from trade.user.serializer import UserWeixinSerializer, WeixinInfoValidator
 from trade.utils.mp import MediaPlatform
