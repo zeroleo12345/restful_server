@@ -6,25 +6,24 @@ from wechatpy import WeChatClient
 from wechatpy.oauth import WeChatOAuth
 from wechatpy.session.redisstorage import RedisStorage
 
-redis_client = get_redis_connection()
-
-g_wechat_client = WeChatClient(appid=settings.APPID,
-                               secret=settings.APPSECRET,
-                               session=RedisStorage(redis_client, prefix="_wechatpy"))
-
-redirect_uri = urljoin(settings.HTML_URL, '')
-g_wechat_oauth = WeChatOAuth(app_id=settings.APPID,
-                             secret=settings.APPSECRET,
-                             redirect_uri=redirect_uri,
-                             # snsapi_base-不需授权; snsapi_userinfo-需授权
-                             scope='snsapi_userinfo',
-                             state='1')
+redis_client = get_redis_connection(alias='default')
 
 
 class MediaPlatform(object):
+    REDIRECT_URI = urljoin(settings.MP_WEB_URL, '')
+    WECHAT_CLIENT = WeChatClient(
+        appid=settings.MP_APP_ID, secret=settings.MP_APP_SECRET, session=RedisStorage(redis_client, prefix="_wechatpy")
+    )
+
+    WECHAT_OAUTH = WeChatOAuth(
+        # snsapi_base-不需授权; snsapi_userinfo-需授权
+        app_id=settings.MP_APP_ID, secret=settings.MP_APP_SECRET, redirect_uri=REDIRECT_URI, scope='snsapi_userinfo',
+        state='1'
+    )
+
     @staticmethod
     def create_mp_menu():
-        if settings.ENVIORMENT.is_unittest():
+        if settings.ENVIRONMENT.is_unittest():
             return
 
         # TODO: 防止多次创建菜单
@@ -33,18 +32,16 @@ class MediaPlatform(object):
             {
                 "name": '个人中心',
                 "type": 'view',
-                "url": f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.APPID}'
-                       f'&redirect_uri={redirect_uri}&response_type=code&scope=snsapi_userinfo'
+                "url": f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}'
+                       f'&redirect_uri={MediaPlatform.REDIRECT_URI}&response_type=code&scope=snsapi_userinfo'
             },
         ]}
-        print(menu_data)
-        g_wechat_client.menu.create(menu_data)
+        MediaPlatform.WECHAT_CLIENT.menu.create(menu_data)
 
     @staticmethod
     def get_user_info_from_wechat(code):
-        """ 使用code通过微信OAUTH2接口, 获取openid.
-        返回数据请参考: http://www.cnblogs.com/txw1958/p/weixin76-user-info.html
-        fetch_access_token:
+        """ 使用code通过微信OAUTH2接口, 获取openid.  # http://www.cnblogs.com/txw1958/p/weixin76-user-info.html
+        fetch_access_token()函数返回:
         {
             u'access_token': u'vX1lcBkeRY6WZUylVyZA9XPeoA92_15iBAXHHRtBD1dtbAtWe9e3i-DyHR9PBtP6L......',
             u'openid': u'ovj3E0l9vffwBuqz_PNu25yL_is4', u'expires_in': 7200,
@@ -64,6 +61,6 @@ class MediaPlatform(object):
 
         # TODO: token 针对每个用户2小时内有效, 不需要每次都通过code获取新的token!!!
         # https://wohugb.gitbooks.io/wechat/content/qrconnent/refresh_token.html
-        g_wechat_oauth.fetch_access_token(code)
-        user_info = g_wechat_oauth.get_user_info()
+        MediaPlatform.WECHAT_OAUTH.fetch_access_token(code)
+        user_info = MediaPlatform.WECHAT_OAUTH.get_user_info()
         return user_info

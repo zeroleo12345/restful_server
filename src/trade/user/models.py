@@ -1,6 +1,7 @@
-import uuid
-from django.db import models
+from django.db import models, transaction
 from django.contrib.auth.models import AbstractBaseUser
+# 自己的库
+from trade.utils.myrandom import MyRandom
 
 
 # 微信号
@@ -32,32 +33,25 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     role = models.CharField(max_length=32, choices=ROLE, default='user')
 
-    expired_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
-
     def __str__(self):
         return self.username
 
+    @staticmethod
+    @transaction.atomic
+    def get_or_create_user(openid, nickname='', headimgurl=''):
+        user = User.objects.filter(weixin__openid=openid).first()
+        if not user:
+            weixin_fields = {
+                'openid': openid,
+                'nickname': nickname,
+                'headimgurl': headimgurl,
+            }
+            user_fields = {
+                'weixin': Weixin.objects.create(**weixin_fields),
+                'username': MyRandom.random_string(length=8),
+                'password': 'password',
+                'role': 'user',
+            }
+            user = User.objects.create(**user_fields)   # create 返回 Model 实例
 
-# 交易历史
-class TradeHistory(models.Model):
-    class Meta:
-        db_table = 'trade_history'
-
-    STATUS = (
-        ('unpaid', '未支付'),
-        ('paid', '已支付'),
-        ('expired', '已过期'),
-    )
-
-    uuid = models.UUIDField(editable=False, default=uuid.uuid4)
-    openid = models.CharField(max_length=255)
-    out_trade_no = models.CharField(max_length=255, unique=True)     # 商家订单号
-    attach = models.CharField(max_length=255)           # 附加信息
-    transaction_id = models.CharField(max_length=255)   # 微信订单号
-    total_fee = models.IntegerField()                   # 单位分
-    appid = models.CharField(max_length=32)             # appid
-    mch_id = models.CharField(max_length=32)            # 商户号
-    status = models.CharField(max_length=32, choices=STATUS, default='unpaid')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+        return user

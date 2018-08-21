@@ -1,9 +1,9 @@
 from unittest.mock import MagicMock
-
+# 第三方库
 from django.conf import settings
 from rest_framework import status
 import pytest
-
+# 自己的库
 from trade.framework.unittest import get_user_and_token, UnitTestAPIClient
 from trade.utils.mp import MediaPlatform
 
@@ -30,14 +30,13 @@ class TestUser:
         assert 'nickname' in res_dict['data']['weixin']
         assert 'headimgurl' in res_dict['data']['weixin']
         assert 'created_at' in res_dict['data']['weixin']
-        assert 'updated_at' in res_dict['data']
         assert 'username' in res_dict['data']
         assert 'is_active' in res_dict['data']
         assert 'role' in res_dict['data']
 
     def test_user_without_token(self):
         settings.DEBUG = True
-        user, token = get_user_and_token()
+        # httpClient 没有 token
         client = UnitTestAPIClient()
         response = client.get('/user?code=001yROix1KtF1c0waVgx1k6Bix1yROiR')
         assert response.status_code == status.HTTP_200_OK
@@ -48,8 +47,14 @@ class TestUser:
         assert 'nickname' in res_dict['data']['weixin']
         assert 'headimgurl' in res_dict['data']['weixin']
         assert 'created_at' in res_dict['data']['weixin']
-        assert 'updated_at' in res_dict['data']
         assert 'username' in res_dict['data']
         assert 'is_active' in res_dict['data']
         assert 'role' in res_dict['data']
         assert response.has_header('Authorization')
+
+    def test_user_resource_not_exist(self):
+        settings.DEBUG = True
+        user, token = get_user_and_token()
+        client = UnitTestAPIClient(token=token)
+        response = client.get('/resource')
+        assert response.status_code == status.HTTP_200_OK

@@ -17,9 +17,13 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from trade.views import EchoStrView
 from trade.user.urls import user_urls
+from trade.resource.urls import resource_urls
+from trade.order.urls import order_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^echostr', EchoStrView.as_view()),
+    url(r'^echostr$', EchoStrView.as_view()),
     url(r'^user', include(user_urls)),
+    url(r'^resource', include(resource_urls)),
+    url(r'^order', include(order_urls)),
 ]
