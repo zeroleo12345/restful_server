@@ -30,7 +30,7 @@ class User(AbstractBaseUser):
     weixin = models.OneToOneField(Weixin, on_delete=models.CASCADE, null=False)
     username = models.CharField(max_length=255, unique=True, null=True)
     password = models.CharField(max_length=255)
-    is_active = models.BooleanField(default=True)
+    is_enable = models.BooleanField(default=True)
     role = models.CharField(max_length=32, choices=ROLE, default='user')
 
     def __str__(self):

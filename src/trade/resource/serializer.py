@@ -13,7 +13,7 @@ class ResourceSerializer(serializers.ModelSerializer):
 
     def get_status(self, obj):
         # expired: 已过期; working: 使用中; inactive: 已停用
-        if not obj.user.is_active:
+        if not obj.user.is_enable:
             return 'inactive'
 
         if obj.expired_at > timezone.localtime():
