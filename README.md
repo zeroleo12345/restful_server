@@ -5,8 +5,14 @@
 pppoe用户充值系统 (基于 python3 + django 1.11 + docker)
 
 
+## 环境变量说明
+``` bash
+DEBUG:
+    True: 不会创建公众号菜单; get_user_info_from_wechat 时不会调用fetch_access_token();
+```
+
 ## 启动充值系统步骤
-```bash
+``` bash
 1. 修改配置
   - decrpyt .envrc.x
   - 修改.envrc. (原则: 尽量不用修改docker-compose.yml)

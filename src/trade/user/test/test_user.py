@@ -31,7 +31,7 @@ class TestUser:
         assert 'headimgurl' in res_dict['data']['weixin']
         assert 'created_at' in res_dict['data']['weixin']
         assert 'username' in res_dict['data']
-        assert 'is_active' in res_dict['data']
+        assert 'is_enable' in res_dict['data']
         assert 'role' in res_dict['data']
 
     def test_user_without_token(self):
@@ -48,7 +48,7 @@ class TestUser:
         assert 'headimgurl' in res_dict['data']['weixin']
         assert 'created_at' in res_dict['data']['weixin']
         assert 'username' in res_dict['data']
-        assert 'is_active' in res_dict['data']
+        assert 'is_enable' in res_dict['data']
         assert 'role' in res_dict['data']
         assert response.has_header('Authorization')
 

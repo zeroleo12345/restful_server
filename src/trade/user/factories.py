@@ -23,5 +23,5 @@ class UserFactory(factory.DjangoModelFactory):
     weixin = factory.SubFactory(WeixinFactory)
     username = factory.Sequence(lambda n: f'username_{n}')
     password = factory.Sequence(lambda n: make_password(f'password_{n}'))
-    is_active = True
+    is_enable = True
     role = factory.Iterator([role[0] for role in User.ROLE])
