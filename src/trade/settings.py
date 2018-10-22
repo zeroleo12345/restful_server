@@ -208,10 +208,6 @@ MP_SUB_MERCHANT_ID = config('MP_SUB_MERCHANT_ID', default=None)     # 可选. �
 # MP_KF_PASSWORD = config('MP_KF_PASSWORD')
 """
 
-# PayJS
-PAYJS_MERCHANT_ID = config('PAYJS_MERCHANT_ID')     # payjs 商户号
-PAYJS_MERCHANT_KEY = config('PAYJS_MERCHANT_KEY')   # payjs API密钥
-
 
 class ENVIRONMENT(object):
     """

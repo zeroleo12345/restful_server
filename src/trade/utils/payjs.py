@@ -2,12 +2,17 @@ import time
 import hashlib
 from urllib.parse import urlencode, unquote_plus, urlparse, parse_qsl, urlunparse
 # 第三方库
+from decouple import config
 import requests
 from django.conf import settings
 # 自己的库
 from trade.utils.myrandom import MyRandom
 
 # 参考:   https://gist.github.com/motord/c0d6979d7685708b02950216290e255f
+
+# PayJS
+PAYJS_MERCHANT_ID = config('PAYJS_MERCHANT_ID')     # payjs 商户号
+PAYJS_MERCHANT_KEY = config('PAYJS_MERCHANT_KEY')   # payjs API密钥
 
 
 def url_join_param(host, params):
