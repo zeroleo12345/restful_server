@@ -25,6 +25,7 @@ class TestView(APIView):
         return Response()
 
 
+# 通过微信OAUTH接口, 获取微信用户信息
 class UserView(generics.RetrieveAPIView):
     authentication_classes = ()
     permission_classes = ()
@@ -38,11 +39,13 @@ class UserView(generics.RetrieveAPIView):
             code = self.request.GET.get('code', '')
             if not code:
                 raise exceptions.ValidationError('code字段不能为空', 'invalid_code')
+            # 调用OAUTH
             weixin_info = MediaPlatform.get_user_info_from_wechat(code)
 
             serializer = WeixinInfoValidator(data=weixin_info)
             serializer.is_valid(raise_exception=True)
             openid = serializer.validated_data['openid']
+            print(f'openid: {openid}')
             nickname = serializer.validated_data['nickname']
             headimgurl = serializer.validated_data['headimgurl']
 

@@ -7,8 +7,8 @@ pppoe用户充值系统 (基于 python3 + django 1.11 + docker)
 
 ## 环境变量说明
 ``` bash
-DEBUG:
-    True: 不会创建公众号菜单; get_user_info_from_wechat 时不会调用fetch_access_token();
+ENVIRONMENT:
+    非production: 不会创建公众号菜单; get_user_info_from_wechat 时不会调用fetch_access_token();
 ```
 
 ## 启动充值系统步骤

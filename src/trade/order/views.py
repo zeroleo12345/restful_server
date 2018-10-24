@@ -5,7 +5,8 @@ from django.conf import settings
 from django.db import transaction
 from rest_framework.renderers import StaticHTMLRenderer
 # 自己的库
-from trade.utils.payjs import Payjs
+from trade.utils.django import get_client_ip
+from trade.utils.wepay import WePay
 from trade.order.models import Orders, Tariff
 from trade.resource.models import Resource, ResourceChange
 from trade.framework.authorization import JWTAuthentication, UserPermission
@@ -25,24 +26,25 @@ class OrderView(APIView):
         print(f'tariff_name: {tariff_name}, attach: {attach}')
         total_fee = tariff.price
         notify_url = f'{settings.API_SERVER_URL}/order/notify'      # 充值状态通知地址
-        callback_url = settings.MP_WEB_URL      # 充值后用户跳转地址
         title = '用户支付提示'
-        redirect_url, param = Payjs.Cashier(
-            total_fee=total_fee, title=title, attach=attach, notify_url=notify_url, callback_url=callback_url
+        client_ip = get_client_ip(request)
+        openid = user.weixin.openid
+        data = WePay.Cashier(
+            openid=openid, total_fee=total_fee, title=title, client_ip=client_ip, attach=attach, notify_url=notify_url
         )
-        print(redirect_url)
+        out_trade_no = '123'
+        attach = '123'
         # 订单入库
         Orders.objects.create(
             user=user,
-            openid='testuser',
-            out_trade_no=param['out_trade_no'],
-            attach=param['attach'],
-            total_fee=param['total_fee'],
-            appid='payjs',
-            mch_id=param['mchid'],
+            openid=openid,
+            out_trade_no=out_trade_no,
+            attach=attach,
+            total_fee=total_fee,
+            appid=settings.MP_APP_ID,
+            mch_id=settings.MP_MERCHANT_ID,
             status='unpaid',
         )
-        data = {'redirect_url': redirect_url}
         return Response(data)
 
 
@@ -79,7 +81,7 @@ class OrderNotifyView(APIView):
         sign = request.POST.get('sign')
 
         # 校验签名. 错误时返回: 400
-        cal_sign = Payjs.get_sign(request.POST.dict())
+        cal_sign = WePay.get_sign(request.POST.dict())
         if sign != cal_sign:
             return Response(data='invalid_signature', status=400)
 

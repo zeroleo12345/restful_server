@@ -23,7 +23,7 @@ class MediaPlatform(object):
 
     @staticmethod
     def create_mp_menu():
-        if settings.ENVIRONMENT.is_unittest():
+        if not settings.ENVIRONMENT.is_production():
             return
 
         # TODO: 防止多次创建菜单
@@ -48,7 +48,7 @@ class MediaPlatform(object):
             u'refresh_token': u'LSaCEeS8m-18_njiAN8Jm11V4QIeWxwOSsjEV9cM1ra5zkL......', u'scope': u'snsapi_userinfo'
         }
         """
-        if settings.DEBUG:
+        if not settings.ENVIRONMENT.is_production():
             user_info = {
                 u'province': u'\u5e7f\u4e1c', u'openid': u'ovj3E0l9vffwBuqz_PNu25yL_is4',
                 u'headimgurl': u'http://wx.qlogo.cn/mmhead/Q3auHgzwzM7AianZsHE6LefhQuSmwibx4KZ9LYkRmIibrFKmSbAVjlpBg/0',

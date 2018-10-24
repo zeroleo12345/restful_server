@@ -8,8 +8,4 @@ class TradeConfig(AppConfig):
 
     def ready(self):
         # startup code here
-        if settings.DEBUG:
-            # 本地调试环境
-            pass
-        else:
-            MediaPlatform.create_mp_menu()
+        MediaPlatform.create_mp_menu()
