@@ -9,7 +9,7 @@ class WeixinFactory(factory.DjangoModelFactory):
     class Meta:
         model = Weixin
 
-    openid = factory.Sequence(lambda n: f'openid_{n}')
+    openid = 'o0FSR0Zh3rotbOog_b2lytxzKrYo'     # zeroleo12345 在畅玩竹仔园下的openid
     nickname = factory.Sequence(lambda n: f'nickname_{n}')
     headimgurl = factory.Sequence(lambda n: f'http://www.headimgurl.com/{n}')
 

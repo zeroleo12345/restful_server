@@ -1,9 +1,11 @@
+import traceback
 # 第三方库
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.conf import settings
 from django.db import transaction
-from rest_framework.renderers import StaticHTMLRenderer
+from rest_framework_xml.renderers import XMLRenderer
+from wechatpy.exceptions import WeChatPayException, InvalidSignatureException
 # 自己的库
 from trade.utils.django import get_client_ip
 from trade.utils.wepay import WePay
@@ -23,17 +25,16 @@ class OrderView(APIView):
         #
         tariff = Tariff.get_object_or_404(tariff_name=tariff_name)
         attach = Tariff.tariff_to_attach(tariff=tariff)
-        print(f'tariff_name: {tariff_name}, attach: {attach}')
         total_fee = tariff.price
-        notify_url = f'{settings.API_SERVER_URL}/order/notify'      # 充值状态通知地址
+        notify_url = f'{settings.API_SERVER_URL}/order/notify'      # 订单状态通知地址
         title = '用户支付提示'
         client_ip = get_client_ip(request)
         openid = user.weixin.openid
-        data = WePay.Cashier(
+        order_params, wepay_params = WePay.Cashier(
             openid=openid, total_fee=total_fee, title=title, client_ip=client_ip, attach=attach, notify_url=notify_url
         )
-        out_trade_no = '123'
-        attach = '123'
+        out_trade_no = order_params['out_trade_no']
+        attach = order_params['attach']
         # 订单入库
         Orders.objects.create(
             user=user,
@@ -45,13 +46,16 @@ class OrderView(APIView):
             mch_id=settings.MP_MERCHANT_ID,
             status='unpaid',
         )
-        return Response(data)
+        return Response(wepay_params)
 
 
 class OrderNotifyView(APIView):
     authentication_classes = ()
     permission_classes = ()
-    renderer_classes = (StaticHTMLRenderer,)    # response的content-type方式, 会使用指定类序列化body
+    renderer_classes = (XMLRenderer,)    # response的content-type方式, 会使用指定类序列化body
+
+    SUCCESS = """ <xml> <return_code><![CDATA[SUCCESS]]></return_code> </xml> """
+    ERROR = """ <xml> <return_code><![CDATA[FAIL]]></return_code> <return_msg><![CDATA[参数格式校验错误]]></return_msg> </xml> """
 
     def post(self, request):
         """
@@ -71,19 +75,26 @@ class OrderNotifyView(APIView):
             APIException(500):     {'detail': ErrorDetail(string='signature not match!', code='invalid_signature')}
             ValidationError(400):  [ErrorDetail(string='signature not match!', code='invalid_signature')]
         """
-        # openid = request.POST.get('openid')
-        total_fee = request.POST.get('total_fee')
-        out_trade_no = request.POST.get('out_trade_no')
-        # payjs_order_id = request.POST.get('payjs_order_id')
-        # transaction_id = request.POST.get('transaction_id')
-        attach = request.POST.get('attach')
-        # mchid = request.POST.get('mchid')
-        sign = request.POST.get('sign')
+        # 1. 解析微信侧回调请求
+        try:
+            # data: OrderedDict([(u'appid', u'wx7f843ee17bc2a7b7'), (u'attach', u'{"btype": 0}'), (u'bank_type', u'CFT'), (u'cash_fee', 1), (u'fee_type', u'CNY'), (u'is_subscribe', u'Y'), (u'mch_id', u'1480215992'), (u'nonce_str', u'bZhA1HTmIqBFCluKpai32Yj97tvk4DzV'), (u'openid', u'ovj3E0l9vffwBuqz_PNu25yL_is4'), (u'out_trade_no', u'15021710481087kJMqd36CBz9OqFnK'), (u'result_code', u'SUCCESS'), (u'return_code', u'SUCCESS'), (u'time_end', u'20170808134526'), (u'total_fee', 1), (u'trade_type', u'JSAPI'), (u'transaction_id', u'4005762001201708085135613047'), (u'sign', u'F59843FFFAE5E70A9F1B67D755A372E0')])
+            # SUCCESS 和 FAIL: out_trade_no, attach附加值
+            xml = request.data
+            data = WePay.WECHAT_PAY.parse_payment_result(xml)
+        except (InvalidSignatureException, Exception):
+            print(traceback.format_exc())
+            return Response(self.ERROR)
 
-        # 校验签名. 错误时返回: 400
-        cal_sign = WePay.get_sign(request.POST.dict())
-        if sign != cal_sign:
-            return Response(data='invalid_signature', status=400)
+        out_trade_no = data['out_trade_no']
+        attach = data['attach']
+        return_code = data['return_code']
+        if return_code != 'SUCCESS':
+            return_msg = data.get('return_msg', '')
+            return Response(self.SUCCESS)
+
+        openid = data['openid']
+        transaction_id = data['transaction_id']
+        total_fee = data['total_fee']
 
         # 根据out_trade_no检查数据库订单
         order = Orders.objects.filter(out_trade_no=out_trade_no, total_fee=total_fee).select_related('user').first()
@@ -105,4 +116,5 @@ class OrderNotifyView(APIView):
             order.status = 'paid'
             order.save()
             ResourceChange.objects.create(user=user, orders=order, before=before, after=after)
-        return Response('success')
+
+        return Response(self.SUCCESS)
