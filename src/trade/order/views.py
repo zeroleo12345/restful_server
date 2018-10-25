@@ -8,7 +8,7 @@ from rest_framework_xml.renderers import XMLRenderer
 from wechatpy.exceptions import WeChatPayException, InvalidSignatureException
 # 自己的库
 from trade.utils.django import get_client_ip
-from trade.utils.wepay import WePay
+from trade.utils.wepay import WePay, WePayXMLParser
 from trade.order.models import Orders, Tariff
 from trade.resource.models import Resource, ResourceChange
 from trade.framework.authorization import JWTAuthentication, UserPermission
@@ -52,7 +52,8 @@ class OrderView(APIView):
 class OrderNotifyView(APIView):
     authentication_classes = ()
     permission_classes = ()
-    renderer_classes = (XMLRenderer,)    # response的content-type方式, 会使用指定类序列化body
+    renderer_classes = (XMLRenderer,)       # 制定 response 的 content-type 方式为 xml. (会使用指定类序列化body)
+    # parser_classes = (WePayXMLParser,)      # 解析 text/xml 类型的数据
 
     SUCCESS = """ <xml> <return_code><![CDATA[SUCCESS]]></return_code> </xml> """
     ERROR = """ <xml> <return_code><![CDATA[FAIL]]></return_code> <return_msg><![CDATA[参数格式校验错误]]></return_msg> </xml> """
@@ -79,7 +80,9 @@ class OrderNotifyView(APIView):
         try:
             # data: OrderedDict([(u'appid', u'wx7f843ee17bc2a7b7'), (u'attach', u'{"btype": 0}'), (u'bank_type', u'CFT'), (u'cash_fee', 1), (u'fee_type', u'CNY'), (u'is_subscribe', u'Y'), (u'mch_id', u'1480215992'), (u'nonce_str', u'bZhA1HTmIqBFCluKpai32Yj97tvk4DzV'), (u'openid', u'ovj3E0l9vffwBuqz_PNu25yL_is4'), (u'out_trade_no', u'15021710481087kJMqd36CBz9OqFnK'), (u'result_code', u'SUCCESS'), (u'return_code', u'SUCCESS'), (u'time_end', u'20170808134526'), (u'total_fee', 1), (u'trade_type', u'JSAPI'), (u'transaction_id', u'4005762001201708085135613047'), (u'sign', u'F59843FFFAE5E70A9F1B67D755A372E0')])
             # SUCCESS 和 FAIL: out_trade_no, attach附加值
-            xml = request.data
+            xml = request.body
+            # (Pdb) request.body
+            # b'<xml><appid><![CDATA[wx54d296959ee50c0b]]></appid>\n<attach><![CDATA[{"tariff_name": "month1"}]]></attach>\n<bank_type><![CDATA[CFT]]></bank_type>\n<cash_fee><![CDATA[1]]></cash_fee>\n<fee_type><![CDATA[CNY]]></fee_type>\n<is_subscribe><![CDATA[Y]]></is_subscribe>\n<mch_id><![CDATA[1517154171]]></mch_id>\n<nonce_str><![CDATA[dJ1t73xXmCrOjn8z5DP6BKyNqgI0cwvS]]></nonce_str>\n<openid><![CDATA[o0FSR0Zh3rotbOog_b2lytxzKrYo]]></openid>\n<out_trade_no><![CDATA[1540483879395x3Oko4Ta9RWamsQCW]]></out_trade_no>\n<result_code><![CDATA[SUCCESS]]></result_code>\n<return_code><![CDATA[SUCCESS]]></return_code>\n<sign><![CDATA[22BE162C29D8558541F04475C379E18B]]></sign>\n<time_end><![CDATA[20181026001122]]></time_end>\n<total_fee>1</total_fee>\n<trade_type><![CDATA[JSAPI]]></trade_type>\n<transaction_id><![CDATA[4200000206201810263667544938]]></transaction_id>\n</xml>'
             data = WePay.WECHAT_PAY.parse_payment_result(xml)
         except (InvalidSignatureException, Exception):
             print(traceback.format_exc())
@@ -104,6 +107,7 @@ class OrderNotifyView(APIView):
         if order.is_paid():
             return Response('success')
 
+        # 计算时长叠加
         user = order.user
         resource, is_created = Resource.objects.get_or_create(user=user)
         tariff = Tariff.attach_to_tariff(attach)
@@ -111,10 +115,13 @@ class OrderNotifyView(APIView):
         after = tariff.increase_duration(before)
 
         with transaction.atomic():
+            # 变更免费资源
             resource.expired_at = after
             resource.save()
+            # 变更订单状态
             order.status = 'paid'
             order.save()
+            # 插入免费资源历史变更表
             ResourceChange.objects.create(user=user, orders=order, before=before, after=after)
 
         return Response(self.SUCCESS)

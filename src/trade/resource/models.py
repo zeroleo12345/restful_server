@@ -19,7 +19,7 @@ class ResourceChange(models.Model):
     class Meta:
         db_table = 'resource_change'
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
     orders = models.ForeignKey(Orders, null=False)
     before = models.DateTimeField()
     after = models.DateTimeField()
