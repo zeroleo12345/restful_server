@@ -4,7 +4,6 @@ from urllib.parse import urlencode, unquote_plus, urlparse, parse_qsl, urlunpars
 # 第三方库
 from decouple import config
 import requests
-from django.conf import settings
 # 自己的库
 from trade.utils.myrandom import MyRandom
 

@@ -4,11 +4,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.conf import settings
 from django.db import transaction
-from rest_framework_xml.renderers import XMLRenderer
-from wechatpy.exceptions import WeChatPayException, InvalidSignatureException
+from wechatpy.exceptions import InvalidSignatureException
 # 自己的库
 from trade.utils.django import get_client_ip
-from trade.utils.wepay import WePay, WePayXMLParser
+from trade.utils.wepay import WePay, WePayXMLRenderer
 from trade.order.models import Orders, Tariff
 from trade.resource.models import Resource, ResourceChange
 from trade.framework.authorization import JWTAuthentication, UserPermission
@@ -52,8 +51,8 @@ class OrderView(APIView):
 class OrderNotifyView(APIView):
     authentication_classes = ()
     permission_classes = ()
-    renderer_classes = (XMLRenderer,)       # 制定 response 的 content-type 方式为 xml. (会使用指定类序列化body)
-    # parser_classes = (WePayXMLParser,)      # 解析 text/xml 类型的数据
+    renderer_classes = (WePayXMLRenderer,)      # 制定 response 的 content-type 方式为 xml. (会使用指定类序列化body)
+    # parser_classes = (WePayXMLParser,)        # 解析 text/xml 类型的数据
 
     SUCCESS = """ <xml> <return_code><![CDATA[SUCCESS]]></return_code> </xml> """
     ERROR = """ <xml> <return_code><![CDATA[FAIL]]></return_code> <return_msg><![CDATA[参数格式校验错误]]></return_msg> </xml> """
@@ -93,6 +92,8 @@ class OrderNotifyView(APIView):
         return_code = data['return_code']
         if return_code != 'SUCCESS':
             return_msg = data.get('return_msg', '')
+            # FIXME
+            print(f'error')
             return Response(self.SUCCESS)
 
         openid = data['openid']

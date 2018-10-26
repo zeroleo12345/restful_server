@@ -1,5 +1,4 @@
 from django.apps import AppConfig
-from django.conf import settings
 from trade.utils.mp import MediaPlatform
 
 
