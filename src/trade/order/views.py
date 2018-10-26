@@ -49,6 +49,7 @@ class OrderView(APIView):
         return Response(wepay_params)
 
 
+# request.path:  /order/notify
 class OrderNotifyView(APIView):
     authentication_classes = ()
     permission_classes = ()
@@ -61,23 +62,6 @@ class OrderNotifyView(APIView):
     </xml> """
 
     def post(self, request):
-        """
-        :param request:
-        request.path:  不包含域名 /order/notify
-        url参数 request.GET: {}
-        form参数 request.POST:
-        {
-             'attach': ['{"tariff_name": "month1"}'], 'mchid': ['1511573911'],
-             'openid': ['o7LFAwUGHPZxyNahwjoNQtKh8EME'],
-             'out_trade_no': ['1534167177710ovfltv6a8v7BsFAH0'], 'payjs_order_id': ['2018081321325600636471374'],
-             'return_code': ['1'], 'time_end': ['2018-08-13 21:33:02'], 'total_fee': ['1'],
-             'transaction_id': ['4200000149201808138100178561'], 'sign': ['3BB0F5C8843A16DEE422012A28CB3D47']
-        }
-        :return:
-            因为是返回给PayJS服务器, 是text/html类型, 非application/json类型
-            APIException(500):     {'detail': ErrorDetail(string='signature not match!', code='invalid_signature')}
-            ValidationError(400):  [ErrorDetail(string='signature not match!', code='invalid_signature')]
-        """
         # 1. 解析微信侧回调请求
         try:
             # data: OrderedDict([(u'appid', u'wx7f843ee17bc2a7b7'), (u'attach', u'{"btype": 0}'), (u'bank_type', u'CFT'), (u'cash_fee', 1), (u'fee_type', u'CNY'), (u'is_subscribe', u'Y'), (u'mch_id', u'1480215992'), (u'nonce_str', u'bZhA1HTmIqBFCluKpai32Yj97tvk4DzV'), (u'openid', u'ovj3E0l9vffwBuqz_PNu25yL_is4'), (u'out_trade_no', u'15021710481087kJMqd36CBz9OqFnK'), (u'result_code', u'SUCCESS'), (u'return_code', u'SUCCESS'), (u'time_end', u'20170808134526'), (u'total_fee', 1), (u'trade_type', u'JSAPI'), (u'transaction_id', u'4005762001201708085135613047'), (u'sign', u'F59843FFFAE5E70A9F1B67D755A372E0')])
@@ -97,7 +81,7 @@ class OrderNotifyView(APIView):
         return_code = data['return_code']
         if return_code != 'SUCCESS':
             return_msg = data.get('return_msg', '')
-            log.e(f'return_msg: {return_msg}')
+            log.e(f'wepay fail, return_msg: {return_msg}')
             return Response(self.SUCCESS)
 
         openid = data['openid']
@@ -112,7 +96,7 @@ class OrderNotifyView(APIView):
             return Response(self.SUCCESS)
         # 去重逻辑
         if order.is_paid():
-            log.w(f'wepay notify duplicate')
+            log.w(f'order notify duplicate')
             return Response(self.SUCCESS)
 
         # 计算时长叠加
