@@ -121,6 +121,8 @@ class OrderNotifyView(APIView):
             resource.save()
             # 变更订单状态
             order.status = 'paid'
+            order.openid = openid
+            order.transaction_id = transaction_id
             order.save()
             # 插入免费资源历史变更表
             ResourceChange.objects.create(user=user, orders=order, before=before, after=after)
