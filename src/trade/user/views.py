@@ -45,7 +45,6 @@ class UserView(generics.RetrieveAPIView):
             serializer = WeixinInfoValidator(data=weixin_info)
             serializer.is_valid(raise_exception=True)
             openid = serializer.validated_data['openid']
-            print(f'openid: {openid}')
             nickname = serializer.validated_data['nickname']
             headimgurl = serializer.validated_data['headimgurl']
 

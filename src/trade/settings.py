@@ -15,6 +15,13 @@ import os
 import dj_database_url
 import datetime
 from decouple import config
+from mybase3.mylog3 import log
+
+LOG_HEADER = config('LOG_HEADER', default='restful')
+LOG_DIR = config('LOG_DIR', default='../run/log')
+LOG_LEVEL = config('LOG_LEVEL', default='debug')
+log.init(header=LOG_HEADER, directory=LOG_DIR, level=LOG_LEVEL, max_buffer=0, max_line=100000)
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

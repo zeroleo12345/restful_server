@@ -6,6 +6,7 @@ from django.conf import settings
 from django.db import transaction
 from wechatpy.exceptions import InvalidSignatureException
 # 自己的库
+from mybase3.mylog3 import log
 from trade.utils.django import get_client_ip
 from trade.utils.wepay import WePay, WePayXMLRenderer
 from trade.order.models import Orders, Tariff
@@ -54,8 +55,10 @@ class OrderNotifyView(APIView):
     renderer_classes = (WePayXMLRenderer,)      # 制定 response 的 content-type 方式为 xml. (会使用指定类序列化body)
     # parser_classes = (WePayXMLParser,)        # 解析 text/xml 类型的数据
 
-    SUCCESS = """ <xml> <return_code><![CDATA[SUCCESS]]></return_code> </xml> """
-    ERROR = """ <xml> <return_code><![CDATA[FAIL]]></return_code> <return_msg><![CDATA[参数格式校验错误]]></return_msg> </xml> """
+    SUCCESS = """ <xml>
+      <return_code><![CDATA[SUCCESS]]></return_code>
+      <return_msg><![CDATA[OK]]></return_msg>
+    </xml> """
 
     def post(self, request):
         """
@@ -84,29 +87,33 @@ class OrderNotifyView(APIView):
             # b'<xml><appid><![CDATA[wx54d296959ee50c0b]]></appid>\n<attach><![CDATA[{"tariff_name": "month1"}]]></attach>\n<bank_type><![CDATA[CFT]]></bank_type>\n<cash_fee><![CDATA[1]]></cash_fee>\n<fee_type><![CDATA[CNY]]></fee_type>\n<is_subscribe><![CDATA[Y]]></is_subscribe>\n<mch_id><![CDATA[1517154171]]></mch_id>\n<nonce_str><![CDATA[dJ1t73xXmCrOjn8z5DP6BKyNqgI0cwvS]]></nonce_str>\n<openid><![CDATA[o0FSR0Zh3rotbOog_b2lytxzKrYo]]></openid>\n<out_trade_no><![CDATA[1540483879395x3Oko4Ta9RWamsQCW]]></out_trade_no>\n<result_code><![CDATA[SUCCESS]]></result_code>\n<return_code><![CDATA[SUCCESS]]></return_code>\n<sign><![CDATA[22BE162C29D8558541F04475C379E18B]]></sign>\n<time_end><![CDATA[20181026001122]]></time_end>\n<total_fee>1</total_fee>\n<trade_type><![CDATA[JSAPI]]></trade_type>\n<transaction_id><![CDATA[4200000206201810263667544938]]></transaction_id>\n</xml>'
             data = WePay.WECHAT_PAY.parse_payment_result(xml)
         except (InvalidSignatureException, Exception):
-            print(traceback.format_exc())
-            return Response(self.ERROR)
+            log.e(traceback.format_exc())
+            return Response(self.SUCCESS)
 
         out_trade_no = data['out_trade_no']
         attach = data['attach']
+        log.i(f'wepay order notify, out_trade_no: {out_trade_no}, attach: {attach}')
+
         return_code = data['return_code']
         if return_code != 'SUCCESS':
             return_msg = data.get('return_msg', '')
-            # FIXME
-            print(f'error')
+            log.e(f'return_msg: {return_msg}')
             return Response(self.SUCCESS)
 
         openid = data['openid']
         transaction_id = data['transaction_id']
         total_fee = data['total_fee']
+        log.i(f'openid: {openid}, transaction_id: {transaction_id}, total_fee: {total_fee}')
 
         # 根据out_trade_no检查数据库订单
         order = Orders.objects.filter(out_trade_no=out_trade_no, total_fee=total_fee).select_related('user').first()
         if not order:
-            return Response(data='invalid_order', status=400)
+            log.e(f'order not exist')
+            return Response(self.SUCCESS)
         # 去重逻辑
         if order.is_paid():
-            return Response('success')
+            log.w(f'wepay notify duplicate')
+            return Response(self.SUCCESS)
 
         # 计算时长叠加
         user = order.user
