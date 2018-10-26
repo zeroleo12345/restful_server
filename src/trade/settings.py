@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# coding:utf-8
 """
 Django settings for trade project.
 
@@ -17,6 +15,13 @@ import os
 import dj_database_url
 import datetime
 from decouple import config
+from mybase3.mylog3 import log
+
+LOG_HEADER = config('LOG_HEADER', default='restful')
+LOG_DIR = config('LOG_DIR', default='../run/log')
+LOG_LEVEL = config('LOG_LEVEL', default='debug')
+log.init(header=LOG_HEADER, directory=LOG_DIR, level=LOG_LEVEL, max_buffer=0, max_line=100000)
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -185,32 +190,28 @@ JWT_AUTH = {
     'JWT_AUTH_COOKIE': None,
 }
 
-# API服务器域名, 如: 'http://api.xxx.cn'
-API_SERVER_URL = config('API_SERVER_URL')
 
-# 微信公众平台, 如: 'http://www.xxx.cn'
-MP_WEB_URL = config('MP_WEB_URL')
+# API服务器域名
+API_SERVER_URL = config('API_SERVER_URL')   # 如: http://api.xxx.cn
+
+# 微信公众平台配置
+MP_WEB_URL = config('MP_WEB_URL')           # 如: http://www.xxx.cn
 MP_APP_ID = config('MP_APP_ID')             # 开发者ID
 MP_APP_SECRET = config('MP_APP_SECRET')     # 开发者密码
 MP_TOKEN = config('MP_TOKEN')               # 令牌
 MP_AES_KEY = config('MP_AES_KEY')           # 消息加解密密钥
-"""
-# # 微信商户平台
+
+# 微信商户平台配置
 MP_MERCHANT_ID = config('MP_MERCHANT_ID')   # 商户号
 MP_APP_KEY = config('MP_APP_KEY')           # API密钥
-MP_MERCHANT_CERT = config('MP_MERCHANT_CERT', default=None)         # 商户证书路径
-MP_MERCHANT_KEY = config('MP_MERCHANT_KEY', default=None)           # 商户证书私钥路径
-# # 未确定哪里获取
-MP_SUB_MERCHANT_ID = config('MP_SUB_MERCHANT_ID', default=None)     # 可选. 子商户号, 受理模式下必填
+MP_MERCHANT_CERT = config('MP_MERCHANT_CERT', default=None)         # 可选. 商户证书路径 (平台上下载). 申请退款, 拉取订单评价数据, 下载资金账单 等个别接口需要证书
+MP_MERCHANT_KEY = config('MP_MERCHANT_KEY', default=None)           # 可选. 商户证书私钥路径 (平台上下载).
+MP_SUB_MERCHANT_ID = config('MP_SUB_MERCHANT_ID', default=None)     # 可选(一般不需填). 子商户号, 受理模式下需填
+
 # # 公众号客服
 # MP_KF_ACCOUNT = config('MP_KF_ACCOUNT')
 # MP_KF_NICKNAME = config('MP_KF_NICKNAME')
 # MP_KF_PASSWORD = config('MP_KF_PASSWORD')
-"""
-
-# PayJS
-PAYJS_MERCHANT_ID = config('PAYJS_MERCHANT_ID')     # payjs 商户号
-PAYJS_MERCHANT_KEY = config('PAYJS_MERCHANT_KEY')   # payjs API密钥
 
 
 class ENVIRONMENT(object):

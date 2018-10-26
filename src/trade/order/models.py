@@ -23,12 +23,12 @@ class Orders(models.Model):
     uuid = models.UUIDField(editable=False, default=uuid.uuid4)
     user = models.ForeignKey(User, null=False)
     openid = models.CharField(max_length=255)
-    out_trade_no = models.CharField(max_length=255, unique=True)     # 商家订单号
-    attach = models.CharField(max_length=255)           # 附加信息
-    transaction_id = models.CharField(default='', max_length=255)   # 微信订单号
-    total_fee = models.IntegerField()                   # 单位分
-    appid = models.CharField(default='payjs', max_length=32)             # appid
-    mch_id = models.CharField(max_length=32)            # 商户号
+    out_trade_no = models.CharField(max_length=255, unique=True)        # 商家订单号
+    attach = models.CharField(max_length=255)                           # 附加信息
+    transaction_id = models.CharField(default='', max_length=255)       # 微信订单号
+    total_fee = models.IntegerField()                                   # 单位分
+    appid = models.CharField(default='payjs', max_length=32)            # appid
+    mch_id = models.CharField(max_length=32)                            # 商户号
     status = models.CharField(default='unpaid', max_length=32, choices=STATUS)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -56,10 +56,15 @@ class Tariff(object):
     @staticmethod
     def get_object_or_404(tariff_name):
         # 单位分
+        # objects = {
+        #    'month1': Tariff.Instance(tariff_name='month1', price=50*100, duration=1, unit='month'),
+        #    'month3': Tariff.Instance(tariff_name='month3', price=144*100, duration=3, unit='month'),  # 单位分, 9.6折
+        #    'month6': Tariff.Instance(tariff_name='month6', price=276*100, duration=6, unit='month'),  # 单位分, 9.2折
+        # }
         objects = {
-           'month1': Tariff.Instance(tariff_name='month1', price=50*100, duration=1, unit='month'),
-           'month3': Tariff.Instance(tariff_name='month3', price=144*100, duration=3, unit='month'),  # 单位分, 9.6折
-           'month6': Tariff.Instance(tariff_name='month6', price=276*100, duration=6, unit='month'),  # 单位分, 9.2折
+            'month1': Tariff.Instance(tariff_name='month1', price=1, duration=1, unit='month'),
+            'month3': Tariff.Instance(tariff_name='month3', price=3, duration=3, unit='month'),
+            'month6': Tariff.Instance(tariff_name='month6', price=6, duration=6, unit='month'),
         }
 
         if tariff_name not in objects:
