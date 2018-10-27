@@ -11,6 +11,7 @@ ENVIRONMENT:
     非production: 不会创建公众号菜单; get_user_info_from_wechat 时不会调用fetch_access_token();
 ```
 
+
 ## 启动充值系统步骤
 ``` bash
 1. 修改配置
@@ -26,15 +27,18 @@ ENVIRONMENT:
   - 浏览器访问 http://127.0.0.1:8000/   (Dockerfile内定义了8000端口映射到docker内的80端口)
 ```
 
+
 ## 测试案例
 ``` bash
 sh dev/runtest_in_docker.sh
 ```
 
+
 ## 连接MySQL
 ``` bash
 mycli -h 127.0.0.1 -u root --password=root -D trade
 ```
+
 
 ## Migration
 ``` bash
