@@ -21,6 +21,7 @@ LOG_HEADER = config('LOG_HEADER', default='restful')
 LOG_DIR = config('LOG_DIR', default='../run/log')
 LOG_LEVEL = config('LOG_LEVEL', default='debug')
 log.init(header=LOG_HEADER, directory=LOG_DIR, level=LOG_LEVEL, max_buffer=0, max_line=100000)
+log.i('log init')
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
