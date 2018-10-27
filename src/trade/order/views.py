@@ -105,9 +105,8 @@ class OrderNotifyView(APIView):
             # 变更免费资源
             resource.expired_at = after
             resource.save()
-            # 变更订单状态
+            # 变更订单状态 和 微信订单号
             order.status = 'paid'
-            order.openid = openid
             order.transaction_id = transaction_id
             order.save()
             # 插入免费资源历史变更表
