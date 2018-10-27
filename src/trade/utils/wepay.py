@@ -1,8 +1,6 @@
 import time
 # 第三方库
 from django.conf import settings
-from rest_framework_xml.parsers import XMLParser
-from rest_framework_xml.renderers import XMLRenderer
 from wechatpy.pay import WeChatPay
 # 自己的库
 from trade.utils.myrandom import MyRandom
@@ -83,11 +81,3 @@ class WePay(object):
     def Query(payjs_order_id):
         # 查询订单状态
         pass
-
-
-class WePayXMLParser(XMLParser):
-    media_type = 'text/xml'     # 一般为:  application/xml. (参考文章: https://segmentfault.com/a/1190000015140970)
-
-
-class WePayXMLRenderer(XMLRenderer):
-    media_type = 'text/xml'     # 一般为:  application/xml.

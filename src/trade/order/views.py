@@ -2,13 +2,14 @@ import traceback
 # 第三方库
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.http import HttpResponse
 from django.conf import settings
 from django.db import transaction
 from wechatpy.exceptions import InvalidSignatureException
 # 自己的库
 from mybase3.mylog3 import log
 from trade.utils.django import get_client_ip
-from trade.utils.wepay import WePay, WePayXMLRenderer
+from trade.utils.wepay import WePay
 from trade.order.models import Orders, Tariff
 from trade.resource.models import Resource, ResourceChange
 from trade.framework.authorization import JWTAuthentication, UserPermission
@@ -53,13 +54,7 @@ class OrderView(APIView):
 class OrderNotifyView(APIView):
     authentication_classes = ()
     permission_classes = ()
-    renderer_classes = (WePayXMLRenderer,)      # 制定 response 的 content-type 方式为 xml. (会使用指定类序列化body)
-    # parser_classes = (WePayXMLParser,)        # 解析 text/xml 类型的数据
-
-    SUCCESS = """ <xml>
-      <return_code><![CDATA[SUCCESS]]></return_code>
-      <return_msg><![CDATA[OK]]></return_msg>
-    </xml> """
+    SUCCESS = """<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>"""
 
     def post(self, request):
         # 1. 解析微信侧回调请求
@@ -72,7 +67,7 @@ class OrderNotifyView(APIView):
             data = WePay.WECHAT_PAY.parse_payment_result(xml)
         except (InvalidSignatureException, Exception):
             log.e(traceback.format_exc())
-            return Response(self.SUCCESS)
+            return HttpResponse(self.SUCCESS, content_type='text/xml')
 
         out_trade_no = data['out_trade_no']
         attach = data['attach']
@@ -82,7 +77,7 @@ class OrderNotifyView(APIView):
         if return_code != 'SUCCESS':
             return_msg = data.get('return_msg', '')
             log.e(f'wepay fail, return_msg: {return_msg}')
-            return Response(self.SUCCESS)
+            return HttpResponse(self.SUCCESS, content_type='text/xml')
 
         openid = data['openid']
         transaction_id = data['transaction_id']
@@ -93,11 +88,11 @@ class OrderNotifyView(APIView):
         order = Orders.objects.filter(out_trade_no=out_trade_no, total_fee=total_fee).select_related('user').first()
         if not order:
             log.e(f'order not exist')
-            return Response(self.SUCCESS)
+            return HttpResponse(self.SUCCESS, content_type='text/xml')
         # 去重逻辑
         if order.is_paid():
             log.w(f'order notify duplicate')
-            return Response(self.SUCCESS)
+            return HttpResponse(self.SUCCESS, content_type='text/xml')
 
         # 计算时长叠加
         user = order.user
@@ -118,4 +113,4 @@ class OrderNotifyView(APIView):
             # 插入免费资源历史变更表
             ResourceChange.objects.create(user=user, orders=order, before=before, after=after)
 
-        return Response(self.SUCCESS)
+        return HttpResponse(self.SUCCESS, content_type='text/xml')
