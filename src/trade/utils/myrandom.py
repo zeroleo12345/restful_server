@@ -8,7 +8,7 @@ class MyRandom(object):
 
     @classmethod
     def random_string(cls, length, lowercase=True, uppercase=False):
-        choices = (cls.DIGIT,)
+        choices = cls.DIGIT
         if lowercase:
             choices += cls.LOWERCASE
         if uppercase:
