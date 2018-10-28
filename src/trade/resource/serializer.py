@@ -7,7 +7,7 @@ from trade.resource.models import Resource
 class ResourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Resource
-        exclude = ('user',)
+        exclude = ('id', 'user',)
 
     status = serializers.SerializerMethodField()
 

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 # 自己的库
 from trade.user.models import Weixin, User
+from trade.resource.serializer import ResourceSerializer
 
 
 class WeixinInfoValidator(serializers.Serializer):
@@ -21,3 +22,12 @@ class UserWeixinSerializer(serializers.ModelSerializer):
         exclude = ('id',)
 
     weixin = WeixinSerializer()
+
+
+class UserSyncSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        exclude = ('id', 'weixin')
+
+    resource = ResourceSerializer()
+

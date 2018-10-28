@@ -3,7 +3,7 @@ from rest_framework import exceptions
 # 自己的库
 from trade.framework.authorization import JWTAuthentication
 from trade.user.models import User
-from trade.user.serializer import UserWeixinSerializer, WeixinInfoValidator
+from trade.user.serializer import UserWeixinSerializer, WeixinInfoValidator, UserSyncSerializer
 from trade.utils.mp import MediaPlatform
 
 
@@ -34,3 +34,14 @@ class UserView(generics.RetrieveAPIView):
 
         self.request.user = user    # 用于Response时, 设置JsonWebToken
         return user
+
+
+# /user/sync 同步用户列表
+class UserSyncView(generics.ListAPIView):
+    authentication_classes = ()
+    permission_classes = ()
+    serializer_class = UserSyncSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        return User.objects.all().select_related('resource')
