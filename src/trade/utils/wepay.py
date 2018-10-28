@@ -18,7 +18,7 @@ class WePay(object):
         # 商户订单号(32个字符内,只能是>数字、大小写字母_-|*@), 默认自动生成
         return ''.join((
             str(int(time.time()*1000)),
-            MyRandom.random_string(17)
+            MyRandom.random_string(17, lowercase=True, uppercase=True)
         ))
 
     @staticmethod

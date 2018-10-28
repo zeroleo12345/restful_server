@@ -50,7 +50,7 @@ class Payjs(object):
     def create_out_trade_no():
         return ''.join((
             str(int(time.time()*1000)),
-            MyRandom.random_string(17)
+            MyRandom.random_string(17, lowercase=True, uppercase=True)
         ))
 
     @staticmethod

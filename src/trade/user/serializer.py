@@ -18,6 +18,6 @@ class WeixinSerializer(serializers.ModelSerializer):
 class UserWeixinSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        exclude = ('password',)
+        exclude = ('id',)
 
     weixin = WeixinSerializer()
