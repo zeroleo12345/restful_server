@@ -84,15 +84,21 @@ class OrderNotifyView(APIView):
         total_fee = data['total_fee']
         log.i(f'openid: {openid}, transaction_id: {transaction_id}, total_fee: {total_fee}')
 
+        # 增加用户免费资源
+        OrderNotifyView.increase_user_resource(total_fee, out_trade_no, transaction_id, attach)
+        return HttpResponse(self.SUCCESS, content_type='text/xml')
+
+    @staticmethod
+    def increase_user_resource(total_fee, out_trade_no, transaction_id, attach):
         # 根据out_trade_no检查数据库订单
         order = Orders.objects.filter(out_trade_no=out_trade_no, total_fee=total_fee).select_related('user').first()
         if not order:
             log.e(f'order not exist')
-            return HttpResponse(self.SUCCESS, content_type='text/xml')
+            return
         # 去重逻辑
         if order.is_paid():
             log.w(f'order notify duplicate')
-            return HttpResponse(self.SUCCESS, content_type='text/xml')
+            return
 
         # 计算时长叠加
         user = order.user
@@ -111,5 +117,3 @@ class OrderNotifyView(APIView):
             order.save()
             # 插入免费资源历史变更表
             ResourceChange.objects.create(user=user, orders=order, before=before, after=after)
-
-        return HttpResponse(self.SUCCESS, content_type='text/xml')

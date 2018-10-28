@@ -8,6 +8,7 @@ import signal
 from django.core.management.base import BaseCommand
 # 第三方类
 # 自己的类
+from trade.order.views import OrderNotifyView
 from trade.order.models import Orders
 from trade.utils.wepay import WePay
 from mybase3.mylog3 import log
@@ -76,11 +77,12 @@ class ServiceLoop(object):
         # 关闭订单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_3
         # 下载对账单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6
 
-        transaction_id = order.transaction_id       # 微信订单号
         out_trade_no = order.out_trade_no           # 商户订单号
+        attach = order.attach
+        total_fee = order.total_fee
 
         # 1. 查询订单API, 获取查询结果
-        ret_json = WePay.WECHAT_PAY.order.query(transaction_id, out_trade_no)
+        ret_json = WePay.WECHAT_PAY.order.query(None, out_trade_no)
         # OrderedDict([
         #  ('return_code', 'SUCCESS'), ('return_msg', 'OK'), ('appid', 'wx54d296959ee50c0b'), ('mch_id', '1517154171'),
         #  ('nonce_str', 'LQ36VyPkbS7tK7Nk'), ('sign', '5182234EB26EBFB718D5FDD1189E6056'), ('result_code', 'SUCCESS'),
@@ -107,14 +109,16 @@ class ServiceLoop(object):
 
         if trade_state == 'SUCCESS':
 
-            # 支付成功, 先检查total_fee是否一致, 然后把charge记录状态从0改为1, transaction_id更新为微信返回值
             wx_total_fee = int(ret_json['total_fee'])
-            if wx_total_fee != order.total_fee:
-                log.e(f'wx total_fee: {wx_total_fee} != db total_fee:{order.total_fee}')
+            transaction_id = ret_json['transaction_id']
+
+            # 支付成功, 先检查total_fee是否一致, 然后把charge记录状态从0改为1, transaction_id更新为微信返回值
+            if wx_total_fee != total_fee:
+                log.e(f'total_fee: {wx_total_fee} != order.total_fee:{total_fee}')
                 return
 
-            # 更新表状态: 未支付 改为 已支付 和 微信订单号
-            transaction_id = ret_json['transaction_id']
+            # 增加用户免费资源
+            OrderNotifyView.increase_user_resource(total_fee, out_trade_no, transaction_id, attach)
             Orders.objects.filter(out_trade_no=out_trade_no).update(status='paid', transaction_id=transaction_id)
             log.i(f"UPDATE orders SET status = 'paid', transaction_id = '{transaction_id}' WHERE out_trade_no = '{out_trade_no}'")
 
@@ -122,7 +126,7 @@ class ServiceLoop(object):
 
             # 超时还未支付或订单已经关闭, 需把charge记录状态从0改为-1
             Orders.objects.filter(out_trade_no=out_trade_no).update(status='expired')
-            log.i(f"UPDATE orders SET status = 'expired', transaction_id = '{transaction_id}' WHERE out_trade_no = '{out_trade_no}'")
+            log.i(f"UPDATE orders SET status = 'expired' WHERE out_trade_no = '{out_trade_no}'")
 
     @property
     def start_time(self):
