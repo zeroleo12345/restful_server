@@ -21,3 +21,11 @@ class UserWeixinSerializer(serializers.ModelSerializer):
         exclude = ('id',)
 
     weixin = WeixinSerializer()
+
+
+class UserSyncSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        exclude = ('id', 'weixin', 'is_enable', 'role')
+
+    expired_at = serializers.CharField(source='resource.expired_at')
