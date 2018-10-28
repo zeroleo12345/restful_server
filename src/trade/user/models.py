@@ -48,8 +48,8 @@ class User(AbstractBaseUser):
             }
             user_fields = {
                 'weixin': Weixin.objects.create(**weixin_fields),
-                'username': MyRandom.random_string(length=8),
-                'password': '000000',
+                'username': MyRandom.random_digit(length=8),
+                'password': MyRandom.random_digit(length=8),
                 'role': 'user',
             }
             user = User.objects.create(**user_fields)   # create 返回 Model 实例
