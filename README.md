@@ -13,6 +13,8 @@ ENVIRONMENT:
 
 
 ## 启动充值系统步骤
+
+- 主程序
 ``` bash
 1. 修改配置
   - decrpyt .envrc.x
@@ -26,6 +28,13 @@ ENVIRONMENT:
 
 3. 本地验证:
   - 浏览器访问 http://127.0.0.1:8000/   (Dockerfile内定义了8000端口映射到docker内的80端口)
+```
+
+
+- 其他程序
+```
+# 更新微信支付订单状态
+python manage.py manage_order
 ```
 
 
