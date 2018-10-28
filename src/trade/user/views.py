@@ -1,5 +1,3 @@
-from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework import exceptions
 # 自己的库
@@ -9,23 +7,7 @@ from trade.user.serializer import UserWeixinSerializer, WeixinInfoValidator
 from trade.utils.mp import MediaPlatform
 
 
-class TestView(APIView):
-    authentication_classes = ()
-    permission_classes = ()
-
-    def get(self, request):
-        token = self.request.META.get('HTTP_AUTHORIZATION', '')
-        if token:
-            print(f'11111111111111111: {token}')
-            user = JWTAuthentication.jwt_decode_handler(token)
-            print(f'22222222222222222: {user}')
-        return Response()
-
-    def post(self, request):
-        return Response()
-
-
-# 通过微信OAUTH接口, 获取微信用户信息
+# /user 通过微信OAUTH接口, 获取微信用户信息
 class UserView(generics.RetrieveAPIView):
     authentication_classes = ()
     permission_classes = ()

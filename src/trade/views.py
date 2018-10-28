@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from wechatpy.utils import check_signature
 
 
+# /echostr
 class EchoStrView(APIView):
     authentication_classes = ()
     permission_classes = ()
