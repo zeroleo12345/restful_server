@@ -21,9 +21,13 @@ class TestUser:
     def test_user_sync(self):
         settings.DEBUG = True
         user, token = get_user_and_token()
-        resource = ResourceFactory(user=user)
+        ResourceFactory(user=user)
 
         client = UnitTestAPIClient(token=token)
         response = client.get('/user/sync')
         assert response.status_code == status.HTTP_200_OK
-        from pprint import pprint; import pdb; pdb.set_trace()
+
+        user0 = response.json()['data'][0]
+        assert 'expired_at' in user0
+        assert 'username' in user0
+        assert 'password' in user0
