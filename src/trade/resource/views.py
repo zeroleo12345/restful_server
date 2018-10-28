@@ -5,6 +5,7 @@ from trade.resource.models import Resource
 from trade.resource.serializer import ResourceSerializer
 
 
+# /resource
 class UserResourceView(generics.RetrieveAPIView):
     authentication_classes = (JWTAuthentication, )      # 默认配置
     permission_classes = (UserPermission, )             # 默认配置

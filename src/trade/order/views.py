@@ -15,6 +15,7 @@ from trade.resource.models import Resource, ResourceChange
 from trade.framework.authorization import JWTAuthentication, UserPermission
 
 
+# /order
 class OrderView(APIView):
     authentication_classes = (JWTAuthentication, )      # 默认配置
     permission_classes = (UserPermission, )             # 默认配置
@@ -50,7 +51,7 @@ class OrderView(APIView):
         return Response(wepay_params)
 
 
-# request.path:  /order/notify
+# /order/notify
 class OrderNotifyView(APIView):
     authentication_classes = ()
     permission_classes = ()
