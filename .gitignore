@@ -136,3 +136,4 @@ ENV/
 # Self Define
 *.cap
 *.tmp
+*.tag

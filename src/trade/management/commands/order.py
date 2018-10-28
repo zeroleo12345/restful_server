@@ -12,9 +12,10 @@ from trade.order.models import Orders
 from trade.utils.wepay import WePay
 from mybase3.mylog3 import log
 
+log.setLogHeader('order')
 TZ = pytz.timezone('Asia/Shanghai')
 INTERVAL = datetime.timedelta(minutes=10)  # 超时10分钟
-TAG_FILE_PATH = 'start_time.tag'
+TAG_FILE_PATH = 'time.tag'
 
 
 class Command(BaseCommand):
@@ -29,13 +30,12 @@ class ServiceLoop(object):
     start_time_dict = {"file": os.path.basename(__file__), "start_time": "2018-01-01 00:00:00"}
 
     def __init__(self):
-        self.start_time, self.end_time = self.init_start_time_end_time()
         self.signal_register()
 
     def signal_register(self):
         """ 注册信号 """
-        signal.signal(signal.SIGINT, self._sig_handler)
-        signal.signal(signal.SIGTERM, self._sig_handler)
+        signal.signal(signal.SIGINT, self.signal_handler)
+        signal.signal(signal.SIGTERM, self.signal_handler)
 
     def signal_handler(self, sig, frame):
         if sig in [signal.SIGINT, signal.SIGTERM]:
@@ -44,21 +44,22 @@ class ServiceLoop(object):
     def cal_end_time(self):
         now_datetime = datetime.datetime.now(TZ)
         # 距离当前时间 INTERVAL 的时间点作为结束时间
-        end_time = (now_datetime - INTERVAL).strftime('%Y-%m-%d %H:%M:%S')
+        end_time = now_datetime - INTERVAL
         return end_time
 
     def start(self):
+        start_time, end_time = self.init_start_time_end_time()
         try:
             # 消息循环
             while not self.term:
-                self.end_time = self.cal_end_time()
-                log.d('start_time: {self.start_time}, end_time: {self.end_time}')
+                end_time = self.cal_end_time()
+                log.d(f'start_time: {start_time}, end_time: {end_time}')
 
-                orders = Orders.objects.filter(created_at__gt=self.start_time, created_at__lte=self.end_time, status='unpaid')
+                orders = Orders.objects.filter(created_at__gt=start_time, created_at__lte=end_time, status='unpaid')
                 for order in orders:
                     self.handle_charge_status0(order)
                 # 保存标签
-                self.start_time = self.end_time
+                start_time = end_time
                 self.save_start_time()
                 # 睡眠X秒
                 time.sleep(INTERVAL.total_seconds())
@@ -80,7 +81,13 @@ class ServiceLoop(object):
 
         # 1. 查询订单API, 获取查询结果
         ret_json = WePay.WECHAT_PAY.order.query(transaction_id, out_trade_no)
-        log.i("order query from weixin:{}".format(ret_json))
+        # OrderedDict([
+        #  ('return_code', 'SUCCESS'), ('return_msg', 'OK'), ('appid', 'wx54d296959ee50c0b'), ('mch_id', '1517154171'),
+        #  ('nonce_str', 'LQ36VyPkbS7tK7Nk'), ('sign', '5182234EB26EBFB718D5FDD1189E6056'), ('result_code', 'SUCCESS'),
+        #  ('out_trade_no', '1540519817110XiX6jCKAmXb348V3e'), ('trade_state', 'NOTPAY'),
+        #  ('trade_state_desc', '订单未支付')
+        # ])
+        log.d(f'order query from weixin: {ret_json}')
 
         if ret_json['return_code'] != 'SUCCESS':
             log.e('order query not success')
@@ -108,13 +115,14 @@ class ServiceLoop(object):
 
             # 更新表状态: 未支付 改为 已支付 和 微信订单号
             transaction_id = ret_json['transaction_id']
-            Orders.objects.get(out_trade_no=out_trade_no).update(status='paid', transaction_id=transaction_id)
+            Orders.objects.filter(out_trade_no=out_trade_no).update(status='paid', transaction_id=transaction_id)
+            log.i(f"UPDATE orders SET status = 'paid', transaction_id = '{transaction_id}' WHERE out_trade_no = '{out_trade_no}'")
 
         elif trade_state in ['NOTPAY', 'CLOSED', 'PAYERROR']:
 
             # 超时还未支付或订单已经关闭, 需把charge记录状态从0改为-1
-            log.w(f'update orders status to expired, out_trade_no:{out_trade_no}')
-            Orders.objects.get(out_trade_no=out_trade_no).update(status='expired')
+            Orders.objects.filter(out_trade_no=out_trade_no).update(status='expired')
+            log.i(f"UPDATE orders SET status = 'expired', transaction_id = '{transaction_id}' WHERE out_trade_no = '{out_trade_no}'")
 
     @property
     def start_time(self):
@@ -125,7 +133,7 @@ class ServiceLoop(object):
         self.start_time_dict['start_time'] = yyyymmddHHMMSS
 
     def save_start_time(self):
-        with open(TAG_FILE_PATH, 'wb') as f:
+        with open(TAG_FILE_PATH, 'w', encoding='utf8') as f:
             json.dump(self.start_time_dict, f)
 
     def init_start_time_end_time(self):
@@ -137,13 +145,14 @@ class ServiceLoop(object):
             raise Exception('tag file mismatch, file: {}', self.start_time_dict['file'])
 
         # 1. 标签存在, 以标签记录时间为开始时间; 2. 标签不存在, 以2018年1月1日为开始时间
-        start_time = self.start_time_dict['start_time']
+        start_time = TZ.localize(datetime.datetime.strptime(self.start_time_dict['start_time'], "%Y-%m-%d %H:%M:%S"))
 
         now_datetime = datetime.datetime.now(TZ)
-        if now_datetime - TZ.localize(datetime.datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S")) < INTERVAL:
+        if now_datetime - start_time < INTERVAL:
             time.sleep(INTERVAL.total_seconds())   # 睡眠X秒, 再处理
 
         # 距离当前时间 INTERVAL 的时间点作为结束时间
-        end_time = (now_datetime - INTERVAL).strftime('%Y-%m-%d %H:%M:%S')
+        end_time = now_datetime - INTERVAL
 
+        log.i(f'init start_time: {start_time}, end_time: {end_time}')
         return start_time, end_time
