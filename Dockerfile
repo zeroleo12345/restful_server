@@ -12,7 +12,7 @@ RUN apk add --no-cache --virtual .build-deps \
     && pip3 install --no-cache-dir -r /app/requirements/test.txt --trusted-host mirrors.aliyun.com --index-url http://mirrors.aliyun.com/pypi/simple \
     && apk del .build-deps \
     && export PYCURL_SSL_LIBRARY=openssl \
-    && apk add --no-cache mariadb-client-libs libcurl libstdc++
+    && apk add --no-cache mariadb-client-libs libcurl libstdc++ supervisor
 
 # WORKDIR: 如果目录不存在, 则自动创建
 WORKDIR /app/src/
@@ -20,4 +20,4 @@ ADD src /app/src/
 
 ADD bin /app/bin/
 # docker-compose.yml 会覆盖 entrypoint
-ENTRYPOINT ["/app/bin/restful_server_deamon.sh"]
+#ENTRYPOINT ["/app/bin/web.sh"]
