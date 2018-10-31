@@ -30,6 +30,7 @@ class UserView(generics.RetrieveAPIView):
             nickname = serializer.validated_data['nickname']
             headimgurl = serializer.validated_data['headimgurl']
 
+            # 获取用户信息, 不存在则创建
             user = User.get_or_create_user(openid, nickname, headimgurl)
 
         self.request.user = user    # 用于Response时, 设置JsonWebToken
