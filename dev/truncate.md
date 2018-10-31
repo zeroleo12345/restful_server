@@ -1,1 +1,1 @@
-set foreign_key_checks = 0;delete from orders;delete from user;delete from weixin;delete from resource;delete from resource_change;
+set foreign_key_checks = 0;truncate orders;truncate user;truncate weixin;truncate resource;truncate resource_change;

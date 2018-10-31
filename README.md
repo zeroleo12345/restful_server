@@ -46,7 +46,8 @@ sh dev/runtest_in_docker.sh
 
 ## 连接MySQL
 ``` bash
-mycli -h 127.0.0.1 -u root --password=root -D trade
+pip install mycli
+mycli -h 127.0.0.1 -P 33333 -u root --password=root -D trade
 ```
 
 
