@@ -17,7 +17,7 @@ ENVIRONMENT:
 - 主程序
 ``` bash
 1. 修改配置
-  - decrpyt .envrc.x
+  - decrypt .envrc.x
   - 修改.envrc. (原则: 尽量不用修改docker-compose.yml)
 
 2. 运行docker
