@@ -34,12 +34,12 @@ class MediaPlatform(object):
                     "name": '账号中心',
                     "type": 'view',
                     "url": f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}'
-                           f'&redirect_uri={MediaPlatform.REDIRECT_URI}&response_type=code&scope=snsapi_userinfo'
+                           f'&redirect_uri={MediaPlatform.REDIRECT_URI}&response_type=code&scope=snsapi_userinfo',
                 },
                 {
                     "name": '使用教程',
                     "type": 'view',
-                    "url": 'https://www.baidu.com'
+                    "url": f'{settings.TUTORIAL}',
                 },
             ]
         }

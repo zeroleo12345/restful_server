@@ -234,4 +234,5 @@ class ENVIRONMENT(object):
         return cls.environment == 'development'
 
 
+TUTORIAL = config('TUTORIAL', default='http://ca1145e4.wiz03.com/share/s/3a4knA3wo4e92gDVx03U7UoV0JuqNU0z3kT629VCU40BeXq6')
 SILENCED_SYSTEM_CHECKS = ['urls.W002']
