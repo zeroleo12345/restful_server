@@ -28,14 +28,21 @@ class MediaPlatform(object):
 
         # TODO: 防止多次创建菜单
         # 创建公众号-自定义菜单: https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141013
-        menu_data = {"button": [
-            {
-                "name": '个人中心',
-                "type": 'view',
-                "url": f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}'
-                       f'&redirect_uri={MediaPlatform.REDIRECT_URI}&response_type=code&scope=snsapi_userinfo'
-            },
-        ]}
+        menu_data = {
+            "button": [
+                {
+                    "name": '账号中心',
+                    "type": 'view',
+                    "url": f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}'
+                           f'&redirect_uri={MediaPlatform.REDIRECT_URI}&response_type=code&scope=snsapi_userinfo'
+                },
+                {
+                    "name": '使用教程',
+                    "type": 'view',
+                    "url": 'https://www.baidu.com'
+                },
+            ]
+        }
         MediaPlatform.WECHAT_CLIENT.menu.create(menu_data)
 
     @staticmethod
