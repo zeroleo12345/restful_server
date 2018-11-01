@@ -7,7 +7,8 @@ FROM python:3.6.5-alpine3.6
 ADD requirements /app/requirements/
 RUN echo "http://mirrors.aliyun.com/alpine/v3.6/main/" > /etc/apk/repositories
 RUN apk add --no-cache --virtual .build-deps \
-    mariadb-dev curl-dev build-base gcc musl-dev git python3-dev libffi-dev \
+    mariadb-dev curl-dev build-base gcc musl-dev git python3-dev libffi-dev tzdata \
+    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && pip3 install --upgrade pip \
     && pip3 install --no-cache-dir -r /app/requirements/test.txt --trusted-host mirrors.aliyun.com --index-url http://mirrors.aliyun.com/pypi/simple \
     && apk del .build-deps \

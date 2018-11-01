@@ -2,6 +2,7 @@ import json
 import uuid
 # 第三方库
 from django.db import models
+from django.utils import timezone
 from rest_framework import exceptions
 from django.http.response import Http404
 from dateutil.relativedelta import relativedelta
@@ -49,6 +50,11 @@ class Tariff(object):
             self.unit = unit
 
         def increase_duration(self, start_datetime):
+            # 如果有效期 < 当前时间, 则重置为当前时间再叠加有效期
+            now = timezone.localtime()
+            if start_datetime < now:
+                start_datetime = now
+
             if self.unit == 'month':
                 return start_datetime + relativedelta(months=self.duration)
             raise exceptions.ValidationError('时长单位错误', 'invalid_unit')
