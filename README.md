@@ -18,6 +18,7 @@ ENVIRONMENT:
 ``` bash
 1. 修改配置
   - decrypt .envrc.x
+  - direnv allow .
   - 修改.envrc. (原则: 尽量不用修改docker-compose.yml)
 
 2. 运行docker
