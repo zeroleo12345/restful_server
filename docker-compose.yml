@@ -1,8 +1,8 @@
 version: '3.5'
 
 services:
-  web:
-    container_name: restful_server_web
+  api:
+    container_name: api
     build:
        context: .
        dockerfile: ./Dockerfile
