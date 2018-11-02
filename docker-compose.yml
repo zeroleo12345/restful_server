@@ -10,7 +10,7 @@ services:
       - mysql
       - redis
     ports:      # 外部端口:docker内部端口
-      - "8000:8000"       # 只限于使用docker-compse up时, 会映射到8000端口, 而生产会映射到80端口
+      - "8000:8000"
     #env_file:
       #- docker.env
     environment:
