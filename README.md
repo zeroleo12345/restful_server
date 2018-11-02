@@ -21,13 +21,15 @@ ENVIRONMENT:
   - direnv allow .
   - 修改.envrc. (原则: 尽量不用修改docker-compose.yml)
 
-2. 运行docker
+2. 构建 docker
   - docker-compose build --no-cache
+
+3. 运行 docker
   - docker-compose up -d redis mysql
   Debug 版本:   export ENVIRONMENT=unittest; export DEBUG=True; docker-compose up web
   Release 版本: export ENVIRONMENT=production; export DEBUG=False; docker-compose up web
 
-3. 本地验证:
+4. 本地验证:
   - 浏览器访问 http://127.0.0.1:8000/   (Dockerfile内定义了8000端口映射到docker内的80端口)
 ```
 
