@@ -13,7 +13,7 @@ RUN apk add --no-cache --virtual .build-deps \
     && pip3 install --no-cache-dir -r /app/requirements/test.txt --trusted-host mirrors.aliyun.com --index-url http://mirrors.aliyun.com/pypi/simple \
     && apk del .build-deps \
     && export PYCURL_SSL_LIBRARY=openssl \
-    && apk add --no-cache mariadb-client-libs libcurl libstdc++ supervisor
+    && apk add --no-cache mariadb-client-libs mariadb-client libcurl libstdc++ supervisor
 
 # WORKDIR: 如果目录不存在, 则自动创建
 WORKDIR /app/src/
