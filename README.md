@@ -26,8 +26,8 @@ ENVIRONMENT:
 
 3. 运行 docker
   - docker-compose up -d redis mysql
-  Debug 版本:   export ENVIRONMENT=unittest; export DEBUG=True; docker-compose up web
-  Release 版本: export ENVIRONMENT=production; export DEBUG=False; docker-compose up web
+  Debug 版本:   export ENVIRONMENT=unittest; export DEBUG=True; docker-compose up api
+  Release 版本: export ENVIRONMENT=production; export DEBUG=False; docker-compose up api
 
 4. 本地验证:
   - 浏览器访问 http://127.0.0.1:8000/   (Dockerfile内定义了8000端口映射到docker内的80端口)
@@ -56,8 +56,8 @@ mycli -h 127.0.0.1 -P 33333 -u root --password=root -D trade
 
 ## Migration
 ``` bash
-docker-compose exec web  python manage.py makemigrations
-docker-compose exec web  python manage.py migrate --database=default
+docker-compose exec api  python manage.py makemigrations
+docker-compose exec api  python manage.py migrate --database=default
 
 # 清理历史migrations文件, 并重新生成表结构
   - 清理目录文件:  rm -rf migrations/*
