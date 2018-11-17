@@ -1,3 +1,7 @@
 #!/usr/bin/env sh
 
-exec python manage.py manage_order
+if [ "$DEBUG" == "True" ]; then
+    sleep 360
+else
+    exec python manage.py manage_order
+fi
