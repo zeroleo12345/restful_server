@@ -18,7 +18,6 @@ coverage.xml
 
 # docker
 .env
-*.envrc
 
 # django
 *.log
