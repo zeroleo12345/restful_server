@@ -1,10 +1,17 @@
 # django 库
 from django.conf import settings
+from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.renderers import StaticHTMLRenderer
 from rest_framework.response import Response
 # 第三方库
 from wechatpy.utils import check_signature
+from wechatpy.events import SubscribeEvent
+from wechatpy.messages import TextMessage
+from wechatpy.replies import TextReply
+from wechatpy import parse_message
+# 自己的库
+from mybase3.mylog3 import log
 
 
 # /echostr
@@ -25,8 +32,17 @@ class EchoStrView(APIView):
         return Response(echostr)
 
     def post(self, request):
-        # TODO: 公众号平台事件通知. (使用平台自带的自定义菜单时平台不会下发消息)
-        # from wechatpy import parse_message
-        # xml = request.body
-        # msg = parse_message(xml)
+        # 公众号平台事件通知. (note: 使用平台自带的自定义菜单时, 平台不会下发消息)
+        xml = request.body
+        msg = parse_message(xml)
+        log.d(f'platform event notify: {msg}')
+        _appid = msg.target     # 例如: gh_9225266caeb1
+        from_user = msg.source
+        if isinstance(msg, SubscribeEvent) or isinstance(msg, TextMessage):   # 关注公众号事件 或者 文字消息
+            reply = TextReply()
+            reply.source = _appid
+            reply.target = from_user
+            reply.content = settings.SUBSCRIBE_EVENT_REPLY
+            xml = reply.render()
+            return HttpResponse(xml, mimetype='text/xml')
         return Response('success')
