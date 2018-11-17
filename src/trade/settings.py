@@ -212,6 +212,7 @@ MP_SUB_MERCHANT_ID = config('MP_SUB_MERCHANT_ID', default=None)     # 可选(一
 # MP_KF_ACCOUNT = config('MP_KF_ACCOUNT')
 # MP_KF_NICKNAME = config('MP_KF_NICKNAME')
 # MP_KF_PASSWORD = config('MP_KF_PASSWORD')
+MP_DEFAULT_REPLY = config('MP_DEFAULT_REPLY', default='宽带接入教程请点击按钮<使用教程>, 有问题可联系管理员')
 
 
 class ENVIRONMENT(object):
@@ -234,5 +235,5 @@ class ENVIRONMENT(object):
         return cls.environment == 'development'
 
 
-TUTORIAL = config('TUTORIAL', default='http://ca1145e4.wiz03.com/share/s/3a4knA3wo4e92gDVx03U7UoV0JuqNU0z3kT629VCU40BeXq6')
+TUTORIAL_URL = config('TUTORIAL_URL', default='http://ca1145e4.wiz03.com/share/s/3a4knA3wo4e92gDVx03U7UoV0JuqNU0z3kT629VCU40BeXq6')
 SILENCED_SYSTEM_CHECKS = ['urls.W002']
