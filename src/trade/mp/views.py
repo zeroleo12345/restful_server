@@ -1,3 +1,4 @@
+import traceback
 # django 库
 from django.conf import settings
 from django.http import HttpResponse
@@ -33,16 +34,21 @@ class EchoStrView(APIView):
 
     def post(self, request):
         # 公众号平台事件通知. (note: 使用平台自带的自定义菜单时, 平台不会下发消息)
-        xml = request.body
-        msg = parse_message(xml)
-        log.d(f'platform event notify: {msg}')
-        _appid = msg.target     # 例如: gh_9225266caeb1
-        from_user = msg.source
-        if isinstance(msg, SubscribeEvent) or isinstance(msg, TextMessage):   # 关注公众号事件 或者 文字消息
-            reply = TextReply()
-            reply.source = _appid
-            reply.target = from_user
-            reply.content = settings.SUBSCRIBE_EVENT_REPLY
-            xml = reply.render()
-            return HttpResponse(xml, mimetype='text/xml')
-        return Response('success')
+        try:
+            xml = request.body
+            msg = parse_message(xml)
+            log.d(f'platform event notify: {msg}')
+            _appid = msg.target     # 例如: gh_9225266caeb1
+            from_user = msg.source
+            if isinstance(msg, SubscribeEvent) or isinstance(msg, TextMessage):   # 关注公众号事件 或者 文字消息
+                reply = TextReply()
+                reply.source = _appid
+                reply.target = from_user
+                reply.content = settings.SUBSCRIBE_EVENT_REPLY
+                xml = reply.render()
+                log.d(f'response: {xml}')
+                return HttpResponse(xml, mimetype='text/xml')
+            return Response('success')
+        except Exception:
+            log.e(traceback.format_exc())
+            return Response('success')
