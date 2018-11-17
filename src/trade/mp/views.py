@@ -44,7 +44,7 @@ class EchoStrView(APIView):
                 reply = TextReply()
                 reply.source = _appid
                 reply.target = from_user
-                reply.content = settings.SUBSCRIBE_EVENT_REPLY
+                reply.content = settings.MP_DEFAULT_REPLY
                 xml = reply.render()
                 log.d(f'response: {xml}')
                 return HttpResponse(xml, mimetype='text/xml')
