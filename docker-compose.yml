@@ -11,8 +11,36 @@ services:
       - redis
     ports:      # 外部端口:docker内部端口
       - "8000:8000"
-    env_file:
-      - .env
+    #env_file:
+      #- docker.env
+    environment:
+      SECRET_KEY: "${SECRET_KEY}"
+      DJANGO_SETTINGS_MODULE: "${DJANGO_SETTINGS_MODULE}"
+      REDIS_URI: "${REDIS_URI}"
+      DATABASE_URI: "${DATABASE_URI}"
+      DEBUG: "${DEBUG}"
+      ENVIRONMENT: "${ENVIRONMENT}"
+
+      API_SERVER_URL: "${API_SERVER_URL}"   # API服务器域名
+
+      MP_WEB_URL: "${MP_WEB_URL}"   # 微信公众平台
+      MP_APP_ID: "${MP_APP_ID}"     # 开发者ID
+      MP_APP_SECRET: "${MP_APP_SECRET}"     # 开发者密码
+      MP_TOKEN: "${MP_TOKEN}"   # 令牌
+      MP_AES_KEY: "${MP_AES_KEY}"   # 消息加解密密钥
+
+      # 微信商户平台
+      MP_APP_KEY: "${MP_APP_KEY}"   # API密钥
+      MP_MERCHANT_ID: "${MP_MERCHANT_ID}"   # 商户号
+      MP_MERCHANT_CERT: "${MP_MERCHANT_CERT}"   # 商户证书路径
+      MP_MERCHANT_KEY: "${MP_MERCHANT_KEY}"     # 商户证书私钥路径
+      ## 未确定哪里获取
+      MP_SUB_MERCHANT_ID: "${MP_SUB_MERCHANT_ID}"   # 可选. 子商户号, 受理模式下必填
+
+      # 公众号客服
+      #MP_KF_ACCOUNT: "${MP_KF_ACCOUNT}"
+      #MP_KF_NICKNAME: "${MP_KF_NICKNAME}"
+      #MP_KF_PASSWORD: "${MP_KF_PASSWORD}"
     volumes:        # 挂载盘(多用于输出程序文件, 日志等)
       - .:/app     # 主机路径:docker内部路径.(把主机下的src目录挂在到docker下, 实现边开发, 边调试)
       #- ./etc/supervisord.conf:/etc/supervisord.conf
