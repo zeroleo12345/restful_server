@@ -212,7 +212,7 @@ MP_SUB_MERCHANT_ID = config('MP_SUB_MERCHANT_ID', default=None)     # 可选(一
 # MP_KF_ACCOUNT = config('MP_KF_ACCOUNT')
 # MP_KF_NICKNAME = config('MP_KF_NICKNAME')
 # MP_KF_PASSWORD = config('MP_KF_PASSWORD')
-MP_DEFAULT_REPLY = config('MP_DEFAULT_REPLY', default='宽带接入请点击按钮使用教程, 有问题可联系管理员')
+MP_DEFAULT_REPLY = config('MP_DEFAULT_REPLY', default='宽带接入教程请点击按钮<使用教程>, 有问题可联系管理员')
 
 
 class ENVIRONMENT(object):
