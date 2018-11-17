@@ -17,9 +17,9 @@ ENVIRONMENT:
 - 主程序
 ``` bash
 1. 修改配置
-  - decrypt .envrc.x
+  - decrypt .env.x
   - direnv allow .
-  - 修改.envrc. (原则: 尽量不用修改docker-compose.yml)
+  - 修改.env   (原则: 尽量不用修改docker-compose.yml)
 
 2. 构建 docker
   - docker-compose build --no-cache

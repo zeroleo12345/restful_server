@@ -17,6 +17,7 @@ coverage.xml
 .idea
 
 # docker
+.env
 *.envrc
 
 # django
