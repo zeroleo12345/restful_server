@@ -1,5 +1,9 @@
 #!/usr/bin/env sh
 
+# crond job
+cp /app/bin/cron_jobs  /etc/crontabs/root
+crond
+
 if [ "$DEBUG" == "True" ]; then
     python manage.py migrate
     exec python manage.py runserver 0.0.0.0:8000
