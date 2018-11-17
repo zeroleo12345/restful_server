@@ -47,7 +47,7 @@ class EchoStrView(APIView):
                 reply.content = settings.MP_DEFAULT_REPLY
                 xml = reply.render()
                 log.d(f'response: {xml}')
-                return HttpResponse(xml, mimetype='text/xml')
+                return HttpResponse(xml, content_type='text/xml')
             return Response('success')
         except Exception:
             log.e(traceback.format_exc())
