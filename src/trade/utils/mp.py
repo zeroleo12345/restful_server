@@ -39,7 +39,7 @@ class MediaPlatform(object):
                 {
                     "name": '使用教程',
                     "type": 'view',
-                    "url": f'{settings.TUTORIAL}',
+                    "url": f'{settings.TUTORIAL_URL}',
                 },
             ]
         }
