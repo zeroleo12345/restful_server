@@ -17,4 +17,5 @@ gunicorn==19.7.1
 #celery==4.0.2
 pycurl==7.43.0.1
 django-cors-headers==2.4.0
+qiniu==7.2.2
 git+https://github.com/zeroleo12345/myclog-python.git
