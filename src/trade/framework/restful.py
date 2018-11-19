@@ -5,6 +5,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework import exceptions
 from rest_framework.views import exception_handler
+import sentry_sdk
 
 
 class MyJSONRenderer(JSONRenderer):
@@ -55,6 +56,7 @@ def custom_exception_handler(exc, context):
                 'message': detail.__str__(),
             }
         else:
+            sentry_sdk.capture_exception(exc)
             response.data = {
                 'code': 'unknown_error',
                 'message': 'Unknown Error',

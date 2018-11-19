@@ -11,10 +11,13 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-
-import dj_database_url
 import datetime
+# 第三方库
 from decouple import config
+import dj_database_url
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+# 自己的库
 from mybase3.mylog3 import log
 
 LOG_HEADER = config('LOG_HEADER', default='restful')
@@ -237,3 +240,10 @@ class ENVIRONMENT(object):
 
 TUTORIAL_URL = config('TUTORIAL_URL', default='http://ca1145e4.wiz03.com/share/s/3a4knA3wo4e92gDVx03U7UoV0JuqNU0z3kT629VCU40BeXq6')
 SILENCED_SYSTEM_CHECKS = ['urls.W002']
+
+SENTRY_DSN=config('SENTRY_DSN')
+sentry_sdk.init(
+    dsn=SENTRY_DSN,
+    environment=ENVIRONMENT.environment,
+    integrations=[DjangoIntegration()]
+)

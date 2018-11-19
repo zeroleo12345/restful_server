@@ -3,10 +3,10 @@ import json
 import datetime
 import time
 import pytz
-import traceback
 import signal
-from django.core.management.base import BaseCommand
 # 第三方类
+import sentry_sdk
+from django.core.management.base import BaseCommand
 # 自己的类
 from trade.order.views import OrderNotifyView
 from trade.order.models import Orders
@@ -19,6 +19,7 @@ INTERVAL = datetime.timedelta(minutes=10)  # 超时10分钟
 TAG_FILE_PATH = 'time.tag'
 
 
+# 使用方法:  python manage.py manage_order
 class Command(BaseCommand):
     def handle(self, *args, **options):
         process = ServiceLoop()
@@ -66,8 +67,8 @@ class ServiceLoop(object):
                 time.sleep(INTERVAL.total_seconds())
         except KeyboardInterrupt:
             log.d('KeyboardInterrupt, break')
-        except Exception:
-            log.e(traceback.format_exc())
+        except Exception as exc:
+            sentry_sdk.capture_exception(exc)
         finally:
             log.i(f'exit, term: {self.term}')
             log.close()
