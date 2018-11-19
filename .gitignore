@@ -138,3 +138,4 @@ ENV/
 *.cap
 *.tmp
 *.tag
+.qiniu_pythonsdk_hostscache.json
