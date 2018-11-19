@@ -27,7 +27,7 @@ ENVIRONMENT:
 3. 运行 docker
   - docker-compose up -d redis mysql
   Debug 版本:   export ENVIRONMENT=unittest; export DEBUG=True; docker-compose up api
-  Release 版本: export ENVIRONMENT=production; export DEBUG=False; docker-compose up api    # deamon 增加参数 -d
+  Release 版本: export ENVIRONMENT=production; export DEBUG=False; docker-compose up api    # 或者执行 bin/release.sh
 
 4. 本地验证:
   - 浏览器访问 http://127.0.0.1:8000/   (Dockerfile内定义了8000端口映射到docker内的80端口)
