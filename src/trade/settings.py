@@ -241,7 +241,7 @@ class ENVIRONMENT(object):
 TUTORIAL_URL = config('TUTORIAL_URL', default='http://ca1145e4.wiz03.com/share/s/3a4knA3wo4e92gDVx03U7UoV0JuqNU0z3kT629VCU40BeXq6')
 SILENCED_SYSTEM_CHECKS = ['urls.W002']
 
-SENTRY_DSN=config('SENTRY_DSN')
+SENTRY_DSN = config('SENTRY_DSN')
 sentry_sdk.init(
     dsn=SENTRY_DSN,
     environment=ENVIRONMENT.environment,

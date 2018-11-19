@@ -68,9 +68,9 @@ class Tariff(object):
            'month6': Tariff.Instance(tariff_name='month6', price=276*100, duration=6, unit='month'),  # 单位分, 9.2折
         }
         # objects = {
-            # 'month1': Tariff.Instance(tariff_name='month1', price=1, duration=1, unit='month'),
-            # 'month3': Tariff.Instance(tariff_name='month3', price=3, duration=3, unit='month'),
-            # 'month6': Tariff.Instance(tariff_name='month6', price=6, duration=6, unit='month'),
+        #     'month1': Tariff.Instance(tariff_name='month1', price=1, duration=1, unit='month'),
+        #     'month3': Tariff.Instance(tariff_name='month3', price=3, duration=3, unit='month'),
+        #     'month6': Tariff.Instance(tariff_name='month6', price=6, duration=6, unit='month'),
         # }
 
         if tariff_name not in objects:

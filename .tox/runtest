@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+set -o verbose
+
+# 用法: flake8  目标目录
+flake8 ../src/trade --config=flake8.ini
+
+# 用法:
+pytest
+
+# 上述两个命令, 可以通过tox一并执行
+#pip3 install tox && tox -c tox.ini
