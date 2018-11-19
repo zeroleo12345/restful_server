@@ -5,7 +5,7 @@ set -o verbose
 flake8 ../src/trade --config=flake8.ini
 
 # 用法:
-pytest
+pytest ../src/ -c pytest.ini
 
 # 上述两个命令, 可以通过tox一并执行
 #pip3 install tox && tox -c tox.ini
