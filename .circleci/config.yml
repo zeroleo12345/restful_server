@@ -39,8 +39,8 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            flake8 src --config=.tox/flake8.ini
-            pytest src/ -c .tox/pytest.ini
+            flake8 src --config=.test/flake8.ini
+            pytest src/ -c .test/pytest.ini
           environment:
             REDIS_URI: "redis://localhost:6379/0"
             DATABASE_URI: "mysql://root:@127.0.0.1:3306/trade"
