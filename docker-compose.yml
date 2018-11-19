@@ -11,6 +11,9 @@ services:
       - redis
     ports:      # 外部端口:docker内部端口
       - "8000:8000"
+    environment:
+      DEBUG: "${DEBUG}"
+      ENVIRONMENT: "${ENVIRONMENT}"
     env_file:
       - .env
     volumes:        # 挂载盘(多用于输出程序文件, 日志等)
