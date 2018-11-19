@@ -139,3 +139,4 @@ ENV/
 *.tmp
 *.tag
 .qiniu_pythonsdk_hostscache.json
+run/backup/
