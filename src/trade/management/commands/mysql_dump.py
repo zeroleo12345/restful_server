@@ -10,10 +10,10 @@ HOME = os.path.expanduser("~")
 # 七牛秘钥
 QN_ACCESS_KEY = config('QN_ACCESS_KEY')
 QN_SECRET_KEY = config('QN_SECRET_KEY')
+# 上传空间
+QN_BUCKET = config('QN_BUCKET')
 # 构建鉴权对象
 qn_auth = Auth(QN_ACCESS_KEY, QN_SECRET_KEY)
-# 上传空间
-BUCKET = 'pppoe'
 
 
 def init_args():
@@ -30,9 +30,8 @@ def init_args():
 
 def gzip(file_path):
     cmd = 'gzip {file_path}'.format(file_path=file_path)
-    ret = subprocess.getoutput(cmd)
-    if ret.find('error') > -1:
-        raise Exception(ret)
+    ret = subprocess.check_output(cmd, shell=True)
+    print(ret)
 
     gzip_file_path = file_path + '.gz'
     ret = os.path.isfile(gzip_file_path)
@@ -52,7 +51,7 @@ def upload(file_path):
     key = filename
 
     # 生成上传 Token，可以指定过期时间等
-    token = qn_auth.upload_token(BUCKET, key=key, expires=3600)
+    token = qn_auth.upload_token(QN_BUCKET, key=key, expires=3600)
 
     # 上传
     ret, info = put_file(token, key=key, file_path=file_path)
