@@ -1,4 +1,3 @@
-import traceback
 # django 库
 from django.conf import settings
 from django.http import HttpResponse
@@ -11,11 +10,12 @@ from wechatpy.events import SubscribeEvent
 from wechatpy.messages import TextMessage
 from wechatpy.replies import TextReply
 from wechatpy import parse_message
+import sentry_sdk
 # 自己的库
-from mybase3.mylog3 import log
+# from mybase3.mylog3 import log
 
 
-# /echostr
+# /mp/echostr
 class EchoStrView(APIView):
     authentication_classes = ()
     permission_classes = ()
@@ -37,7 +37,7 @@ class EchoStrView(APIView):
         try:
             xml = request.body
             msg = parse_message(xml)
-            log.d(f'platform event notify: {msg}')
+            # log.d(f'platform event notify: {msg}')
             _appid = msg.target     # 例如: gh_9225266caeb1
             from_user = msg.source
             if isinstance(msg, SubscribeEvent) or isinstance(msg, TextMessage):   # 关注公众号事件 或者 文字消息
@@ -46,9 +46,9 @@ class EchoStrView(APIView):
                 reply.target = from_user
                 reply.content = settings.MP_DEFAULT_REPLY
                 xml = reply.render()
-                log.d(f'response: {xml}')
+                # log.d(f'response: {xml}')
                 return HttpResponse(xml, content_type='text/xml')
             return Response('success')
-        except Exception:
-            log.e(traceback.format_exc())
+        except Exception as exc:
+            sentry_sdk.capture_exception(exc)
             return Response('success')

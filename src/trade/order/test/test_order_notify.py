@@ -12,6 +12,7 @@ from trade.order.factories import OrdersFactory
 pytestmark = pytest.mark.django_db
 
 
+@pytest.mark.skip(reason="手动触发测试")
 def test_payjs_notify_success():
     user, token = get_user_and_token()
     data = {
@@ -54,6 +55,7 @@ def test_payjs_notify_success():
     assert expired_at >= timezone.localtime() + relativedelta(months=1) - relativedelta(hours=1)
 
 
+@pytest.mark.skip(reason="手动触发测试")
 def test_payjs_notify_order_not_exist():
     user, token = get_user_and_token()
     data = {
@@ -70,6 +72,7 @@ def test_payjs_notify_order_not_exist():
     assert response.data == 'invalid_order'
 
 
+@pytest.mark.skip(reason="手动触发测试")
 def test_payjs_notify_sign_error():
     user, token = get_user_and_token()
     client = UnitTestAPIClient(token=token)

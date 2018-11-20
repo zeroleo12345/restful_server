@@ -1,5 +1,6 @@
 import pytest
 # 第三方库
+from django.conf import settings
 from rest_framework import status
 # 自己的库
 from trade.framework.unittest import get_user_and_token, UnitTestAPIClient
@@ -8,6 +9,7 @@ from trade.framework.unittest import get_user_and_token, UnitTestAPIClient
 pytestmark = pytest.mark.django_db
 
 
+@pytest.mark.skipif(condition=settings.ENVIRONMENT.is_unittest(), reason="手动触发测试")
 def test_order_create():
     user, jwt_token = get_user_and_token()
     client = UnitTestAPIClient(token=jwt_token)

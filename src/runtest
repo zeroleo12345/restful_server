@@ -1,7 +1,0 @@
-#!/usr/bin/env sh
-set -o verbose
-
-flake8 trade --config=tox.ini
-pytest
-
-#pip3 install tox && tox -c tox.ini
