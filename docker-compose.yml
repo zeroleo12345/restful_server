@@ -29,8 +29,8 @@ services:
       - pppoe_system
 
 
-  order:
-    container_name: order
+  api_order:
+    container_name: api_order
     build:
        context: .
        dockerfile: ./Dockerfile
