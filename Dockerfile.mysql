@@ -1,0 +1,6 @@
+FROM mysql:5.7
+
+RUN mkdir -p /var/lib/mysql/  /var/log/  /var/run/mysqld
+RUN chmod 777 /var/lib/mysql/  /var/log/  /var/run/mysqld
+
+COPY ./etc/mysql/my.cnf /etc/mysql/my.cnf
