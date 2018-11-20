@@ -77,7 +77,7 @@ def dump(host, port, username, password, db, directory):
     if not os.path.exists(directory):
         os.mkdir(directory)
 
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.now()
     filename = now.strftime('%d') + '_' + db + '.sql'
     output = os.path.join(directory, filename)
 
