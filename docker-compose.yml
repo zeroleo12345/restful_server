@@ -71,7 +71,6 @@ services:
     #user: mysql
     #privileged: true   # 拥有主机的root权限
     volumes:       # 挂载盘(多用于输出程序文件, 日志等)
-      - ./run/mysql:/run/mysql     # 主机路径:docker内部路径.
       - ./etc/mysql/my.cnf:/etc/mysql/my.cnf
     restart: unless-stopped
     command:
