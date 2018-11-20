@@ -140,3 +140,4 @@ ENV/
 *.tag
 .qiniu_pythonsdk_hostscache.json
 run/backup/
+run/mysql
