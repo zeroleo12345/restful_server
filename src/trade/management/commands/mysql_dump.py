@@ -78,7 +78,7 @@ def dump(host, port, username, password, db, directory):
         os.mkdir(directory)
 
     now = datetime.datetime.now()
-    filename = now.strftime('%d') + '_' + db + '.sql'
+    filename = now.strftime('%d_%H:00') + '_' + db + '.sql'
     output = os.path.join(directory, filename)
 
     cmd = 'mysqldump -h{host} -P{port} -u{user} -p"{password}" --single-transaction {db} > {output}'.format(
