@@ -25,6 +25,7 @@ services:
     entrypoint: /app/bin/web.sh      # docker启动期执行程序
     #command: dockerize -wait tcp://mysql:3306 -timeout 10s
     tty: true
+    restart: unless-stopped
     networks:
       - pppoe_system
 
@@ -46,6 +47,7 @@ services:
       - .:/app     # 主机路径:docker内部路径.(把主机下的src目录挂在到docker下, 实现边开发, 边调试)
     entrypoint: /app/bin/manage_order.sh      # docker启动期执行程序
     tty: true
+    restart: unless-stopped
     networks:
       - pppoe_system
 
@@ -53,6 +55,7 @@ services:
   redis:
     container_name: restful_server_redis
     image: redis:alpine
+    restart: unless-stopped
     networks:
       - pppoe_system
 
@@ -64,7 +67,12 @@ services:
       MYSQL_ROOT_PASSWORD: 'root'
       MYSQL_DATABASE: 'trade'
     ports:
-      - "33333:3306"     # 用于sequel pro连接
+      - "33333:3306"    # 用于sequel pro连接
+    #user: mysql
+    #privileged: true   # 拥有主机的root权限
+    volumes:       # 挂载盘(多用于输出程序文件, 日志等)
+      - ./etc/mysql/my.cnf:/etc/mysql/my.cnf
+    restart: unless-stopped
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
