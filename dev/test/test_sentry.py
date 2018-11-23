@@ -3,13 +3,13 @@
 
 from decouple import config
 
-# 上报异常
 import sentry_sdk
 from sentry_sdk import capture_exception
 
 SENTRY_DSN = config('SENTRY_DSN')
 sentry_sdk.init(SENTRY_DSN)
 
+# 上报异常
 try:
     a = 1 / 0
 except Exception as e:
