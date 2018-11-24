@@ -33,7 +33,7 @@ class TokenSetMiddleware(object):
         response = self.get_response(request)
 
         token = request.META.get('HTTP_AUTHORIZATION', '')
-        if UserPermission.is_user(request.user) and not token:
+        if not token and getattr(request, 'user', None) and UserPermission.is_user(request.user):
             response['Authorization'] = JWTAuthentication.jwt_encode_handler(request.user)
 
         return response
