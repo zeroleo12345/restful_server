@@ -3,11 +3,10 @@ import json
 import datetime
 import time
 import pytz
-import signal
 # 第三方类
-import sentry_sdk
 from django.core.management.base import BaseCommand
 # 自己的类
+from trade.management.commands import Service
 from trade.order.views import OrderNotifyView
 from trade.order.models import Orders
 from trade.utils.wepay import WePay
@@ -26,22 +25,13 @@ class Command(BaseCommand):
         process.start()
 
 
-class ServiceLoop(object):
-    term = 0
-    is_init = False
+class ServiceLoop(Service):
+    interval = INTERVAL.total_seconds()    # 单位秒
     start_time_dict = {"file": os.path.basename(__file__), "start_time": "2018-01-01 00:00:00"}
 
     def __init__(self):
-        self.signal_register()
-
-    def signal_register(self):
-        """ 注册信号 """
-        signal.signal(signal.SIGINT, self.signal_handler)
-        signal.signal(signal.SIGTERM, self.signal_handler)
-
-    def signal_handler(self, sig, frame):
-        if sig in [signal.SIGINT, signal.SIGTERM]:
-            self.term = 1
+        super(self.__class__, self).__init__()
+        self.start_time, self.end_time = self.init_start_time_end_time()
 
     def cal_end_time(self):
         now_datetime = datetime.datetime.now(TZ)
@@ -49,29 +39,16 @@ class ServiceLoop(object):
         end_time = now_datetime - INTERVAL
         return end_time
 
-    def start(self):
-        start_time, end_time = self.init_start_time_end_time()
-        try:
-            # 消息循环
-            while not self.term:
-                end_time = self.cal_end_time()
-                log.d(f'start_time: {start_time}, end_time: {end_time}')
+    def run(self):
+        self.end_time = self.cal_end_time()
+        log.d(f'start_time: {self.start_time}, end_time: {self.end_time}')
 
-                orders = Orders.objects.filter(created_at__gt=start_time, created_at__lte=end_time, status='unpaid')
-                for order in orders:
-                    self.handle_charge_status0(order)
-                # 保存标签
-                start_time = end_time
-                self.save_start_time()
-                # 睡眠X秒
-                time.sleep(INTERVAL.total_seconds())
-        except KeyboardInterrupt:
-            log.d('KeyboardInterrupt, break')
-        except Exception as exc:
-            sentry_sdk.capture_exception(exc)
-        finally:
-            log.i(f'exit, term: {self.term}')
-            log.close()
+        orders = Orders.objects.filter(created_at__gt=self.start_time, created_at__lte=self.end_time, status='unpaid')
+        for order in orders:
+            self.handle_charge_status0(order)
+        # 保存标签
+        self.start_time = self.end_time
+        self.save_start_time()
 
     def handle_charge_status0(self, order):
         # 查询订单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2
@@ -128,14 +105,6 @@ class ServiceLoop(object):
             # 超时还未支付或订单已经关闭, 需把charge记录状态从0改为-1
             Orders.objects.filter(out_trade_no=out_trade_no).update(status='expired')
             log.i(f"UPDATE orders SET status = 'expired' WHERE out_trade_no = '{out_trade_no}'")
-
-    @property
-    def start_time(self):
-        return self.start_time_dict['start_time']
-
-    @start_time.setter
-    def start_time(self, yyyymmddHHMMSS):
-        self.start_time_dict['start_time'] = yyyymmddHHMMSS
 
     def save_start_time(self):
         with open(TAG_FILE_PATH, 'w', encoding='utf8') as f:
