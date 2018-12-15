@@ -3,5 +3,5 @@
 if [ "$DEBUG" == "True" ]; then
     sleep 360
 else
-    exec python manage.py statistics
+    exec python /app/src/manage.py statistics
 fi
