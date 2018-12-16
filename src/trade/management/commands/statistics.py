@@ -24,7 +24,7 @@ class ServiceLoop(Service):
 
     def run(self):
         # 累计昨天成交
-        today = timezone.localtime().replace(hour=9, minute=0, second=0, microsecond=0)
+        today = timezone.localtime().replace(hour=0, minute=0, second=0, microsecond=0)
         yesterday = today - datetime.timedelta(days=1)
         today_sum = Orders.objects.filter(
             status='paid', updated_at__gt=yesterday, updated_at__lt=today
