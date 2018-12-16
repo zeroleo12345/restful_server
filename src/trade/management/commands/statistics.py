@@ -38,6 +38,6 @@ class ServiceLoop(Service):
             total_sum = 0
 
         # 发送slack统计消息
-        text = f'今天充值金额: {today_sum/100} 元, 历史累计充值金额: {total_sum/100} 元'
+        text = f'昨天充值金额: {today_sum/100} 元, 历史累计充值金额: {total_sum/100} 元'
         send_slack_message(text=text)
         self.term = 1
