@@ -38,6 +38,9 @@ ENVIRONMENT:
 ```
 # 更新微信支付订单状态
 python manage.py manage_order
+
+# 统计订单金额
+python manage.py statistics
 ```
 
 

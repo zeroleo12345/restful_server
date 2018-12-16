@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 # crond job
-cp /app/bin/cron_jobs  /etc/crontabs/root
+cp /app/bin/crontab/root  /etc/crontabs/root
 crond
 
 if [ "$DEBUG" == "True" ]; then
