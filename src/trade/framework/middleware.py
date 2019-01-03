@@ -25,6 +25,7 @@ class CORSMiddleware(object):
         response['Access-Control-Expose-Headers'] = 'Content-Type, Origin, Authorization'
 
 
+# 服务端应答时, 自动在HTTP头Authorization设置jwt. (需在登录接口增加request.user = user语句)
 class TokenSetMiddleware(object):
     def __init__(self, get_response):
         self.get_response = get_response
