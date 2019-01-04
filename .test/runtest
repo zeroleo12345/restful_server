@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -o verbose
 
-project_root=$(cd "$(dirname "$0")/.."; pwd)    # /root/radius_server
+project_root=$(cd "$(dirname "$0")/.."; pwd)
 cd $project_root
 
 # 用法: flake8  目标目录
