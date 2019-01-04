@@ -59,6 +59,10 @@ mycli -h 127.0.0.1 -P 33333 -u root --password=root -D trade
 
 ## Migration
 ``` bash
+# 首次执行需指定app
+docker-compose exec api  python manage.py makemigrations trade
+
+# 非首次执行
 docker-compose exec api  python manage.py makemigrations
 docker-compose exec api  python manage.py migrate --database=default
 
