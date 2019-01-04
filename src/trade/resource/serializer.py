@@ -11,12 +11,12 @@ class ResourceSerializer(serializers.ModelSerializer):
 
     status = serializers.SerializerMethodField()
 
-    def get_status(self, obj):
+    def get_status(self, row):
         # expired: 已过期; working: 使用中; inactive: 已停用
-        if not obj.user.is_enable:
+        if not row.user.is_enable:
             return 'inactive'
 
-        if obj.expired_at > timezone.localtime():
+        if row.expired_at > timezone.localtime():
             return 'working'
 
         return 'expired'
