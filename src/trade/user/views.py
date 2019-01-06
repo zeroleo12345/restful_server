@@ -3,7 +3,8 @@ from rest_framework import exceptions
 # 自己的库
 from trade.framework.authorization import JWTAuthentication
 from trade.user.models import User
-from trade.user.serializer import UserWeixinSerializer, WeixinInfoValidator, UserSyncSerializer
+from trade.user.serializer import UserWeixinSerializer, UserSyncSerializer
+from trade.user.validators import WeixinInfoValidator
 from trade.utils.mp import MediaPlatform
 
 
