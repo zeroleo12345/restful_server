@@ -3,12 +3,6 @@ from rest_framework import serializers
 from trade.user.models import Weixin, User
 
 
-class WeixinInfoValidator(serializers.Serializer):
-    openid = serializers.CharField()
-    nickname = serializers.CharField()
-    headimgurl = serializers.CharField()
-
-
 class WeixinSerializer(serializers.ModelSerializer):
     class Meta:
         model = Weixin
