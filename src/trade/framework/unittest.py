@@ -31,7 +31,7 @@ class UnitTestAPIClient(APIClient):
         return super().post(path, data, format=format, *args, **kwargs)
 
     def put(self, path, data=None, format='json', *args, **kwargs):
-        return super().put(path, data=None, format=format, *args, **kwargs)
+        return super().put(path, data, format=format, *args, **kwargs)
 
     def patch(self, path, data=None, format='json', *args, **kwargs):
         return super().patch(path, data, format=format, *args, **kwargs)
