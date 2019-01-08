@@ -22,7 +22,7 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install -U pip mycli
-            pip install -U -r requirements/test.txt
+            pip install -U -r requirements/requirements-test.txt
       - save_cache:
           paths:
             - ./venv
