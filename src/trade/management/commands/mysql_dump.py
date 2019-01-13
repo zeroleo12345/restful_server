@@ -91,7 +91,7 @@ def dump(host, port, username, password, db, directory):
     # File check
     ret = os.path.isfile(output)
     if ret is False:
-        raise Exception('File check failed')
+        raise Exception('File not exist')
 
     return output
 
