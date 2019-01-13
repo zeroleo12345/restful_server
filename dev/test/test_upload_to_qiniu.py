@@ -19,7 +19,7 @@ bucket = 'pppoe'
 
 # 上传到七牛后保存的文件名
 directory, filename = 'test', 'test.jpg'
-key = f'{directory}/{filename}'
+key = f'user/{directory}/{filename}'
 
 # 生成上传 Token，可以指定过期时间等
 policy = {
