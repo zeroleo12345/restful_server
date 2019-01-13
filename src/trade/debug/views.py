@@ -22,4 +22,5 @@ class DebugView(APIView):
             log.i(f'GET: {request.GET}')
             log.i(f'POST: {request.POST}')
             log.i(f'data: {request.data}')
-        return Response()
+        data = request.data
+        return Response(data=data)
