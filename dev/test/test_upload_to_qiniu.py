@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os
 from decouple import config
@@ -21,9 +22,16 @@ key = filename
 
 # 生成上传 Token，可以指定过期时间等
 policy = {
+    'endUser': '1',
     'callbackUrl': f'{API_SERVER_URL}/debug',    # 上传成功后，七牛云向业务服务器发送 POST 请求的 URL
+    # 七牛回调服务端, 方式1
+    # 'callbackBodyType': 'application/x-www-form-urlencoded',
+    # 'callbackBody': 'bucket=${bucket}&key=$(key)&etag=$(etag)&fname=${fname}&fsize=${fsize}&mimeType=${mimeType}&endUser=${endUser}',
+    # 七牛回调服务端, 方式2
     'callbackBodyType': 'application/json',
-    'callbackBody': {"key": "$(key)", "hash": "$(etag)", "w": "$(imageInfo.width)", "h": "$(imageInfo.height)"},
+    'callbackBody': '''{"bucket": "${bucket}", "key": "$(key)", "hash": "$(etag)", "fname": "$(fname)", "endUser": "$(endUser)"}''',
+    # 返回给客户端的内容格式
+    # 'returnBody': '''{"bucket": "${bucket}", "key": "$(key)", "hash": "$(etag)", "fname": "$(fname)"}''',
 }
 token = q.upload_token(bucket, key=key, expires=3600, policy=policy)
 print('token: ', token)
@@ -34,6 +42,8 @@ if not os.path.exists(file_path):
     raise Exception(f'file {file_path} not exist')
 
 ret, info = put_file(token, key=key, file_path=file_path)
+print('ret:', ret)
 print('info:', info)
-assert ret['key'] == key
-assert ret['hash'] == etag(file_path)
+if info.ok():
+    assert ret['key'] == key
+    assert ret['hash'] == etag(file_path)
