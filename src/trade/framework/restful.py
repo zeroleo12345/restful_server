@@ -44,7 +44,11 @@ def custom_exception_handler(exc, context):
     # Now add the HTTP status code to the response.
     if response is not None:
         if isinstance(exc, exceptions.ValidationError):
-            detail = exc.detail[0]
+            if isinstance(exc.detail, dict):
+                _, detail_list = exc.detail.popitem()
+            else:
+                detail_list = exc.detail
+            detail = detail_list[0]
             response.data = {
                 'code': detail.code,
                 'message': detail.__str__(),
