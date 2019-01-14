@@ -50,17 +50,17 @@ class MediaPlatform(object):
         """ 使用code通过微信OAUTH2接口, 获取openid.  # http://www.cnblogs.com/txw1958/p/weixin76-user-info.html
         fetch_access_token()函数返回:
         {
-            u'access_token': u'vX1lcBkeRY6WZUylVyZA9XPeoA92_15iBAXHHRtBD1dtbAtWe9e3i-DyHR9PBtP6L......',
-            u'openid': u'ovj3E0l9vffwBuqz_PNu25yL_is4', u'expires_in': 7200,
-            u'refresh_token': u'LSaCEeS8m-18_njiAN8Jm11V4QIeWxwOSsjEV9cM1ra5zkL......', u'scope': u'snsapi_userinfo'
+            'access_token': 'vX1lcBkeRY6WZUylVyZA9XPeoA92_15iBAXHHRtBD1dtbAtWe9e3i-DyHR9PBtP6L......',
+            'openid': 'ovj3E0l9vffwBuqz_PNu25yL_is4', 'expires_in': 7200,
+            'refresh_token': 'LSaCEeS8m-18_njiAN8Jm11V4QIeWxwOSsjEV9cM1ra5zkL......', 'scope': 'snsapi_userinfo'
         }
         """
         if not settings.ENVIRONMENT.is_production():
             user_info = {
-                u'province': u'\u5e7f\u4e1c', u'openid': u'ovj3E0l9vffwBuqz_PNu25yL_is4',
-                u'headimgurl': u'http://wx.qlogo.cn/mmhead/Q3auHgzwzM7AianZsHE6LefhQuSmwibx4KZ9LYkRmIibrFKmSbAVjlpBg/0',
-                u'language': u'zh_CN', u'city': u'\u5e7f\u5dde', u'country': u'\u4e2d\u56fd', u'sex': 1,
-                u'privilege': [], u'nickname': u'\u5468\u793c\u6b23'
+                'province': '广东', 'openid': 'ovj3E0l9vffwBuqz_PNu25yL_is4',
+                'headimgurl': 'http://wx.qlogo.cn/mmhead/Q3auHgzwzM7AianZsHE6LefhQuSmwibx4KZ9LYkRmIibrFKmSbAVjlpBg/0',
+                'language': 'zh_CN', 'city': '广州', 'country': '中国', 'sex': 1,
+                'privilege': [], 'nickname': '测试账号'
             }
             pass
             user_info['openid'] = code
