@@ -20,10 +20,12 @@ from trade.resource.urls import resource_urls
 from trade.order.urls import order_urls
 from trade.mp.urls import mp_urls
 from trade.views import HeartBeatView
+from trade.debug.views import DebugView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^heartbeat$', HeartBeatView.as_view()),
+    url(r'^debug', DebugView.as_view()),
     url(r'^mp', include(mp_urls)),
     url(r'^user', include(user_urls)),
     url(r'^resource', include(resource_urls)),
