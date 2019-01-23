@@ -31,6 +31,7 @@ OSS_BUCKET_NAME = os.getenv('OSS_BUCKET_NAME')
 OSS_REGION = os.getenv('OSS_REGION', 'cn-hongkong')
 OSS_ENDPOINT = os.getenv('OSS_ENDPOINT')      # EndPoint（地域节点）
 OSS_ARN = os.getenv('OSS_ARN')      # Role Arn      https://ram.console.aliyun.com/roles
+OSS_CALLBACK_URL = os.getenv('OSS_CALLBACK_URL')
 
 
 def fetch_sts_token():
@@ -66,14 +67,56 @@ access_key, access_key_secret, security_token, request_id, expiration = fetch_st
 print(f'STS access_key: {access_key}, access_key_secret: {access_key_secret}')
 print(f'STS security_token: {security_token}, request_id: {request_id}, expiration: {expiration}')
 
-# 客户端使用临时授权
-auth = oss2.StsAuth(access_key, access_key_secret, security_token)
-# 创建Bucket对象，所有Object相关的接口都可以通过Bucket对象来进行
-bucket = oss2.Bucket(auth, OSS_ENDPOINT, OSS_BUCKET_NAME)
 
-# 上传一段字符串。Object名是motto.txt，内容是一段名言。
-bucket.put_object('motto.txt', 'Never give up. - Jack Ma')
-# 下载到本地文件
-# bucket.get_object_to_file('motto.txt', '本地座右铭.txt')
-# 删除名为motto.txt的Object
-# bucket.delete_object('motto.txt')
+def upload(access_key, access_key_secret, security_token):
+    # 客户端使用临时授权
+    auth = oss2.StsAuth(access_key, access_key_secret, security_token)
+    # 创建Bucket对象，所有Object相关的接口都可以通过Bucket对象来进行
+    bucket = oss2.Bucket(auth, OSS_ENDPOINT, OSS_BUCKET_NAME)
+
+    # 上传一段字符串。Object名是motto.txt，内容是一段名言。
+    bucket.put_object('motto.txt', 'Never give up. - Jack Ma')
+    # 下载到本地文件
+    # bucket.get_object_to_file('motto.txt', '本地座右铭.txt')
+    # 删除名为motto.txt的Object
+    # bucket.delete_object('motto.txt')
+
+
+def upload_and_callback(access_key, access_key_secret, security_token):
+    # 方式1: 非临时授权
+    # auth = oss2.Auth(access_key, access_key_secret)
+    # bucket = oss2.Bucket(auth, OSS_ENDPOINT, OSS_BUCKET_NAME)
+
+    # 方式2: 客户端临时授权
+    auth = oss2.StsAuth(access_key, access_key_secret, security_token)
+    # 创建Bucket对象，所有Object相关的接口都可以通过Bucket对象来进行
+    bucket = oss2.Bucket(auth, OSS_ENDPOINT, OSS_BUCKET_NAME)
+
+    # 准备回调参数，更详细的信息请参考 https://help.aliyun.com/document_detail/31989.html
+    callback_dict = {
+        'callbackUrl': f'{OSS_CALLBACK_URL}/debug',
+        # 'callbackHost': 'oss-cn-hangzhou.aliyuncs.com',
+
+        # 'callbackBodyType': 'application/x-www-form-urlencoded',
+        # 'callbackBody': 'object=${object}&size=${size}&mimeType=${mimeType}',
+
+        'callbackBodyType': 'application/json',
+        'callbackBody': '''{"bucket": ${bucket}, "object": ${object}, "etag": ${etag}, "size": ${size}}''',   # key
+    }
+    # 回调参数是json格式，并且base64编码
+    callback_param = json.dumps(callback_dict).strip()
+    base64_callback_body = oss2.utils.b64encode_as_string(callback_param)
+
+    # 回调参数编码后放在header中传给oss
+    # 方式1: 通过消息头中的 x-oss-callback，携带回调参数。这种方式比较常用，推荐该方式；
+    headers = {'x-oss-callback': base64_callback_body}
+    # 方式2: 通过QueryString的 callback，携带回调参数。
+    pass
+
+    # 上传
+    key = 'file/quote.txt'
+    response = bucket.put_object(key, "Anything you're good at contributes to happiness.", headers)
+    print(f'api server response: ', response.resp.read())
+
+
+upload_and_callback(access_key, access_key_secret, security_token)
