@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import json
 import os
 # 第三方库
@@ -28,7 +29,7 @@ OSS_ACCESS_KEY = os.getenv('OSS_ACCESS_KEY')
 OSS_ACCESS_KEY_SECRET = os.getenv('OSS_ACCESS_KEY_SECRET')
 OSS_BUCKET_NAME = os.getenv('OSS_BUCKET_NAME')
 OSS_REGION = os.getenv('OSS_REGION', 'cn-hongkong')
-OSS_URL = os.getenv('OSS_URL')      # 你的访问域名
+OSS_ENDPOINT = os.getenv('OSS_ENDPOINT')      # EndPoint（地域节点）
 OSS_ARN = os.getenv('OSS_ARN')      # Role Arn      https://ram.console.aliyun.com/roles
 
 
@@ -38,12 +39,12 @@ def fetch_sts_token():
 
     req.set_accept_format('json')
     req.set_RoleArn(OSS_ARN)
-    req.set_RoleSessionName('oss-python-sdk-example')
+    req.set_RoleSessionName('rethink-backend')
 
     body = clt.do_action_with_exception(req)
 
     j = json.loads(oss2.to_unicode(body))
-    print(j)
+    print('body:', j)
 
     """
     AssumeRole返回的临时用户密钥
@@ -62,20 +63,17 @@ def fetch_sts_token():
 
 
 access_key, access_key_secret, security_token, request_id, expiration = fetch_sts_token()
-print(access_key, access_key_secret, security_token, request_id, expiration)
+print(f'STS access_key: {access_key}, access_key_secret: {access_key_secret}')
+print(f'STS security_token: {security_token}, request_id: {request_id}, expiration: {expiration}')
 
 # 客户端使用临时授权
 auth = oss2.StsAuth(access_key, access_key_secret, security_token)
 # 创建Bucket对象，所有Object相关的接口都可以通过Bucket对象来进行
-bucket = oss2.Bucket(auth, OSS_URL, OSS_BUCKET_NAME)
+bucket = oss2.Bucket(auth, OSS_ENDPOINT, OSS_BUCKET_NAME)
 
-
-def test_api():
-    # 上传一段字符串。Object名是motto.txt，内容是一段名言。
-    bucket.put_object('motto.txt', 'Never give up. - Jack Ma')
-
-    # 下载到本地文件
-    bucket.get_object_to_file('motto.txt', '本地座右铭.txt')
-
-    # 删除名为motto.txt的Object
-    bucket.delete_object('motto.txt')
+# 上传一段字符串。Object名是motto.txt，内容是一段名言。
+bucket.put_object('motto.txt', 'Never give up. - Jack Ma')
+# 下载到本地文件
+# bucket.get_object_to_file('motto.txt', '本地座右铭.txt')
+# 删除名为motto.txt的Object
+# bucket.delete_object('motto.txt')
