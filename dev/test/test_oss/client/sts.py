@@ -96,12 +96,12 @@ def upload_and_callback(access_key_id, access_key_secret, security_token):
     }
     # 回调参数是json格式，并且base64编码
     callback_param = json.dumps(callback_dict).strip()
-    base64_callback_body = oss2.utils.b64encode_as_string(callback_param)
+    x_oss_callback = oss2.utils.b64encode_as_string(callback_param)
 
     # 参考:  https://yq.aliyun.com/articles/68863
     # 方式1: 回调参数放在消息头中的 x-oss-callback。这种方式比较常用，推荐该方式；
-    headers = {'x-oss-callback': base64_callback_body}
-    # 方式2: 通过QueryString的 callback，携带回调参数。
+    headers = {'x-oss-callback': x_oss_callback}
+    # 方式2: 通过 QueryString 中的参数callback携带回调参数. (例如callback=x_oss_callback).。
     pass
 
     # 方式1: 非临时授权
