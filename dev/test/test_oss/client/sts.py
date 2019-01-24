@@ -83,15 +83,6 @@ def upload(access_key, access_key_secret, security_token):
 
 
 def upload_and_callback(access_key, access_key_secret, security_token):
-    # 方式1: 非临时授权
-    # auth = oss2.Auth(access_key, access_key_secret)
-    # bucket = oss2.Bucket(auth, OSS_ENDPOINT, OSS_BUCKET_NAME)
-
-    # 方式2: 客户端临时授权
-    auth = oss2.StsAuth(access_key, access_key_secret, security_token)
-    # 创建Bucket对象，所有Object相关的接口都可以通过Bucket对象来进行
-    bucket = oss2.Bucket(auth, OSS_ENDPOINT, OSS_BUCKET_NAME)
-
     # 准备回调参数，更详细的信息请参考 https://help.aliyun.com/document_detail/31989.html
     callback_dict = {
         'callbackUrl': f'{OSS_CALLBACK_URL}/debug',
@@ -112,6 +103,15 @@ def upload_and_callback(access_key, access_key_secret, security_token):
     headers = {'x-oss-callback': base64_callback_body}
     # 方式2: 通过QueryString的 callback，携带回调参数。
     pass
+
+    # 方式1: 非临时授权
+    # auth = oss2.Auth(access_key, access_key_secret)
+    # bucket = oss2.Bucket(auth, OSS_ENDPOINT, OSS_BUCKET_NAME)
+
+    # 方式2: 客户端临时授权
+    auth = oss2.StsAuth(access_key, access_key_secret, security_token)
+    # 创建Bucket对象，所有Object相关的接口都可以通过Bucket对象来进行
+    bucket = oss2.Bucket(auth, OSS_ENDPOINT, OSS_BUCKET_NAME)
 
     # 上传
     key = 'file/quote.txt'
