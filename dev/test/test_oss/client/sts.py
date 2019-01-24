@@ -101,14 +101,14 @@ def upload_and_callback(access_key, access_key_secret, security_token):
         # 'callbackBody': 'object=${object}&size=${size}&mimeType=${mimeType}',
 
         'callbackBodyType': 'application/json',
-        'callbackBody': '''{"bucket": ${bucket}, "object": ${object}, "etag": ${etag}, "size": ${size}}''',   # key
+        'callbackBody': '''{"bucket": ${bucket}, "object": ${object}, "etag": ${etag}, "size": ${size}}''',
     }
     # 回调参数是json格式，并且base64编码
     callback_param = json.dumps(callback_dict).strip()
     base64_callback_body = oss2.utils.b64encode_as_string(callback_param)
 
-    # 回调参数编码后放在header中传给oss
-    # 方式1: 通过消息头中的 x-oss-callback，携带回调参数。这种方式比较常用，推荐该方式；
+    # 参考:  https://yq.aliyun.com/articles/68863
+    # 方式1: 回调参数放在消息头中的 x-oss-callback。这种方式比较常用，推荐该方式；
     headers = {'x-oss-callback': base64_callback_body}
     # 方式2: 通过QueryString的 callback，携带回调参数。
     pass
