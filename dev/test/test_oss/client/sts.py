@@ -73,7 +73,9 @@ def fetch_sts_token(key, oss_access_key_id, oss_access_key_secret, oss_arn, oss_
 def upload_and_callback(key, access_key_id, access_key_secret, security_token, x_oss_callback, oss_endpoint, oss_bucket_name):
     # 参考:  https://yq.aliyun.com/articles/68863
     # 方式1: 回调参数放在消息头中的 x-oss-callback。这种方式比较常用，推荐该方式；
-    headers = {'x-oss-callback': x_oss_callback}
+    headers = {}
+    if x_oss_callback:
+        headers['x-oss-callback'] = x_oss_callback
     # 方式2: 通过 QueryString 中的参数callback携带回调参数. (例如callback=x_oss_callback).。
     pass
 
