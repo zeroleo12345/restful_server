@@ -21,11 +21,11 @@ import oss2
 #   https://oss-cn-hangzhou.aliyuncs.com
 # 分别以HTTP、HTTPS协议访问。
 """
-:param OSS_ACCESS_KEY: 子用户的 access key id
+:param OSS_ACCESS_KEY_ID: 子用户的 access key id
 :param OSS_ACCESS_KEY_SECRET: 子用户的 access key secret
 :param OSS_ARN: STS角色的Arn
 """
-OSS_ACCESS_KEY = os.getenv('OSS_ACCESS_KEY')
+OSS_ACCESS_KEY_ID = os.getenv('OSS_ACCESS_KEY_ID')
 OSS_ACCESS_KEY_SECRET = os.getenv('OSS_ACCESS_KEY_SECRET')
 OSS_BUCKET_NAME = os.getenv('OSS_BUCKET_NAME')
 OSS_REGION = os.getenv('OSS_REGION', 'cn-hongkong')
@@ -35,7 +35,7 @@ OSS_CALLBACK_URL = os.getenv('OSS_CALLBACK_URL')
 
 
 def fetch_sts_token():
-    clt = client.AcsClient(OSS_ACCESS_KEY, OSS_ACCESS_KEY_SECRET, OSS_REGION)
+    clt = client.AcsClient(OSS_ACCESS_KEY_ID, OSS_ACCESS_KEY_SECRET, OSS_REGION)
     req = AssumeRoleRequest.AssumeRoleRequest()
 
     req.set_accept_format('json')
@@ -49,28 +49,28 @@ def fetch_sts_token():
 
     """
     AssumeRole返回的临时用户密钥
-    :str OSS_ACCESS_KEY: 临时用户的access key id
+    :str access_key_id: 临时用户的access key id
     :str access_key_secret: 临时用户的access key secret
     :int expiration: 过期时间，UNIX时间，自1970年1月1日UTC零点的秒数
     :str security_token: 临时用户Token
     :str request_id: 请求ID
     """
-    access_key = j['Credentials']['AccessKeyId']
+    access_key_id = j['Credentials']['AccessKeyId']
     access_key_secret = j['Credentials']['AccessKeySecret']
     security_token = j['Credentials']['SecurityToken']
     request_id = j['RequestId']
     expiration = oss2.utils.to_unixtime(j['Credentials']['Expiration'], '%Y-%m-%dT%H:%M:%SZ')
-    return access_key, access_key_secret, security_token, request_id, expiration
+    return access_key_id, access_key_secret, security_token, request_id, expiration
 
 
-access_key, access_key_secret, security_token, request_id, expiration = fetch_sts_token()
-print(f'STS access_key: {access_key}, access_key_secret: {access_key_secret}')
+access_key_id, access_key_secret, security_token, request_id, expiration = fetch_sts_token()
+print(f'STS access_key_id: {access_key_id}, access_key_secret: {access_key_secret}')
 print(f'STS security_token: {security_token}, request_id: {request_id}, expiration: {expiration}')
 
 
-def upload(access_key, access_key_secret, security_token):
+def upload(access_key_id, access_key_secret, security_token):
     # 客户端使用临时授权
-    auth = oss2.StsAuth(access_key, access_key_secret, security_token)
+    auth = oss2.StsAuth(access_key_id, access_key_secret, security_token)
     # 创建Bucket对象，所有Object相关的接口都可以通过Bucket对象来进行
     bucket = oss2.Bucket(auth, OSS_ENDPOINT, OSS_BUCKET_NAME)
 
@@ -82,7 +82,7 @@ def upload(access_key, access_key_secret, security_token):
     # bucket.delete_object('motto.txt')
 
 
-def upload_and_callback(access_key, access_key_secret, security_token):
+def upload_and_callback(access_key_id, access_key_secret, security_token):
     # 准备回调参数，更详细的信息请参考 https://help.aliyun.com/document_detail/31989.html
     callback_dict = {
         'callbackUrl': f'{OSS_CALLBACK_URL}/debug',
@@ -105,11 +105,11 @@ def upload_and_callback(access_key, access_key_secret, security_token):
     pass
 
     # 方式1: 非临时授权
-    # auth = oss2.Auth(access_key, access_key_secret)
+    # auth = oss2.Auth(access_key_id, access_key_secret)
     # bucket = oss2.Bucket(auth, OSS_ENDPOINT, OSS_BUCKET_NAME)
 
     # 方式2: 客户端临时授权
-    auth = oss2.StsAuth(access_key, access_key_secret, security_token)
+    auth = oss2.StsAuth(access_key_id, access_key_secret, security_token)
     # 创建Bucket对象，所有Object相关的接口都可以通过Bucket对象来进行
     bucket = oss2.Bucket(auth, OSS_ENDPOINT, OSS_BUCKET_NAME)
 
@@ -119,4 +119,4 @@ def upload_and_callback(access_key, access_key_secret, security_token):
     print(f'api server response: ', response.resp.read())
 
 
-upload_and_callback(access_key, access_key_secret, security_token)
+upload_and_callback(access_key_id, access_key_secret, security_token)
