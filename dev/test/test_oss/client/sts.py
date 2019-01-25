@@ -127,4 +127,10 @@ if __name__ == "__main__":
     print(f'STS access_key_id: {access_key_id}, access_key_secret: {access_key_secret}')
     print(f'STS security_token: {security_token}, request_id: {request_id}, expiration: {expiration}')
 
+    # KEY = data['key']
+    # access_key_id = data['access_key_id']
+    # access_key_secret = data['access_key_secret']
+    # security_token = data['security_token']
+    # x_oss_callback = data['x_oss_callback']
+    # from pprint import pprint; import pdb; pdb.set_trace()
     upload_and_callback(KEY, access_key_id, access_key_secret, security_token, x_oss_callback, OSS_ENDPOINT, OSS_BUCKET_NAME)
