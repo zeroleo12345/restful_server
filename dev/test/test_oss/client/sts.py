@@ -89,7 +89,8 @@ def upload_and_callback(key, access_key_id, access_key_secret, security_token, x
 
     # 上传
     response = bucket.put_object(key, "Anything you're good at contributes to happiness.", headers)
-    print(f'api server response: ', response.resp.read())
+    print(f'response: ', response.resp.read())
+    print(f'json: ', response.resp.response.json())
 
 
 def upload(access_key_id, access_key_secret, security_token, oss_endpoint, oss_bucket_name):
