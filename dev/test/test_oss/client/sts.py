@@ -40,16 +40,15 @@ def get_x_oss_callback(oss_callback_url):
 
 
 def fetch_sts_token(key, oss_access_key_id, oss_access_key_secret, oss_arn, oss_bucket_name, oss_region):
-    clt = client.AcsClient(oss_access_key_id, oss_access_key_secret, oss_region)
-    req = AssumeRoleRequest.AssumeRoleRequest()
-
-    req.set_accept_format('json')
-    req.set_RoleArn(oss_arn)
-    req.set_RoleSessionName('rethink-backend')
+    role = AssumeRoleRequest.AssumeRoleRequest()
+    role.set_accept_format('json')
+    role.set_RoleArn(oss_arn)
+    role.set_RoleSessionName('rethink-backend')
     resource = f'["acs:oss:*:*:{oss_bucket_name}/{key}"]'
-    req.set_Policy('{"Statement": [ { "Action": [ "oss:*" ], "Effect": "Allow", "Resource": ' + resource + ' } ], "Version": "1" }')
+    role.set_Policy('{"Statement": [ { "Action": [ "oss:*" ], "Effect": "Allow", "Resource": ' + resource + ' } ], "Version": "1" }')
 
-    body = clt.do_action_with_exception(req)
+    clt = client.AcsClient(oss_access_key_id, oss_access_key_secret, oss_region)
+    body = clt.do_action_with_exception(role)
 
     j = json.loads(oss2.to_unicode(body))
     print('body:', j)
