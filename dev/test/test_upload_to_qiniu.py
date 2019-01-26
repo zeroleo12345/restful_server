@@ -33,10 +33,10 @@ policy = {
     # 七牛回调服务端, 方式2
     'callbackUrl': f'{API_SERVER_URL}/debug',    # 上传成功后，七牛云向业务服务器发送 POST 请求的 URL
     'callbackBodyType': 'application/json',
-    'callbackBody': '''{"bucket": "${bucket}", "key": "$(key)", "hash": "$(etag)", "fname": "$(fname)", "fsize": "$(fsize)", "endUser": "$(endUser)"}''',
+    'callbackBody': '''{"bucket": "$(bucket)", "key": "$(key)", "etag": "$(etag)", "fname": "$(fname)", "fsize": "$(fsize)", "endUser": "$(endUser)"}''',
 
     # 返回给客户端的内容格式
-    # 'returnBody': '''{"bucket": "${bucket}", "key": "$(key)", "hash": "$(etag)", "fname": "$(fname)", "fsize": "$(fsize)", "endUser": "$(endUser)"}''',
+    # 'returnBody': '''{"bucket": "$(bucket)", "key": "$(key)", "etag": "$(etag)", "fname": "$(fname)", "fsize": "$(fsize)", "endUser": "$(endUser)"}''',
 }
 token = q.upload_token(bucket, key=key, expires=3600, policy=policy)
 print('token: ', token)
@@ -51,4 +51,4 @@ print('ret:', ret)
 print('info:', info)
 if info.ok():
     assert ret['key'] == key
-    assert ret['hash'] == etag(file_path)
+    assert ret['etag'] == etag(file_path)
