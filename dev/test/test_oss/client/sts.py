@@ -24,7 +24,7 @@ import oss2
 def get_x_oss_callback(oss_callback_url):
     # 准备回调参数，更详细的信息请参考 https://help.aliyun.com/document_detail/31989.html
     callback_dict = {
-        'callbackUrl': f'{oss_callback_url}/debug',
+        'callbackUrl': f'{oss_callback_url}',
         # 'callbackHost': 'oss-cn-hangzhou.aliyuncs.com',
 
         # 'callbackBodyType': 'application/x-www-form-urlencoded',
