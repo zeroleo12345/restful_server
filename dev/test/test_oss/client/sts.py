@@ -45,7 +45,8 @@ def fetch_sts_token(key, oss_access_key_id, oss_access_key_secret, oss_arn, oss_
     role.set_RoleArn(oss_arn)
     role.set_RoleSessionName('rethink-backend')
     resource = f'["acs:oss:*:*:{oss_bucket_name}/{key}"]'
-    role.set_Policy('{"Statement": [ { "Action": [ "oss:*" ], "Effect": "Allow", "Resource": ' + resource + ' } ], "Version": "1" }')
+    policy = '{"Statement": [ { "Action": [ "oss:*" ], "Effect": "Allow", "Resource": %s} ], "Version": "1" }' % (resource,)
+    role.set_Policy(policy)
 
     clt = client.AcsClient(oss_access_key_id, oss_access_key_secret, oss_region)
     body = clt.do_action_with_exception(role)
