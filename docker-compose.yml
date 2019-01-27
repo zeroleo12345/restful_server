@@ -60,6 +60,14 @@ services:
       - pppoe_system
 
 
+  postgres:
+    container_name: restful_server_postgres
+    image: postgres:10.6
+    ports:
+      - "55555:5432"    # 用于sequel pro连接
+    networks:
+      - pppoe_system
+
   mysql:
     container_name: restful_server_mysql
     image: mysql:5.7

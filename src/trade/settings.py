@@ -112,7 +112,7 @@ WSGI_APPLICATION = 'trade.wsgi.application'
 DATABASES = {
     'default': {
         **dj_database_url.parse(config("DATABASE_URI")),
-        **{'TIME_ZONE': TIME_ZONE}
+        # **{'TIME_ZONE': TIME_ZONE}
     },
 }
 CACHES = {
