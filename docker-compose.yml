@@ -60,8 +60,8 @@ services:
       - pppoe_system
 
 
-  postgres:
-    container_name: restful_server_postgres
+  postgresql:
+    container_name: restful_server_postgresql
     image: postgres:10.6
     ports:
       - "55555:5432"    # 用于sequel pro连接
