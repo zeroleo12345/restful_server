@@ -63,6 +63,10 @@ services:
   postgresql:
     container_name: restful_server_postgresql
     image: postgres:10.6
+    environment:
+      POSTGRES_USER: 'root'
+      POSTGRES_PASSWORD: 'root'
+      POSTGRES_DB: 'trade'
     ports:
       - "55555:5432"    # 用于sequel pro连接
     networks:
