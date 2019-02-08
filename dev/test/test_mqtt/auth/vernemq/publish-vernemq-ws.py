@@ -17,7 +17,7 @@ headers = {
 # 方法1(推荐):
 client = mqtt.Client(client_id=client_id, transport=transport)
 client.username_pw_set(username=username, password=password)
-client.ws_set_options(path="/mqtt", headers=headers)
+# client.ws_set_options(path="/mqtt", headers=headers)
 client.connect(hostname, port, 60)
 client.publish(topic=topic, payload=payload, qos=qos)
 
