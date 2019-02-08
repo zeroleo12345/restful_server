@@ -4,10 +4,16 @@ from urllib.parse import urlparse
 hostname = "127.0.0.1"
 transport, port = 'websockets', 8083
 topic = 'emqtt'
+qos = 0
 payload = 'Hello, EMQ!'
 client_id = ''
 username = 'user1'
 password = 'password'
+# Host header needs to be set, port is not included in signed host header so should not be included here.
+# No idea what it defaults to but whatever that it seems to be wrong.
+headers = {
+    "Host": hostname,
+}
 
 
 # The callback for when the client receives a CONNACK response from the server.
@@ -15,19 +21,13 @@ def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
     # Subscribing in on_connect() means that if we lose the connection and reconnect then subscriptions will be renewed.
     # client.subscribe("$SYS/#")
-    client.subscribe(topic=topic, qos=0)
+    client.subscribe(topic=topic, qos=qos)
 
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     print(msg.topic+" "+str(msg.payload))
 
-
-# Host header needs to be set, port is not included in signed host header so should not be included here.
-# No idea what it defaults to but whatever that it seems to be wrong.
-headers = {
-        "Host": hostname,
-}
 
 client = mqtt.Client(client_id=client_id, transport=transport)
 client.on_connect = on_connect
