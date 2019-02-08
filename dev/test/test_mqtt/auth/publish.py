@@ -5,7 +5,19 @@ import paho.mqtt.client as mqtt
 
 def Usage():
     print("""
-    python ./{0} -hostname 127.0.0.1 -port 8080 -transport websockets -topic emqtt -qos 0 -payload 'Hello World' -client_id 'client_id2' -username user2 -password password
+VerneMQ:
+  websocket:
+      python ./{0} -hostname 127.0.0.1 -port 8080 -transport websockets -client_id client_publisher -username publisher -password password -topic emqtt -qos 0 -payload HelloWorld
+      
+  tcp:
+      python ./{0} -hostname 127.0.0.1 -port 1883 -transport tcp -client_id client_publisher -username publisher -password password -topic emqtt -qos 0 -payload HelloWorld
+      
+Emqx:
+  websocket:
+      python ./{0} -hostname 127.0.0.1 -port 8083 -transport websockets -client_id '' -username publisher -password password -topic emqtt -qos 0 -payload HelloWorld
+      
+  tcp:
+      python ./{0} -hostname 127.0.0.1 -port 1883 -transport tcp -client_id '' -username publisher -password password -topic emqtt -qos 0 -payload HelloWorld
     """.format(__file__))
 
 
@@ -26,23 +38,22 @@ def init_args():
 
 
 def main(args):
-    headers = {
-        "Host": args.hostname,
-    }
-    # 方法1(推荐):
+    """
+    # 方法1(不推荐, 需要pdb停顿才能发送出去, 暂未定位到原因):
     client = mqtt.Client(client_id=args.client_id, transport=args.transport)
     client.username_pw_set(username=args.username, password=args.password)
     # client.ws_set_options(path="/mqtt", headers=headers)
     client.connect(args.hostname, args.port, 60)
     client.publish(topic=args.topic, payload=args.payload, qos=args.qos)
+    """
 
     # 方法2:
-    # auth = {'username': args.username, 'password': args.password}
-    # publish.single(
-    #     args.topic, payload=args.payload, qos=args.qos, hostname=args.hostname,
-    #     port=args.port, args.client_id=args.client_id, auth=auth,
-    #     transport=args.transport
-    # )
+    auth = {'username': args.username, 'password': args.password}
+    publish.single(
+        args.topic, payload=args.payload, qos=args.qos, hostname=args.hostname,
+        port=args.port, client_id=args.client_id, auth=auth,
+        transport=args.transport
+    )
 
 
 if __name__=="__main__":
