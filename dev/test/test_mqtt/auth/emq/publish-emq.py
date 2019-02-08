@@ -5,7 +5,6 @@ hostname = '127.0.0.1'
 transport, port = 'tcp', 1883
 topic = 'emqtt'
 payload = 'Hello, EMQ!'
-# client_id = 'client_id2'
 client_id = ''
 username = 'user2'
 password = 'password'
@@ -17,4 +16,8 @@ password = 'password'
 # client.publish(topic, payload=payload, qos=0)
 
 auth = {'username': username, 'password': password}
-publish.single(topic, payload=payload, qos=0, client_id=client_id, hostname=hostname, auth=auth)
+publish.single(
+    topic, payload=payload, qos=0, hostname=hostname,
+    port=port, client_id=client_id, auth=auth,
+    transport=transport
+)

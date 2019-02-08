@@ -5,7 +5,6 @@ hostname = "127.0.0.1"
 transport, port = 'websockets', 8083
 topic = 'emqtt'
 payload = 'Hello, EMQ!'
-# client_id = 'client_id1'
 client_id = ''
 username = 'user1'
 password = 'password'

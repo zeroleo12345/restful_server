@@ -9,6 +9,7 @@ client_id = 'client_id2'
 username = 'user2'
 password = 'password'
 
+
 # client = mqtt.Client(client_id='test-client')
 # client.username_pw_set(username=username, password=password)
 # client.connect(hostname, 1883, 60)
