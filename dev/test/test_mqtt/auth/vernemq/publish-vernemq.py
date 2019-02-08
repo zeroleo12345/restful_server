@@ -4,6 +4,7 @@ import paho.mqtt.client as mqtt
 hostname = '127.0.0.1'
 transport, port = 'tcp', 1883
 topic = 'emqtt'
+qos = 0
 payload = 'Hello, EMQ!'
 client_id = 'client_id2'
 username = 'user2'
