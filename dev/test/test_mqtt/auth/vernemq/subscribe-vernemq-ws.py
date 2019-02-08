@@ -2,7 +2,7 @@ import paho.mqtt.client as mqtt
 from urllib.parse import urlparse
 
 hostname = "127.0.0.1"
-transport, port = 'websockets', 8083
+transport, port = 'websockets', 8080
 topic = 'emqtt'
 payload = 'Hello, EMQ!'
 client_id = 'client_id1'
