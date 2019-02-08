@@ -2,7 +2,7 @@ import sys
 import paho.mqtt.client as mqtt
 
 
-def Usage():
+def help():
     print("""
 VerneMQ:
   websocket:
@@ -32,7 +32,7 @@ def init_args():
     parser.add_argument('-client_id', metavar='<client_id>', type=str, dest='client_id')
     parser.add_argument('-username', metavar='<username>', type=str, dest='username')
     parser.add_argument('-password', metavar='<password>', type=str, dest='password')
-    parser.print_help = Usage
+    parser.print_help = help
     return parser.parse_args()
 
 
@@ -67,6 +67,6 @@ def main(args):
 
 if __name__=="__main__":
     if len(sys.argv) == 1:
-        Usage(), sys.exit()
+        help(), sys.exit()
     args = init_args()
     main(args)
