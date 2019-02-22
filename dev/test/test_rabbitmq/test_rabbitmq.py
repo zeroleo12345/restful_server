@@ -204,16 +204,20 @@ def test_exchange_topic_get(connection, channel, persistent_properties):
 
 def help():
     print("""
+# 队列
 python ./{0} -function test_queue_send -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
 python ./{0} -function test_queue_get -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
 python ./{0} -function test_queue_get_nonblock -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
 
+# 广播
 python ./{0} -function test_exchange_fanout_send -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
 python ./{0} -function test_exchange_fanout_get -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
 
+# 路由
 python ./{0} -function test_exchange_direct_send -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
 python ./{0} -function test_exchange_direct_get -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
 
+# 模糊路由
 python ./{0} -function test_exchange_topic_send -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
 python ./{0} -function test_exchange_topic_get -routings "#" -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
 python ./{0} -function test_exchange_topic_get -routings "happy.*" -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
