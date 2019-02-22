@@ -44,6 +44,7 @@ def main(args):
     client.username_pw_set(username=args.username, password=args.password)
     # client.ws_set_options(path="/mqtt", headers=headers)
     client.connect(args.hostname, args.port, 60)
+    # client.loop_start()
     client.publish(topic=args.topic, payload=args.payload, qos=args.qos)
     """
 
