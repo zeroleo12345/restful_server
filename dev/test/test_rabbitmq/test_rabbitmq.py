@@ -169,13 +169,13 @@ def test_exchange_topic_get(connection, channel, persistent_properties):
         关心所有topic, routing key = '#'
     """
     # 定义交换机，设置类型为topic
-    concern_exchange = 'ProcIdle' # 'exchange_topic'
+    concern_exchange = 'ProcIdle'   # 'exchange_topic'
     channel.exchange_declare(exchange=concern_exchange, exchange_type='topic', durable=False)
     # channel.exchange_declare(exchange='messages_fanout', exchange_type='fanout', passive=False, durable=False, auto_delete=False) # 同时也关注广播!
     # 从命令行获取路由参数，如果没有，则报错退出
     routings = sys.argv[1:]
     if not routings:
-        print("Usage: %s [routing_key]..." % ( sys.argv[0], ))
+        print("Usage: %s [routing_key]..." % (sys.argv[0], ))
         exit()
     # 生成临时队列(不会触发持久化)
     result = channel.queue_declare(exclusive=True) # 声明创建队列
@@ -204,27 +204,29 @@ def test_exchange_topic_get(connection, channel, persistent_properties):
 
 def help():
     print("""
-python ./{0} test_queue_send
-python ./{0} test_queue_get
-python ./{0} test_queue_get_nonblock
+python ./{0} -function test_queue_send -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
+python ./{0} -function test_queue_get -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
+python ./{0} -function test_queue_get_nonblock -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
 
-python ./{0} test_exchange_fanout_send
-python ./{0} test_exchange_fanout_get
+python ./{0} -function test_exchange_fanout_send -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
+python ./{0} -function test_exchange_fanout_get -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
 
-python ./{0} test_exchange_direct_send
-python ./{0} test_exchange_direct_get
+python ./{0} -function test_exchange_direct_send -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
+python ./{0} -function test_exchange_direct_get -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
 
-python ./{0} test_exchange_topic_send
-python ./{0} test_exchange_topic_get "#"
-python ./{0} test_exchange_topic_get "happy.*"
-python ./{0} test_exchange_topic_get "*.work"
+python ./{0} -function test_exchange_topic_send -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
+python ./{0} -function test_exchange_topic_get -routings "#" -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
+python ./{0} -function test_exchange_topic_get -routings "happy.*" -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
+python ./{0} -function test_exchange_topic_get -routings "*.work" -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
     """.format(os.path.basename(__file__)))
 
 
 def main(args):
-    credentials = pika.PlainCredentials('guest', 'guest')
+    credentials = pika.PlainCredentials(args.username, args.password)
     # 貌似超过3倍heartbeat time才会超时, 断开链接. (并不是完全是), 默认值为60
-    parameters = pika.ConnectionParameters(host='localhost', port=5672, virtual_host='/', credentials=credentials, heartbeat_interval=60)
+    parameters = pika.ConnectionParameters(
+        host=args.host, port=args.port, virtual_host=args.virtual_host, credentials=credentials, heartbeat_interval=60
+    )
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
     persistent_properties = pika.BasicProperties(delivery_mode=2)
@@ -234,11 +236,13 @@ def main(args):
 def init_args():
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('-hostname', metavar='<hostname>', type=str, dest='hostname')
-    parser.add_argument('-port', metavar='<port>', type=int, dest='port')
     parser.add_argument('-function', metavar='<function>', type=str, dest='function')
+    parser.add_argument('-host', metavar='<host>', type=str, dest='host')
+    parser.add_argument('-port', metavar='<port>', type=int, dest='port')
     parser.add_argument('-username', metavar='<username>', type=str, dest='username')
     parser.add_argument('-password', metavar='<password>', type=str, dest='password')
+    parser.add_argument('-virtual_host', metavar='<virtual_host>', type=str, dest='virtual_host')
+    parser.add_argument('-routings', metavar='<routings>', type=list, nargs='+', dest='routings')
     return parser.parse_args()
 
 

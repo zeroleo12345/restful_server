@@ -6,24 +6,24 @@ def help():
     print("""
 VerneMQ:
   websocket:
-      python ./{0} -hostname 127.0.0.1 -port 8080 -transport websockets -client_id client_subscriber -username subscriber -password password -topic emqtt -qos 0 -payload HelloWorld
+      python ./{0} -host 127.0.0.1 -port 8080 -transport websockets -client_id client_subscriber -username subscriber -password password -topic emqtt -qos 0 -payload HelloWorld
       
   tcp:
-      python ./{0} -hostname 127.0.0.1 -port 1883 -transport tcp -client_id client_subscriber -username subscriber -password password -topic emqtt -qos 0 -payload HelloWorld
+      python ./{0} -host 127.0.0.1 -port 1883 -transport tcp -client_id client_subscriber -username subscriber -password password -topic emqtt -qos 0 -payload HelloWorld
       
 Emqx:
   websocket:
-      python ./{0} -hostname 127.0.0.1 -port 8083 -transport websockets -client_id '' -username subscriber -password password -topic emqtt -qos 0 -payload HelloWorld
+      python ./{0} -host 127.0.0.1 -port 8083 -transport websockets -client_id '' -username subscriber -password password -topic emqtt -qos 0 -payload HelloWorld
       
   tcp:
-      python ./{0} -hostname 127.0.0.1 -port 1883 -transport tcp -client_id '' -username subscriber -password password -topic emqtt -qos 0 -payload HelloWorld
+      python ./{0} -host 127.0.0.1 -port 1883 -transport tcp -client_id '' -username subscriber -password password -topic emqtt -qos 0 -payload HelloWorld
     """.format(__file__))
 
 
 def init_args():
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('-hostname', metavar='<hostname>', type=str, dest='hostname')
+    parser.add_argument('-host', metavar='<host>', type=str, dest='host')
     parser.add_argument('-transport', choices=['tcp', 'websockets'], metavar='<transport>', type=str, dest='transport')
     parser.add_argument('-port', metavar='<port>', type=int, dest='port')
     parser.add_argument('-topic', metavar='<topic>', type=str, dest='topic')
@@ -51,14 +51,14 @@ def main(args):
     # Host header needs to be set, port is not included in signed host header so should not be included here.
     # No idea what it defaults to but whatever that it seems to be wrong.
     headers = {
-        "Host": args.hostname,
+        "Host": args.host,
     }
     client = mqtt.Client(client_id=args.client_id, transport=args.transport)
     client.on_connect = on_connect
     client.on_message = on_message
     client.username_pw_set(username=args.username, password=args.password)
     client.ws_set_options(path="/mqtt", headers=headers)
-    client.connect(args.hostname, args.port, 60)
+    client.connect(args.host, args.port, 60)
 
     # Blocking call that processes network traffic, dispatches callbacks and handles reconnecting.
     # Other loop*() functions are available that give a threaded interface and a manual interface.
