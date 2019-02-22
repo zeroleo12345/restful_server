@@ -24,7 +24,7 @@ def init_args():
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('-hostname', metavar='<hostname>', type=str, dest='hostname')
-    parser.add_argument('-transport', metavar='<transport>', type=str, dest='transport')
+    parser.add_argument('-transport', choices=['tcp', 'websockets'], metavar='<transport>', type=str, dest='transport')
     parser.add_argument('-port', metavar='<port>', type=int, dest='port')
     parser.add_argument('-topic', metavar='<topic>', type=str, dest='topic')
     parser.add_argument('-qos', metavar='<qos>', type=int, dest='qos')
@@ -32,7 +32,7 @@ def init_args():
     parser.add_argument('-client_id', metavar='<client_id>', type=str, dest='client_id')
     parser.add_argument('-username', metavar='<username>', type=str, dest='username')
     parser.add_argument('-password', metavar='<password>', type=str, dest='password')
-    parser.print_help = help
+    # parser.print_help = help
     return parser.parse_args()
 
 
