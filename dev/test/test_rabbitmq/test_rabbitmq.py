@@ -8,7 +8,7 @@ a) Exclusive:排他队列,如果一个队列被声明为排他队列,该队列�
     1. 排他队列是基于连接可见的,同一连接的不同信道是可以同时访问同一个连接创建的排他队列的.
     2. 如果一个连接已经声明了一个排他队列,其他连接是不允许建立同名的排他队列的,这个与普通队列不同.
     3. 即使该队列是持久化的,一旦连接关闭或者客户端退出,该排他队列都会被自动删除的.
-这种队列适用于只限于一个客户端发送读取消息的应用场景.
+    这种队列适用于只限于一个客户端发送读取消息的应用场景.
 b) Auto-delete:自动删除,如果该队列没有任何订阅的消费者的话,该队列会被自动删除.这种队列适用于临时队列.
 c) Durable:持久化,这个会在后面作为专门一个章节讨论.
 d) 如果用户仅想查询某一个队列是否已存在，不想建立该队列，仍然可以调用queue.declare, 
@@ -25,7 +25,7 @@ def test_queue_send(connection, channel, persistent_properties):
     queue_name = 'queue'
     channel.queue_declare(queue=queue_name, durable=False) # 声明创建队列
     channel.basic_publish( exchange='', routing_key=queue_name, body='Hello World!', properties=persistent_properties )
-    print(" [x] Sent 'Hello World!'")
+    print("[x] Sent 'Hello World!'")
     connection.close()
 
 
@@ -34,9 +34,9 @@ def test_queue_get(connection, channel, persistent_properties):
     channel.queue_declare(queue=queue_name, durable=False) # 声明创建队列
 
     def callback(ch, method, properties, body):
-        print(" [x] Received %r" % (body,))
+        print("[x] Received %r" % (body,))
     channel.basic_consume(callback, queue=queue_name, no_ack=True) # 读取queue消息
-    print(' [*] Waiting for messages. To exit press CTRL+C')
+    print('[*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
     connection.close()
 
@@ -73,7 +73,7 @@ def test_exchange_fanout_send(connection, channel, persistent_properties):
     if expiration: properties = pika.BasicProperties(expiration=str(expiration))
     else: properties = pika.BasicProperties()
     channel.basic_publish( exchange=target_exchange, routing_key='', body='Hello World!', properties=properties )
-    print(" [x] Sent Hello World!, expiration:{}".format(expiration))
+    print("[x] Sent Hello World!, expiration:{}".format(expiration))
     connection.close()
 
 
@@ -94,7 +94,7 @@ def test_exchange_fanout_get(connection, channel, persistent_properties):
     channel.queue_bind(exchange='messages_fanout3', queue=queue_name)
     
     def callback(ch, method, properties, body):
-        print(" [x] Received %r" % (body,))
+        print("[x] Received %r" % (body,))
     # 1. 阻塞读
     # channel.basic_consume(callback, queue=queue_name, no_ack=True) # 读取queue消息
     # 2. 非阻塞读
@@ -102,7 +102,7 @@ def test_exchange_fanout_get(connection, channel, persistent_properties):
         msg = channel.basic_get(queue=queue_name, no_ack=True) # 读取queue消息
         print('Recv msg:{}'.format(msg))
         time.sleep(1)
-    print(' [*] Waiting for messages. To exit press CTRL+C')
+    print('[*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
     connection.close()
 
@@ -139,10 +139,10 @@ def test_exchange_direct_get(connection, channel, persistent_properties):
         channel.queue_bind( exchange='exchange_direct', queue=queue_name, routing_key=routing_key )
     
     def callback(ch, method, properties, body):
-        print(" [x] Received %r" % (body,))
+        print("[x] Received %r" % (body,))
     
     channel.basic_consume(callback, queue=queue_name, no_ack=True) # 读取queue消息
-    print(' [*] Waiting for messages. To exit press CTRL+C')
+    print('[*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
     connection.close()
 
@@ -187,9 +187,11 @@ def test_exchange_topic_get(connection, channel, persistent_properties):
         print('concern routing_key:', routing_key)
         channel.queue_bind( exchange=concern_exchange, queue=queue_name, routing_key=routing_key )
     # channel.queue_bind( exchange='messages_fanout', queue=queue_name ) # 同时也关注广播!
+
     def callback(ch, method, properties, body):
         print(ch, method, properties, body)
-        # print(" [x] Received %r" % (body,))
+        # print("[x] Received %r" % (body,))
+
     # 1. 阻塞读
     # channel.basic_consume(callback, queue=queue_name, no_ack=True) # 读取queue消息
     # 2. 非阻塞读
@@ -197,7 +199,7 @@ def test_exchange_topic_get(connection, channel, persistent_properties):
         msg = channel.basic_get(queue=queue_name, no_ack=True) # 读取queue消息
         print('Recv msg:{}'.format(msg))
         time.sleep(1)
-    print(' [*] Waiting for messages. To exit press CTRL+C')
+    print('[*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
     connection.close()
 
