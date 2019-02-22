@@ -57,7 +57,7 @@ def main(args):
     )
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     if len(sys.argv) == 1:
         help(), sys.exit()
     args = init_args()

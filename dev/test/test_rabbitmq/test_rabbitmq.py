@@ -14,19 +14,14 @@ c) Durable:持久化,这个会在后面作为专门一个章节讨论.
 d) 如果用户仅想查询某一个队列是否已存在，不想建立该队列，仍然可以调用queue.declare, 
    只需将参数passive设为true,传给queue.declare,如果该队列已存在,则会返回true;如果不存在,则会返回Error,但是不会创建新的队列.
 """
+import sys
+import os
 import time
 import pika
 
-credentials = pika.PlainCredentials('guest', 'guest')
-# 貌似超过3倍heartbeat time才会超时, 断开链接. (并不是完全是), 默认值为60
-parameters = pika.ConnectionParameters(host='localhost', port=5672, virtual_host='/', credentials=credentials, heartbeat_interval=60)
-connection = pika.BlockingConnection( parameters )
-channel = connection.channel()
-persistent_properties = pika.BasicProperties(delivery_mode=2)
-
 
 # 1. 队列
-def test_queue_send():
+def test_queue_send(connection, channel, persistent_properties):
     queue_name = 'queue'
     channel.queue_declare(queue=queue_name, durable=False) # 声明创建队列
     channel.basic_publish( exchange='', routing_key=queue_name, body='Hello World!', properties=persistent_properties )
@@ -34,7 +29,7 @@ def test_queue_send():
     connection.close()
 
 
-def test_queue_get():
+def test_queue_get(connection, channel, persistent_properties):
     queue_name = 'queue'
     channel.queue_declare(queue=queue_name, durable=False) # 声明创建队列
 
@@ -48,7 +43,7 @@ def test_queue_get():
 
 # Recv msg: (<Basic.GetOk(['delivery_tag=2', 'exchange=', 'message_count=0', 'redelivered=False', 'routing_key=queue'])>, <BasicProperties(['delivery_mode=2'])>, 'Hello World!')
 # Recv msg: (None, None, None)
-def test_queue_get_nonblock():
+def test_queue_get_nonblock(connection, channel, persistent_properties):
     queue_name = 'queue'
     channel.queue_declare(queue=queue_name, durable=False) # 声明创建队列
     # 定义交换机
@@ -68,7 +63,7 @@ def test_queue_get_nonblock():
 
 
 # 2. 广播
-def test_exchange_fanout_send():
+def test_exchange_fanout_send(connection, channel, persistent_properties):
     # 定义交换机
     target_exchange = 'messages_fanout3'
     channel.exchange_declare(exchange=target_exchange, exchange_type='fanout', passive=False, durable=False, auto_delete=False)
@@ -82,7 +77,7 @@ def test_exchange_fanout_send():
     connection.close()
 
 
-def test_exchange_fanout_get():
+def test_exchange_fanout_get(connection, channel, persistent_properties):
     # 定义交换机
     channel.exchange_declare(exchange='messages_fanout1', exchange_type='fanout', passive=False, durable=False, auto_delete=False)
     channel.exchange_declare(exchange='messages_fanout2', exchange_type='fanout', passive=False, durable=False, auto_delete=False)
@@ -113,7 +108,7 @@ def test_exchange_fanout_get():
 
 
 # 3. 路由
-def test_exchange_direct_send():
+def test_exchange_direct_send(connection, channel, persistent_properties):
     # 定义交换机，设置类型为direct
     channel.exchange_declare(exchange='exchange_direct', exchange_type='direct', durable=False)
     # 定义三个路由键
@@ -126,7 +121,7 @@ def test_exchange_direct_send():
     connection.close()
 
 
-def test_exchange_direct_get():
+def test_exchange_direct_get(connection, channel, persistent_properties):
     # 定义交换机，设置类型为direct
     channel.exchange_declare(exchange='exchange_direct', exchange_type='direct', durable=False)
     # 从命令行获取路由键参数，如果没有，则设置为info
@@ -153,7 +148,7 @@ def test_exchange_direct_get():
 
 
 # 4. 模糊路由
-def test_exchange_topic_send():
+def test_exchange_topic_send(connection, channel, persistent_properties):
     # 定义交换机，设置类型为topic
     concern_exchange = 'ProcIdle' # 'exchange_topic'
     channel.exchange_declare(exchange=concern_exchange, exchange_type='topic', durable=False)
@@ -169,7 +164,7 @@ def test_exchange_topic_send():
     connection.close()
 
 
-def test_exchange_topic_get():
+def test_exchange_topic_get(connection, channel, persistent_properties):
     """
         关心所有topic, routing key = '#'
     """
@@ -207,28 +202,48 @@ def test_exchange_topic_get():
     connection.close()
 
 
+def help():
+    print("""
+python ./{0} test_queue_send
+python ./{0} test_queue_get
+python ./{0} test_queue_get_nonblock
+
+python ./{0} test_exchange_fanout_send
+python ./{0} test_exchange_fanout_get
+
+python ./{0} test_exchange_direct_send
+python ./{0} test_exchange_direct_get
+
+python ./{0} test_exchange_topic_send
+python ./{0} test_exchange_topic_get "#"
+python ./{0} test_exchange_topic_get "happy.*"
+python ./{0} test_exchange_topic_get "*.work"
+    """.format(os.path.basename(__file__)))
+
+
+def main(args):
+    credentials = pika.PlainCredentials('guest', 'guest')
+    # 貌似超过3倍heartbeat time才会超时, 断开链接. (并不是完全是), 默认值为60
+    parameters = pika.ConnectionParameters(host='localhost', port=5672, virtual_host='/', credentials=credentials, heartbeat_interval=60)
+    connection = pika.BlockingConnection(parameters)
+    channel = connection.channel()
+    persistent_properties = pika.BasicProperties(delivery_mode=2)
+    eval(args.function)(connection, channel, persistent_properties)
+
+
+def init_args():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-hostname', metavar='<hostname>', type=str, dest='hostname')
+    parser.add_argument('-port', metavar='<port>', type=int, dest='port')
+    parser.add_argument('-function', metavar='<function>', type=str, dest='function')
+    parser.add_argument('-username', metavar='<username>', type=str, dest='username')
+    parser.add_argument('-password', metavar='<password>', type=str, dest='password')
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    def Usage():
-        print(
-            u"""
-            python ./{0} test_queue_send
-            python ./{0} test_queue_get
-            python ./{0} test_queue_get_nonblock
-
-            python ./{0} test_exchange_fanout_send
-            python ./{0} test_exchange_fanout_get
-
-            python ./{0} test_exchange_direct_send
-            python ./{0} test_exchange_direct_get
-
-            python ./{0} test_exchange_topic_send
-            python ./{0} test_exchange_topic_get "#"
-            python ./{0} test_exchange_topic_get "happy.*"
-            python ./{0} test_exchange_topic_get "*.work"
-            """.format(os.path.basename(__file__))
-        )
-    import sys, os
-    if len(sys.argv) == 1: Usage(), sys.exit()
-    function = sys.argv[1]
-    del sys.argv[1]
-    eval(function)()
+    if len(sys.argv) == 1:
+        help(), sys.exit()
+    args = init_args()
+    main(args)
