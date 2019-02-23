@@ -24,7 +24,7 @@ import pika
 def test_queue_send(connection, channel, persistent_properties):
     queue_name = 'queue'
     channel.queue_declare(queue=queue_name, durable=False)  # 声明创建队列
-    channel.basic_publish( exchange='', routing_key=queue_name, body='Hello World!', properties=persistent_properties )
+    channel.basic_publish(exchange='', routing_key=queue_name, body='Hello World!', properties=persistent_properties)
     print("[x] Sent 'Hello World!'")
     connection.close()
 
@@ -51,7 +51,7 @@ def test_queue_get_nonblock(connection, channel, persistent_properties):
     # channel.exchange_declare(exchange='messages_fanout', exchange_type='fanout') # 同时也关注广播!
     # 绑定到交换机上
     # arguments={ "x-message-ttl":10 }
-    channel.queue_bind( exchange='messages_fanout', queue=queue_name )  # 同时也关注广播!
+    channel.queue_bind(exchange='messages_fanout', queue=queue_name)  # 同时也关注广播!
     i = 0
     while True:
         msg = channel.basic_get(queue=queue_name, no_ack=True)  # 读取queue消息
@@ -72,7 +72,7 @@ def test_exchange_fanout_send(connection, channel, persistent_properties):
     expiration = 3000   # 单位: 毫秒
     if expiration: properties = pika.BasicProperties(expiration=str(expiration))
     else: properties = pika.BasicProperties()
-    channel.basic_publish( exchange=target_exchange, routing_key='', body='Hello World!', properties=properties )
+    channel.basic_publish(exchange=target_exchange, routing_key='', body='Hello World!', properties=properties)
     print("[x] Sent Hello World!, expiration:{}".format(expiration))
     connection.close()
 
@@ -116,7 +116,7 @@ def test_exchange_direct_send(connection, channel, persistent_properties):
     # 将消息依次发送到交换机，并设置路由键
     for routing_key in routings:
         message = '%s message.' % routing_key
-        channel.basic_publish( exchange='exchange_direct', routing_key=routing_key, body=message, properties=persistent_properties )
+        channel.basic_publish(exchange='exchange_direct', routing_key=routing_key, body=message, properties=persistent_properties)
         print(message)
     connection.close()
 
@@ -136,7 +136,7 @@ def test_exchange_direct_get(connection, channel, persistent_properties):
     # queue_name = 'direct_queue'; channel.queue_declare(queue=queue_name, durable=False)
     for routing_key in routings:
         # 绑定到交换机上，设置路由键
-        channel.queue_bind( exchange='exchange_direct', queue=queue_name, routing_key=routing_key )
+        channel.queue_bind(exchange='exchange_direct', queue=queue_name, routing_key=routing_key)
     
     def callback(ch, method, properties, body):
         print("[x] Received %r" % (body,))
@@ -158,8 +158,8 @@ def test_exchange_topic_send(connection, channel, persistent_properties):
     # 将消息依次发送到交换机，并设定路由键
     for routing_key in routings:
         message = '%s message.' % routing_key
-        # channel.basic_publish( exchange='exchange_topic', routing_key=routing_key, body=message, properties=persistent_properties )
-        channel.basic_publish( exchange=concern_exchange, routing_key=routing_key, body=message )
+        # channel.basic_publish(exchange='exchange_topic', routing_key=routing_key, body=message, properties=persistent_properties)
+        channel.basic_publish(exchange=concern_exchange, routing_key=routing_key, body=message)
         print(message)
     connection.close()
 
@@ -185,8 +185,8 @@ def test_exchange_topic_get(connection, channel, persistent_properties):
     for routing_key in routings:
         # 绑定到交换机上，设置路由键
         print('concern routing_key:', routing_key)
-        channel.queue_bind( exchange=concern_exchange, queue=queue_name, routing_key=routing_key )
-    # channel.queue_bind( exchange='messages_fanout', queue=queue_name ) # 同时也关注广播!
+        channel.queue_bind(exchange=concern_exchange, queue=queue_name, routing_key=routing_key)
+    # channel.queue_bind(exchange='messages_fanout', queue=queue_name) # 同时也关注广播!
 
     def callback(ch, method, properties, body):
         print(ch, method, properties, body)
@@ -228,14 +228,15 @@ python ./{0} -function test_exchange_topic_get -routings "*.work" -host rabbitmq
 
 
 def main(args):
-    credentials = pika.PlainCredentials(args.username, args.password)
     # 貌似超过3倍heartbeat time才会超时, 断开链接. (并不是完全是), 默认值为60
     parameters = pika.ConnectionParameters(
-        host=args.host, port=args.port, virtual_host=args.virtual_host, credentials=credentials, heartbeat_interval=60
+        host=args.host, port=args.port, virtual_host=args.virtual_host,
+        credentials=pika.PlainCredentials(args.username, args.password),
+        heartbeat_interval=60
     )
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
-    persistent_properties = pika.BasicProperties(delivery_mode=2)
+    persistent_properties = pika.BasicProperties(delivery_mode=2)   # delivery_mode=2指明message为持久的
     eval(args.function)(connection, channel, persistent_properties)
 
 
