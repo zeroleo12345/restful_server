@@ -23,15 +23,15 @@ import pika
 # 1. 队列
 def test_queue_send(connection, channel, persistent_properties):
     queue_name = 'queue'
-    channel.queue_declare(queue=queue_name, durable=False) # 声明创建队列
+    channel.queue_declare(queue=queue_name, durable=False)  # 声明创建队列
     channel.basic_publish( exchange='', routing_key=queue_name, body='Hello World!', properties=persistent_properties )
     print("[x] Sent 'Hello World!'")
     connection.close()
 
 
-def test_queue_get(connection, channel, persistent_properties):
+def test_queue_get_blocking(connection, channel, persistent_properties):
     queue_name = 'queue'
-    channel.queue_declare(queue=queue_name, durable=False) # 声明创建队列
+    channel.queue_declare(queue=queue_name, durable=False)  # 声明创建队列
 
     def callback(ch, method, properties, body):
         print("[x] Received %r" % (body,))
@@ -45,16 +45,16 @@ def test_queue_get(connection, channel, persistent_properties):
 # Recv msg: (None, None, None)
 def test_queue_get_nonblock(connection, channel, persistent_properties):
     queue_name = 'queue'
-    channel.queue_declare(queue=queue_name, durable=False) # 声明创建队列
+    channel.queue_declare(queue=queue_name, durable=False)  # 声明创建队列
     # 定义交换机
     channel.exchange_declare(exchange='messages_fanout', exchange_type='fanout', passive=False, durable=False, auto_delete=False) # 同时也关注广播!
     # channel.exchange_declare(exchange='messages_fanout', exchange_type='fanout') # 同时也关注广播!
     # 绑定到交换机上
     # arguments={ "x-message-ttl":10 }
-    channel.queue_bind( exchange='messages_fanout', queue=queue_name ) # 同时也关注广播!
+    channel.queue_bind( exchange='messages_fanout', queue=queue_name )  # 同时也关注广播!
     i = 0
     while True:
-        msg = channel.basic_get(queue=queue_name, no_ack=True) # 读取queue消息
+        msg = channel.basic_get(queue=queue_name, no_ack=True)  # 读取queue消息
         print('Recv msg:{}'.format(msg))
         time.sleep(5)
         i+=1
@@ -69,7 +69,7 @@ def test_exchange_fanout_send(connection, channel, persistent_properties):
     channel.exchange_declare(exchange=target_exchange, exchange_type='fanout', passive=False, durable=False, auto_delete=False)
     # channel.exchange_declare(exchange='messages_fanout', exchange_type='fanout')
     # 将消息发送到交换机
-    expiration = 3000 # 单位: 毫秒
+    expiration = 3000   # 单位: 毫秒
     if expiration: properties = pika.BasicProperties(expiration=str(expiration))
     else: properties = pika.BasicProperties()
     channel.basic_publish( exchange=target_exchange, routing_key='', body='Hello World!', properties=properties )
@@ -99,7 +99,7 @@ def test_exchange_fanout_get(connection, channel, persistent_properties):
     # channel.basic_consume(callback, queue=queue_name, no_ack=True) # 读取queue消息
     # 2. 非阻塞读
     while True:
-        msg = channel.basic_get(queue=queue_name, no_ack=True) # 读取queue消息
+        msg = channel.basic_get(queue=queue_name, no_ack=True)  # 读取queue消息
         print('Recv msg:{}'.format(msg))
         time.sleep(1)
     print('[*] Waiting for messages. To exit press CTRL+C')
@@ -130,7 +130,7 @@ def test_exchange_direct_get(connection, channel, persistent_properties):
         routings = ['info']
     
     # 生成临时队列(不会触发持久化)
-    result = channel.queue_declare(exclusive=True) # 声明创建队列
+    result = channel.queue_declare(exclusive=True)  # 声明创建队列
     queue_name = result.method.queue
     # direct模式下多个消费者不能使用同一个队列
     # queue_name = 'direct_queue'; channel.queue_declare(queue=queue_name, durable=False)
@@ -150,7 +150,7 @@ def test_exchange_direct_get(connection, channel, persistent_properties):
 # 4. 模糊路由
 def test_exchange_topic_send(connection, channel, persistent_properties):
     # 定义交换机，设置类型为topic
-    concern_exchange = 'ProcIdle' # 'exchange_topic'
+    concern_exchange = 'ProcIdle'   # 'exchange_topic'
     channel.exchange_declare(exchange=concern_exchange, exchange_type='topic', durable=False)
     # 定义路由键
     routings = ['happy.work', 'happy.life', 'sad.work', 'sad.life', 'door_wxid_jy8batoqm0so12']
@@ -178,7 +178,7 @@ def test_exchange_topic_get(connection, channel, persistent_properties):
         print("Usage: %s [routing_key]..." % (sys.argv[0], ))
         exit()
     # 生成临时队列(不会触发持久化)
-    result = channel.queue_declare(exclusive=True) # 声明创建队列
+    result = channel.queue_declare(exclusive=True)  # 声明创建队列
     queue_name = result.method.queue
     # topic模式下多个消费者不能使用同一个队列
     # queue_name = 'topic_queue'; channel.queue_declare(queue=queue_name, durable=False)
@@ -196,7 +196,7 @@ def test_exchange_topic_get(connection, channel, persistent_properties):
     # channel.basic_consume(callback, queue=queue_name, no_ack=True) # 读取queue消息
     # 2. 非阻塞读
     while True:
-        msg = channel.basic_get(queue=queue_name, no_ack=True) # 读取queue消息
+        msg = channel.basic_get(queue=queue_name, no_ack=True)  # 读取queue消息
         print('Recv msg:{}'.format(msg))
         time.sleep(1)
     print('[*] Waiting for messages. To exit press CTRL+C')
@@ -208,7 +208,7 @@ def help():
     print("""
 # 队列
 python ./{0} -function test_queue_send -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
-python ./{0} -function test_queue_get -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
+python ./{0} -function test_queue_get_blocking -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
 python ./{0} -function test_queue_get_nonblock -host rabbitmq -port 5672 -username guest -password guest -virtual_host "/"
 
 # 广播
