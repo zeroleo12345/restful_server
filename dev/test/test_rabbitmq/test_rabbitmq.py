@@ -35,6 +35,7 @@ def test_queue_get_blocking(connection, channel, persistent_properties):
 
     def callback(ch, method, properties, body):
         print("[x] Received %r" % (body,))
+
     channel.basic_consume(callback, queue=queue_name, no_ack=True) # 读取queue消息
     print('[*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
@@ -95,6 +96,7 @@ def test_exchange_fanout_get(connection, channel, persistent_properties):
     
     def callback(ch, method, properties, body):
         print("[x] Received %r" % (body,))
+
     # 1. 阻塞读
     # channel.basic_consume(callback, queue=queue_name, no_ack=True) # 读取queue消息
     # 2. 非阻塞读
@@ -199,9 +201,10 @@ def test_exchange_topic_get(connection, channel, persistent_properties):
         msg = channel.basic_get(queue=queue_name, no_ack=True)  # 读取queue消息
         print('Recv msg:{}'.format(msg))
         time.sleep(1)
-    print('[*] Waiting for messages. To exit press CTRL+C')
-    channel.start_consuming()
-    connection.close()
+
+    # print('[*] Waiting for messages. To exit press CTRL+C')
+    # channel.start_consuming()
+    # connection.close()
 
 
 def help():
