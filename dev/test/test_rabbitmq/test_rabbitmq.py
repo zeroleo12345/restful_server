@@ -22,7 +22,7 @@ import pika
 
 # 1. 队列
 def test_queue_send(connection, channel, persistent_properties):
-    queue_name = 'queue'
+    queue_name = 'rethink_backend'
     channel.queue_declare(queue=queue_name, durable=False)  # 声明创建队列
     channel.basic_publish(exchange='', routing_key=queue_name, body='Hello World!', properties=persistent_properties)
     print("[x] Sent 'Hello World!'")
@@ -30,13 +30,13 @@ def test_queue_send(connection, channel, persistent_properties):
 
 
 def test_queue_get_blocking(connection, channel, persistent_properties):
-    queue_name = 'queue'
+    queue_name = 'rethink_backend'
     channel.queue_declare(queue=queue_name, durable=False)  # 声明创建队列
 
     def callback(ch, method, properties, body):
         print("[x] Received %r" % (body,))
 
-    channel.basic_consume(callback, queue=queue_name, no_ack=True) # 读取queue消息
+    channel.basic_consume(consumer_callback=callback, queue=queue_name, no_ack=True)    # 读取queue消息
     print('[*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
     connection.close()
@@ -45,7 +45,7 @@ def test_queue_get_blocking(connection, channel, persistent_properties):
 # Recv msg: (<Basic.GetOk(['delivery_tag=2', 'exchange=', 'message_count=0', 'redelivered=False', 'routing_key=queue'])>, <BasicProperties(['delivery_mode=2'])>, 'Hello World!')
 # Recv msg: (None, None, None)
 def test_queue_get_nonblock(connection, channel, persistent_properties):
-    queue_name = 'queue'
+    queue_name = 'rethink_backend'
     channel.queue_declare(queue=queue_name, durable=False)  # 声明创建队列
     # 定义交换机
     channel.exchange_declare(exchange='messages_fanout', exchange_type='fanout', passive=False, durable=False, auto_delete=False) # 同时也关注广播!
@@ -98,7 +98,7 @@ def test_exchange_fanout_get(connection, channel, persistent_properties):
         print("[x] Received %r" % (body,))
 
     # 1. 阻塞读
-    # channel.basic_consume(callback, queue=queue_name, no_ack=True) # 读取queue消息
+    # channel.basic_consume(consumer_callback=callback, queue=queue_name, no_ack=True) # 读取queue消息
     # 2. 非阻塞读
     while True:
         msg = channel.basic_get(queue=queue_name, no_ack=True)  # 读取queue消息
@@ -143,7 +143,7 @@ def test_exchange_direct_get(connection, channel, persistent_properties):
     def callback(ch, method, properties, body):
         print("[x] Received %r" % (body,))
     
-    channel.basic_consume(callback, queue=queue_name, no_ack=True) # 读取queue消息
+    channel.basic_consume(consumer_callback=callback, queue=queue_name, no_ack=True) # 读取queue消息
     print('[*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
     connection.close()
@@ -195,7 +195,7 @@ def test_exchange_topic_get(connection, channel, persistent_properties):
         # print("[x] Received %r" % (body,))
 
     # 1. 阻塞读
-    # channel.basic_consume(callback, queue=queue_name, no_ack=True) # 读取queue消息
+    # channel.basic_consume(consumer_callback=callback, queue=queue_name, no_ack=True) # 读取queue消息
     # 2. 非阻塞读
     while True:
         msg = channel.basic_get(queue=queue_name, no_ack=True)  # 读取queue消息
