@@ -1,6 +1,6 @@
 import sys
-import paho.mqtt.publish as publish
-import paho.mqtt.client as mqtt
+import paho.mqtt.publish as mqtt_publish
+import paho.mqtt.client as mqtt_client
 
 
 def help():
@@ -56,20 +56,22 @@ def main(args):
     headers = {
         "Host": args.host,
     }
-    client = mqtt.Client(client_id=args.client_id, transport=args.transport)
+    client = mqtt_client.Client(client_id=args.client_id, transport=args.transport)
     client.on_connect = on_connect
     client.on_message = on_message
     client.username_pw_set(username=args.username, password=args.password)
     client.ws_set_options(path="/mqtt", headers=headers)
     client.connect(args.host, args.port, 60)
     #
-    client.publish(topic=args.topic, payload=args.payload, qos=args.qos)
+    rc, mid = client.publish(topic=args.topic, payload=args.payload, qos=args.qos)
+    print(f'rc: {rc}, mid: {mid}')
+    assert rc == mqtt_client.MQTT_ERR_SUCCESS
     client.loop_forever()
     """
 
     # 方法2:
     auth = {'username': args.username, 'password': args.password}
-    publish.single(
+    mqtt_publish.single(
         args.topic, payload=args.payload, qos=args.qos, hostname=args.host,
         port=args.port, client_id=args.client_id, auth=auth,
         transport=args.transport
