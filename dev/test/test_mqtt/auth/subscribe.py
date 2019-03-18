@@ -53,7 +53,7 @@ def main(args):
     headers = {
         "Host": args.host,
     }
-    client = mqtt.Client(client_id=args.client_id, transport=args.transport)
+    client = mqtt.Client(client_id=args.client_id, clean_session=True, transport=args.transport)
     client.on_connect = on_connect
     client.on_message = on_message
     client.username_pw_set(username=args.username, password=args.password)
