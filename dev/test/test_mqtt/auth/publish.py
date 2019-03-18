@@ -40,12 +40,31 @@ def init_args():
 def main(args):
     """
     # 方法1(不推荐, 需要pdb停顿才能发送出去, 暂未定位到原因):
+    # The callback for when the client receives a CONNACK response from the server.
+    def on_connect(client, userdata, flags, rc):
+        print(f'Connected with result code {rc}')
+        # Subscribing in on_connect() means that if we lose the connection and reconnect then subscriptions will be renewed.
+        # client.subscribe("$SYS/#")
+        client.subscribe(topic=args.topic, qos=args.qos)
+
+    # The callback for when a PUBLISH message is received from the server.
+    def on_message(client, userdata, msg):
+        print(f'topic: {msg.topic}, payload: {msg.payload}')
+
+    # Host header needs to be set, port is not included in signed host header so should not be included here.
+    # No idea what it defaults to but whatever that it seems to be wrong.
+    headers = {
+        "Host": args.host,
+    }
     client = mqtt.Client(client_id=args.client_id, transport=args.transport)
+    client.on_connect = on_connect
+    client.on_message = on_message
     client.username_pw_set(username=args.username, password=args.password)
-    # client.ws_set_options(path="/mqtt", headers=headers)
+    client.ws_set_options(path="/mqtt", headers=headers)
     client.connect(args.host, args.port, 60)
-    # client.loop_start()
+    #
     client.publish(topic=args.topic, payload=args.payload, qos=args.qos)
+    client.loop_forever()
     """
 
     # 方法2:
