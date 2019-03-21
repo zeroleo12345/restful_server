@@ -121,7 +121,7 @@ if __name__ == "__main__":
     OSS_BUCKET_NAME = os.getenv('OSS_BUCKET_NAME')
     OSS_REGION = os.getenv('OSS_REGION')
     OSS_ENDPOINT = os.getenv('OSS_ENDPOINT')      # EndPoint（地域节点）
-    OSS_ARN = os.getenv('OSS_ARN')      # Role Arn      https://ram.console.aliyun.com/roles
+    OSS_ARN = os.getenv('OSS_ARN')      # Role Arn      https://ram.console.aliyun.com/roles   右上角
     OSS_CALLBACK_URL = os.getenv('OSS_CALLBACK_URL')
     KEY = 'file/quote.txt'
 
