@@ -1,3 +1,4 @@
+import json
 import sys
 import paho.mqtt.publish as mqtt_publish
 import paho.mqtt.client as mqtt_client
@@ -71,8 +72,12 @@ def main(args):
 
     # 方法2:
     auth = {'username': args.username, 'password': args.password}
+    payload = json.dumps({
+        'team_uuid': '0xuuid1',
+        'body': args.payload,
+    })
     mqtt_publish.single(
-        args.topic, payload=args.payload, qos=args.qos, hostname=args.host,
+        args.topic, payload=payload, qos=args.qos, hostname=args.host,
         port=args.port, client_id=args.client_id, auth=auth,
         transport=args.transport
     )

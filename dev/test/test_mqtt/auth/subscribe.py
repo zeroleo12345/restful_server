@@ -1,3 +1,4 @@
+import json
 import sys
 import paho.mqtt.client as mqtt
 
@@ -47,6 +48,8 @@ def main(args):
     # The callback for when a PUBLISH message is received from the server.
     def on_message(client, userdata, msg):
         print(f'topic: {msg.topic}, payload: {msg.payload}')
+        deserializer = json.loads(msg.payload)
+        print(f'deserializer: {deserializer}, type: {type(deserializer)}')
 
     # Host header needs to be set, port is not included in signed host header so should not be included here.
     # No idea what it defaults to but whatever that it seems to be wrong.
