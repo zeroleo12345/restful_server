@@ -51,18 +51,18 @@ class Mqtt(object):
         print(f'data published')
         pass
 
-    def __init__(self, args):
+    def __init__(self, host, port, username, password, client_id, transport):
         # Host header needs to be set, port is not included in signed host header so should not be included here.
         # No idea what it defaults to but whatever that it seems to be wrong.
-        self.client = mqtt_client.Client(client_id=args.client_id, transport=args.transport)
+        self.client = mqtt_client.Client(client_id=client_id, transport=transport)
         self.client.on_connect = self.on_connect
         self.client.on_publish = self.on_publish
-        self.client.username_pw_set(username=args.username, password=args.password)
+        self.client.username_pw_set(username=username, password=password)
         headers = {
-            "Host": args.host,
+            "Host": host,
         }
         self.client.ws_set_options(path="/mqtt", headers=headers)
-        self.client.connect(args.host, args.port, keepalive=60)
+        self.client.connect(host, port, keepalive=60)
         self.client.loop_start()
         # self.client.max_inflight_messages_set(1)
         # self.client.max_queued_messages_set(1)
@@ -93,7 +93,7 @@ class Mqtt(object):
 
 
 def main(args):
-    mqtt = Mqtt(args)
+    mqtt = Mqtt(args.host, args.port, args.username, args.password, args.client_id, args.transport)
     mqtt.publish(payload=args.payload)
     """
     # 方法2:
