@@ -39,15 +39,13 @@ def init_args():
     return parser.parse_args()
 
 
-g_is_connect = False
-
-
 class Mqtt(object):
+    is_connect = False
+
     # The callback for when the client receives a CONNACK response from the server.
     def on_connect(self, client, userdata, flags, rc):
         print(f'Connected with result code {rc}')
-        global g_is_connect
-        g_is_connect = True
+        self.is_connect = True
 
     def on_publish(self, client, userdata, result):
         print(f'data published')
@@ -69,10 +67,10 @@ class Mqtt(object):
         # self.client.max_inflight_messages_set(1)
         # self.client.max_queued_messages_set(1)
         for i in range(30):
-            if g_is_connect:
+            if self.is_connect:
                 break
             time.sleep(0.1)
-        if not g_is_connect:
+        if not self.is_connect:
             print(f'not connect!')
             exit()
 
