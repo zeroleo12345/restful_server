@@ -53,13 +53,13 @@ def main(args):
 
     # Host header needs to be set, port is not included in signed host header so should not be included here.
     # No idea what it defaults to but whatever that it seems to be wrong.
-    headers = {
-        "Host": args.host,
-    }
     client = mqtt.Client(client_id=args.client_id, clean_session=True, transport=args.transport)
     client.on_connect = on_connect
     client.on_message = on_message
     client.username_pw_set(username=args.username, password=args.password)
+    headers = {
+        "Host": args.host,
+    }
     client.ws_set_options(path="/mqtt", headers=headers)
     client.connect(args.host, args.port, 60)
 
