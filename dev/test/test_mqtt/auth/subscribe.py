@@ -61,7 +61,7 @@ def main(args):
         "Host": args.host,
     }
     client.ws_set_options(path="/mqtt", headers=headers)
-    client.connect(args.host, args.port, 60)
+    client.connect(args.host, args.port, keepalive=60)
 
     # Blocking call that processes network traffic, dispatches callbacks and handles reconnecting.
     # Other loop*() functions are available that give a threaded interface and a manual interface.
