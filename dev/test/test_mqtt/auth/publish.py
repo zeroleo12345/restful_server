@@ -65,8 +65,8 @@ def main(args):
     client.ws_set_options(path="/mqtt", headers=headers)
     client.connect(args.host, args.port, keepalive=60)
     client.loop_start()
-    client.max_inflight_messages_set(1)
-    client.max_queued_messages_set(1)
+    # client.max_inflight_messages_set(1)
+    # client.max_queued_messages_set(1)
     #
     payload = json.dumps({
         'team_uuid': '0xuuid1',
