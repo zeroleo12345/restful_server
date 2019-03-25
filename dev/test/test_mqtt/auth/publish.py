@@ -42,54 +42,61 @@ def init_args():
 g_is_connect = False
 
 
-def main(args):
+class Mqtt(object):
     # The callback for when the client receives a CONNACK response from the server.
-    def on_connect(client, userdata, flags, rc):
+    def on_connect(self, client, userdata, flags, rc):
         print(f'Connected with result code {rc}')
         global g_is_connect
         g_is_connect = True
 
-    def on_publish(client, userdata, result):
+    def on_publish(self, client, userdata, result):
         print(f'data published')
         pass
 
-    # Host header needs to be set, port is not included in signed host header so should not be included here.
-    # No idea what it defaults to but whatever that it seems to be wrong.
-    client = mqtt_client.Client(client_id=args.client_id, transport=args.transport)
-    client.on_connect = on_connect
-    client.on_publish = on_publish
-    client.username_pw_set(username=args.username, password=args.password)
-    headers = {
-        "Host": args.host,
-    }
-    client.ws_set_options(path="/mqtt", headers=headers)
-    client.connect(args.host, args.port, keepalive=60)
-    client.loop_start()
-    # client.max_inflight_messages_set(1)
-    # client.max_queued_messages_set(1)
-    #
-    payload = json.dumps({
-        'team_uuid': '0xuuid1',
-        'body': args.payload,
-    })
-    for i in range(10):
-        if g_is_connect:
-            break
-        time.sleep(0.1)
-    if not g_is_connect:
-        print(f'not connect!')
-        exit()
-    for i in range(1):
-        ret = client.publish(topic=args.topic, payload=payload, qos=args.qos)
+    def __init__(self, args):
+        # Host header needs to be set, port is not included in signed host header so should not be included here.
+        # No idea what it defaults to but whatever that it seems to be wrong.
+        self.client = mqtt_client.Client(client_id=args.client_id, transport=args.transport)
+        self.client.on_connect = self.on_connect
+        self.client.on_publish = self.on_publish
+        self.client.username_pw_set(username=args.username, password=args.password)
+        headers = {
+            "Host": args.host,
+        }
+        self.client.ws_set_options(path="/mqtt", headers=headers)
+        self.client.connect(args.host, args.port, keepalive=60)
+        self.client.loop_start()
+        # self.client.max_inflight_messages_set(1)
+        # self.client.max_queued_messages_set(1)
+        for i in range(30):
+            if g_is_connect:
+                break
+            time.sleep(0.1)
+        if not g_is_connect:
+            print(f'not connect!')
+            exit()
+
+    def publish(self, payload):
+        payload = json.dumps({
+            'team_uuid': '0xuuid1',
+            'body': payload,
+        })
+        ret = self.client.publish(topic=args.topic, payload=payload, qos=args.qos)
         print(f'rc: {ret.rc}, mid: {ret.mid}')
         is_published = ret.is_published()
         if not is_published:
             ret.wait_for_publish()
-        # print(f'is_published: {ret.is_published()}')
+        print(f'is_published: {ret.is_published()}')
         assert ret.rc == mqtt_client.MQTT_ERR_SUCCESS
-    # client.loop_stop()
-    client.disconnect()
 
+    def disconnect(self):
+        self.client.loop_stop()
+        self.client.disconnect()
+
+
+def main(args):
+    mqtt = Mqtt(args)
+    mqtt.publish(payload=args.payload)
     """
     # 方法2:
     auth = {'username': args.username, 'password': args.password}
