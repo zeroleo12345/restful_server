@@ -81,11 +81,9 @@ class Mqtt(object):
         })
         ret = self.client.publish(topic=topic, payload=payload, qos=qos)
         print(f'rc: {ret.rc}, mid: {ret.mid}')
-        is_published = ret.is_published()
-        if not is_published:
-            ret.wait_for_publish()
+        ret.wait_for_publish()
         print(f'is_published: {ret.is_published()}')
-        assert ret.rc == mqtt_client.MQTT_ERR_SUCCESS
+        # assert ret.rc == mqtt_client.MQTT_ERR_SUCCESS
 
     def disconnect(self):
         self.client.loop_stop()
