@@ -1,8 +1,8 @@
 import time
 import json
 import sys
-import paho.mqtt.publish as mqtt_publish
-import paho.mqtt.client as mqtt_client
+import paho.mqtt.publish as paho_mqtt_publish
+import paho.mqtt.client as paho_mqtt_client
 
 
 def help():
@@ -68,7 +68,7 @@ class Mqtt(object):
     def connect(self):
         # Host header needs to be set, port is not included in signed host header so should not be included here.
         # No idea what it defaults to but whatever that it seems to be wrong.
-        self._client = mqtt_client.Client(client_id=self.client_id, transport=self.transport)
+        self._client = paho_mqtt_client.Client(client_id=self.client_id, transport=self.transport)
         self._client.on_connect = self.on_connect
         self._client.on_disconnect = self.on_disconnect
         self._client.on_publish = self.on_publish
@@ -94,7 +94,7 @@ class Mqtt(object):
         # print(f'rc: {ret.rc}, mid: {ret.mid}')
         # ret.wait_for_publish()
         # print(f'is_published: {ret.is_published()}')
-        # assert ret.rc == mqtt_client.MQTT_ERR_SUCCESS
+        # assert ret.rc == paho_mqtt_client.MQTT_ERR_SUCCESS
 
     def disconnect(self):
         self._client.loop_stop()
@@ -118,7 +118,7 @@ def main(args):
         'team_uuid': '0xuuid1',
         'body': args.payload,
     })
-    mqtt_publish.single(
+    paho_mqtt_publish.single(
         args.topic, payload=payload, qos=args.qos, hostname=args.host,
         port=args.port, client_id=args.client_id, auth=auth,
         transport=args.transport
