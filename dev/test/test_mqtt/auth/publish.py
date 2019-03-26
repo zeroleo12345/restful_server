@@ -41,31 +41,46 @@ def init_args():
 
 class Mqtt(object):
     is_connect = False
+    _client = None
 
-    # The callback for when the client receives a CONNACK response from the server.
     def on_connect(self, client, userdata, flags, rc):
-        print(f'Connected with result code {rc}')
+        # The callback for when the client receives a CONNACK response from the server.
+        print(f'mqtt client connected, result code {rc}')
         self.is_connect = True
 
     def on_publish(self, client, userdata, result):
-        print(f'data published')
-        pass
+        print('data published')
+
+    def on_disconnect(self, client, userdata, rc):
+        print('mqtt client disconnect')
+        self.disconnect()
+        self.connect()
 
     def __init__(self, host, port, username, password, client_id, transport):
+        self.host = host
+        self.port = port
+        self.username = username
+        self.password = password
+        self.client_id = client_id
+        self.transport = transport
+        self.connect()
+
+    def connect(self):
         # Host header needs to be set, port is not included in signed host header so should not be included here.
         # No idea what it defaults to but whatever that it seems to be wrong.
-        self.client = mqtt_client.Client(client_id=client_id, transport=transport)
-        self.client.on_connect = self.on_connect
-        self.client.on_publish = self.on_publish
-        self.client.username_pw_set(username=username, password=password)
+        self._client = mqtt_client.Client(client_id=self.client_id, transport=self.transport)
+        self._client.on_connect = self.on_connect
+        self._client.on_disconnect = self.on_disconnect
+        self._client.on_publish = self.on_publish
+        self._client.username_pw_set(username=self.username, password=self.password)
         headers = {
-            "Host": host,
+            "Host": self.host,
         }
-        self.client.ws_set_options(path="/mqtt", headers=headers)
-        self.client.connect(host, port, keepalive=60)
-        self.client.loop_start()
-        # self.client.max_inflight_messages_set(1)
-        # self.client.max_queued_messages_set(1)
+        self._client.ws_set_options(path="/mqtt", headers=headers)
+        self._client.connect(self.host, self.port, keepalive=60)
+        self._client.loop_start()
+        # self._client.max_inflight_messages_set(1)
+        # self._client.max_queued_messages_set(1)
         for i in range(30):
             if self.is_connect:
                 break
@@ -79,20 +94,23 @@ class Mqtt(object):
             'team_uuid': '0xuuid1',
             'body': payload,
         })
-        ret = self.client.publish(topic=topic, payload=payload, qos=qos)
-        print(f'rc: {ret.rc}, mid: {ret.mid}')
-        ret.wait_for_publish()
-        print(f'is_published: {ret.is_published()}')
+        ret = self._client.publish(topic=topic, payload=payload, qos=qos)
+        # print(f'rc: {ret.rc}, mid: {ret.mid}')
+        # ret.wait_for_publish()
+        # print(f'is_published: {ret.is_published()}')
         # assert ret.rc == mqtt_client.MQTT_ERR_SUCCESS
 
     def disconnect(self):
-        self.client.loop_stop()
-        self.client.disconnect()
+        self._client.loop_stop()
+        self._client.disconnect()
 
 
 def main(args):
+    # """
     mqtt = Mqtt(args.host, args.port, args.username, args.password, args.client_id, args.transport)
-    mqtt.publish(topic=args.topic, payload=args.payload, qos=args.qos)
+    for i in range(3):
+        mqtt.publish(topic=args.topic, payload=args.payload, qos=args.qos)
+        time.sleep(70)
     """
     # 方法2:
     auth = {'username': args.username, 'password': args.password}
