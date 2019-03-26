@@ -90,10 +90,6 @@ class Mqtt(object):
             exit()
 
     def publish(self, topic, payload, qos=0):
-        payload = json.dumps({
-            'team_uuid': '0xuuid1',
-            'body': payload,
-        })
         ret = self._client.publish(topic=topic, payload=payload, qos=qos)
         # print(f'rc: {ret.rc}, mid: {ret.mid}')
         # ret.wait_for_publish()
@@ -109,7 +105,11 @@ def main(args):
     # """
     mqtt = Mqtt(args.host, args.port, args.username, args.password, args.client_id, args.transport)
     for i in range(3):
-        mqtt.publish(topic=args.topic, payload=args.payload, qos=args.qos)
+        payload = json.dumps({
+            'team_uuid': '0xuuid1',
+            'body': args.payload,
+        })
+        mqtt.publish(topic=args.topic, payload=payload, qos=args.qos)
         time.sleep(70)
     """
     # 方法2:
