@@ -49,10 +49,10 @@ class Mqtt(object):
         self.is_connect = True
 
     def on_publish(self, client, userdata, result):
-        print('data published')
+        print(f'data published, client: {client}, userdata: {userdata}, result: {result}')
 
     def on_disconnect(self, client, userdata, rc):
-        print('mqtt client disconnect')
+        print(f'mqtt client disconnect, client: {client}, userdata: {userdata}, rc: {rc}')
         self.disconnect()
         self.connect()
 
@@ -104,13 +104,16 @@ class Mqtt(object):
 def main(args):
     # """
     mqtt = Mqtt(args.host, args.port, args.username, args.password, args.client_id, args.transport)
-    for i in range(3):
+    times = 3
+    for i in range(times):
         payload = json.dumps({
             'team_uuid': '0xuuid1',
             'body': args.payload,
         })
         mqtt.publish(topic=args.topic, payload=payload, qos=args.qos)
-        time.sleep(70)
+        if i == times:
+            break
+        time.sleep(5)
     """
     # 方法2:
     auth = {'username': args.username, 'password': args.password}
