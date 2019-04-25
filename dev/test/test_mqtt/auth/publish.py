@@ -9,10 +9,10 @@ def help():
     print("""
 VerneMQ:
   websocket:
-      python ./{0} -host 127.0.0.1 -port 8080 -transport websockets -client_id client_publisher -username publisher -password password -topic emqtt -qos 0 -payload HelloWorld
+      python ./{0} -host 127.0.0.1 -port 8080 -transport websockets -client_id publisher -username publisher -password password -topic emqtt -qos 0 -payload HelloWorld
       
   tcp:
-      python ./{0} -host 127.0.0.1 -port 1883 -transport tcp -client_id client_publisher -username publisher -password password -topic emqtt -qos 0 -payload HelloWorld
+      python ./{0} -host 127.0.0.1 -port 1883 -transport tcp -client_id publisher -username publisher -password password -topic emqtt -qos 0 -payload HelloWorld
       
 Emqx:
   websocket:
