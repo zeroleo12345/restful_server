@@ -53,8 +53,9 @@ class Mqtt(object):
 
     def on_disconnect(self, client, userdata, rc):
         print(f'mqtt client disconnect, client: {client}, userdata: {userdata}, rc: {rc}')
-        self.disconnect()
-        self.connect()
+        self._client.loop_stop()
+        self._client.disconnect()
+        self.is_connect = False
 
     def __init__(self, host, port, username, password, client_id, transport):
         self.host = host
@@ -95,10 +96,6 @@ class Mqtt(object):
         # ret.wait_for_publish()
         # print(f'is_published: {ret.is_published()}')
         # assert ret.rc == paho_mqtt_client.MQTT_ERR_SUCCESS
-
-    def disconnect(self):
-        self._client.loop_stop()
-        self._client.disconnect()
 
 
 def main(args):
