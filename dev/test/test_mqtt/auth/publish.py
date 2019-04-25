@@ -91,7 +91,7 @@ class Mqtt(object):
 
     def publish(self, topic, payload, qos=0):
         ret = self._client.publish(topic=topic, payload=payload, qos=qos)
-        # print(f'rc: {ret.rc}, mid: {ret.mid}')
+        print(f'rc: {ret.rc}, mid: {ret.mid}')
         # ret.wait_for_publish()
         # print(f'is_published: {ret.is_published()}')
         # assert ret.rc == paho_mqtt_client.MQTT_ERR_SUCCESS
