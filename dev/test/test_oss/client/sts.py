@@ -97,7 +97,7 @@ def upload_and_callback(key, access_key_id, access_key_secret, security_token, x
 
 def upload(access_key_id, access_key_secret, security_token, oss_endpoint, oss_bucket_name):
     # 客户端使用临时授权
-    auth = oss2.StsAuth(access_key_id, access_key_secret, security_token)
+    auth = oss2.StsAuth(access_key_id, access_key_secret, security_token)   # 非sts方式:  auth = oss2.Auth(OSS_ACCESS_KEY_ID, OSS_ACCESS_KEY_SECRET)
     # 创建Bucket对象，所有Object相关的接口都可以通过Bucket对象来进行
     bucket = oss2.Bucket(auth, oss_endpoint, oss_bucket_name)
 
