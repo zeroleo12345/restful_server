@@ -96,13 +96,14 @@ def upload_and_callback(key, access_key_id, access_key_secret, security_token, x
 
 
 def upload(access_key_id, access_key_secret, security_token, oss_endpoint, oss_bucket_name):
+    # 参考地址:    https://github.com/aliyun/aliyun-oss-python-sdk/blob/7735d6a728e2e3eaebbe814833b4883f6fe58bb1/examples/object_basic.py
     # 客户端使用临时授权
-    auth = oss2.StsAuth(access_key_id, access_key_secret, security_token)   # 非sts方式:  auth = oss2.Auth(OSS_ACCESS_KEY_ID, OSS_ACCESS_KEY_SECRET)
+    auth = oss2.StsAuth(access_key_id, access_key_secret, security_token)       # 非sts方式:  auth = oss2.Auth(OSS_ACCESS_KEY_ID, OSS_ACCESS_KEY_SECRET)
     # 创建Bucket对象，所有Object相关的接口都可以通过Bucket对象来进行
     bucket = oss2.Bucket(auth, oss_endpoint, oss_bucket_name)
 
     # 上传一段字符串。Object名是motto.txt，内容是一段名言。
-    bucket.put_object('motto.txt', 'Never give up. - Jack Ma')
+    bucket.put_object('motto.txt', 'Never give up. - Jack Ma')      # with open(oss2.to_unicode(file_path), 'rb') as f: bucket.put_object(key, f)
     # 下载到本地文件
     # bucket.get_object_to_file('motto.txt', '本地座右铭.txt')
     # 删除名为motto.txt的Object
