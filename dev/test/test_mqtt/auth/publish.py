@@ -42,6 +42,49 @@ def init_args():
 class Mqtt(object):
     is_connect = False
     _client = None
+    PUBLISH_MODE = 1
+    SUBSCRIBE_MODE = 2
+
+    def __init__(self, host, port, username, password, client_id, transport):
+        self.host = host
+        self.port = port
+        self.username = username
+        self.password = password
+        self.client_id = client_id
+        self.transport = transport
+
+    def connect(self):
+        # Host header needs to be set, port is not included in signed host header so should not be included here.
+        # No idea what it defaults to but whatever that it seems to be wrong.
+        self._client = paho_mqtt_client.Client(client_id=self.client_id, clean_session=True, transport=self.transport)
+        #
+        self._client.on_connect = self.on_connect
+        self._client.on_disconnect = self.on_disconnect
+        self._client.on_publish = self.on_publish
+        self._client.on_message = self.on_message
+        #
+        self._client.username_pw_set(username=self.username, password=self.password)
+        headers = {
+            "Host": self.host,
+        }
+        self._client.ws_set_options(path="/mqtt", headers=headers)
+        self._client.connect(self.host, self.port, keepalive=60)
+        # self._client.max_inflight_messages_set(1)
+        # self._client.max_queued_messages_set(1)
+
+    def loop(self, mode):
+        if mode == Mqtt.PUBLISH_MODE:
+            self._client.loop_start()
+        elif mode == Mqtt.SUBSCRIBE_MODE:
+            self._client.loop_forever()
+        #
+        for i in range(30):
+            if self.is_connect:
+                break
+            time.sleep(0.1)
+        if not self.is_connect:
+            print(f'not connect!')
+            exit()
 
     def on_connect(self, client, userdata, flags, rc):
         # The callback for when the client receives a CONNACK response from the server.
@@ -51,44 +94,17 @@ class Mqtt(object):
     def on_publish(self, client, userdata, result):
         print(f'data published, client: {client}, userdata: {userdata}, result: {result}')
 
+    def on_message(self, client, userdata, msg):
+        # The callback for when a PUBLISH message is received from the server.
+        print(f'topic: {msg.topic}, payload: {msg.payload}')
+        deserializer = json.loads(msg.payload)
+        print(f'deserializer: {deserializer}, type: {type(deserializer)}')
+
     def on_disconnect(self, client, userdata, rc):
         print(f'mqtt client disconnect, client: {client}, userdata: {userdata}, rc: {rc}')
         self._client.loop_stop()
         self._client.disconnect()
         self.is_connect = False
-
-    def __init__(self, host, port, username, password, client_id, transport):
-        self.host = host
-        self.port = port
-        self.username = username
-        self.password = password
-        self.client_id = client_id
-        self.transport = transport
-        self.connect()
-
-    def connect(self):
-        # Host header needs to be set, port is not included in signed host header so should not be included here.
-        # No idea what it defaults to but whatever that it seems to be wrong.
-        self._client = paho_mqtt_client.Client(client_id=self.client_id, transport=self.transport)
-        self._client.on_connect = self.on_connect
-        self._client.on_disconnect = self.on_disconnect
-        self._client.on_publish = self.on_publish
-        self._client.username_pw_set(username=self.username, password=self.password)
-        headers = {
-            "Host": self.host,
-        }
-        self._client.ws_set_options(path="/mqtt", headers=headers)
-        self._client.connect(self.host, self.port, keepalive=60)
-        self._client.loop_start()
-        # self._client.max_inflight_messages_set(1)
-        # self._client.max_queued_messages_set(1)
-        for i in range(30):
-            if self.is_connect:
-                break
-            time.sleep(0.1)
-        if not self.is_connect:
-            print(f'not connect!')
-            exit()
 
     def publish(self, topic, payload, qos=0):
         ret = self._client.publish(topic=topic, payload=payload, qos=qos)
@@ -97,17 +113,24 @@ class Mqtt(object):
         # print(f'is_published: {ret.is_published()}')
         # assert ret.rc == paho_mqtt_client.MQTT_ERR_SUCCESS
 
+    def subscribe(self, topic, qos=0):
+        self._client.subscribe(topic=topic, qos=qos)
+
 
 def main(args):
+    import json
     # """
     mqtt = Mqtt(args.host, args.port, args.username, args.password, args.client_id, args.transport)
-    times = 3
+    mqtt.connect()
+    mqtt.loop(mode=Mqtt.PUBLISH_MODE)
+    times = 1
     for i in range(times):
         payload = json.dumps({
             'team_uuid': '0xuuid1',
             'body': args.payload,
         })
         mqtt.publish(topic=args.topic, payload=payload, qos=args.qos)
+        print(f'publish, topic: {args.topic}, payload: {payload}, qos: {args.qos}')
         if i == times:
             break
         time.sleep(5)
