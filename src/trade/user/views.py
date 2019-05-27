@@ -50,7 +50,7 @@ class UserView(generics.RetrieveAPIView):
                 }
                 with transaction.atomic():
                     user = User.objects.create(**user_fields)   # create 返回 Model 实例
-                    Resource.objects.create(user)
+                    Resource.objects.create(user=user)
 
         self.request.user = user    # 用于Response时, 设置JsonWebToken
         return user
