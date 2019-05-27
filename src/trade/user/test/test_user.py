@@ -6,6 +6,7 @@ import pytest
 # 自己的库
 from trade.framework.unittest import get_user_and_token, UnitTestAPIClient
 from trade.utils.mp import MediaPlatform
+from trade.resource.factories import ResourceFactory
 
 MediaPlatform.create_mp_menu = MagicMock()
 
@@ -52,9 +53,10 @@ class TestUser:
         assert 'role' in res_dict['data']
         assert response.has_header('Authorization')
 
-    def test_user_resource_not_exist(self):
+    def test_user_resource_success(self):
         settings.DEBUG = True
         user, token = get_user_and_token()
+        ResourceFactory(user=user)
         client = UnitTestAPIClient(token=token)
         response = client.get('/resource')
         assert response.status_code == status.HTTP_200_OK
