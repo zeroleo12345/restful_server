@@ -1,6 +1,6 @@
 from rest_framework import generics
 from rest_framework import exceptions
-from django.db import models, transaction
+from django.db import transaction
 # 自己的库
 from trade.framework.authorization import JWTAuthentication
 from trade.user.models import User, Weixin
