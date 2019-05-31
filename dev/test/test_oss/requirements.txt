@@ -1,2 +1,0 @@
-oss2
-aliyun-python-sdk-sts
