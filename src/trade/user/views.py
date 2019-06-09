@@ -1,11 +1,14 @@
 from rest_framework import generics
 from rest_framework import exceptions
+from django.db import transaction
 # 自己的库
 from trade.framework.authorization import JWTAuthentication
-from trade.user.models import User
+from trade.user.models import User, Weixin
 from trade.user.serializer import UserWeixinSerializer, UserSyncSerializer
 from trade.user.validators import WeixinInfoValidator
 from trade.utils.mp import MediaPlatform
+from trade.utils.myrandom import MyRandom
+from trade.resource.models import Resource
 
 
 # /user 通过微信OAUTH接口, 获取微信用户信息
@@ -32,7 +35,22 @@ class UserView(generics.RetrieveAPIView):
             headimgurl = serializer.validated_data['headimgurl']
 
             # 获取用户信息, 不存在则创建
-            user = User.get_or_create_user(openid, nickname, headimgurl)
+            user = User.objects.filter(weixin__openid=openid).first()
+            if not user:
+                weixin_fields = {
+                    'openid': openid,
+                    'nickname': nickname,
+                    'headimgurl': headimgurl,
+                }
+                user_fields = {
+                    'weixin': Weixin.objects.create(**weixin_fields),
+                    'username': MyRandom.random_digit(length=8),
+                    'password': MyRandom.random_digit(length=8),
+                    'role': 'user',
+                }
+                with transaction.atomic():
+                    user = User.objects.create(**user_fields)   # create 返回 Model 实例
+                    Resource.objects.create(user=user)
 
         self.request.user = user    # 用于Response时, 设置JsonWebToken
         return user

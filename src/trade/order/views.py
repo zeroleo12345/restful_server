@@ -103,7 +103,7 @@ class OrderNotifyView(APIView):
 
         # 计算时长叠加
         user = order.user
-        resource, is_created = Resource.objects.get_or_create(user=user)
+        resource = Resource.objects.get(user=user)
         tariff = Tariff.attach_to_tariff(attach)
         before = resource.expired_at
         after = tariff.increase_duration(before)

@@ -13,5 +13,5 @@ class UserResourceView(generics.RetrieveAPIView):
 
     def get_object(self):
         user = self.request.user
-        resource, is_created = Resource.objects.get_or_create(user=user)
+        resource = Resource.objects.get(user=user)
         return resource
