@@ -56,11 +56,17 @@ class MediaPlatform(object):
         }
         """
         if not settings.ENVIRONMENT.is_production():
+            # 返回例子
             user_info = {
-                'province': '广东', 'openid': 'ovj3E0l9vffwBuqz_PNu25yL_is4',
+                'province': '广东',
+                'openid': 'ovj3E0l9vffwBuqz_PNu25yL_is4',
                 'headimgurl': 'http://wx.qlogo.cn/mmhead/Q3auHgzwzM7AianZsHE6LefhQuSmwibx4KZ9LYkRmIibrFKmSbAVjlpBg/0',
-                'language': 'zh_CN', 'city': '广州', 'country': '中国', 'sex': 1,
-                'privilege': [], 'nickname': '测试账号'
+                'language': 'zh_CN',
+                'city': '广州',
+                'country': '中国',
+                'sex': 1,
+                'privilege': [],
+                'nickname': '测试账号'
             }
             pass
             user_info['openid'] = code
