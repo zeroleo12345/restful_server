@@ -48,12 +48,6 @@ class WechatPlatform(object):
     @staticmethod
     def get_user_info_from_wechat(code):
         """ 使用code通过微信OAUTH2接口, 获取openid.  # http://www.cnblogs.com/txw1958/p/weixin76-user-info.html
-        fetch_access_token()函数返回:
-        {
-            'access_token': 'vX1lcBkeRY6WZUylVyZA9XPeoA92_15iBAXHHRtBD1dtbAtWe9e3i-DyHR9PBtP6L......',
-            'openid': 'ovj3E0l9vffwBuqz_PNu25yL_is4', 'expires_in': 7200,
-            'refresh_token': 'LSaCEeS8m-18_njiAN8Jm11V4QIeWxwOSsjEV9cM1ra5zkL......', 'scope': 'snsapi_userinfo'
-        }
         """
         if not settings.ENVIRONMENT.is_production():
             # 返回例子
@@ -75,5 +69,13 @@ class WechatPlatform(object):
         # TODO: access_token 针对每个用户2小时内有效. 服务端需主动获取用户信息时, 可重用access_token!
         # https://wohugb.gitbooks.io/wechat/content/qrconnent/refresh_token.html
         openid_access_token = WechatPlatform.OAUTH.fetch_access_token(code)
+        # fetch_access_token 函数返回:
+        # {
+        #     'access_token': 'vX1lcBkeRY6WZUylVyZA9XPeoA92_15iBAXHHRtBD1dtbAtWe9e3i-DyHR9PBtP6L',
+        #     'openid': 'ovj3E0l9vffwBuqz_PNu25yL_is4',
+        #     'expires_in': 7200,
+        #     'refresh_token': 'LSaCEeS8m-18_njiAN8Jm11V4QIeWxwOSsjEV9cM1ra5zkL',
+        #     'scope': 'snsapi_userinfo'
+        # }
         user_info = WechatPlatform.OAUTH.get_user_info(openid=openid_access_token['openid'], access_token=openid_access_token['access_token'])
         return user_info
