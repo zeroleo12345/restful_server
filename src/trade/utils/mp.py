@@ -72,7 +72,7 @@ class WechatPlatform(object):
             user_info['openid'] = code
             return user_info
 
-        # TODO: token 针对每个用户2小时内有效, 不需要每次都通过code获取新的token!!!
+        # TODO: access_token 针对每个用户2小时内有效. 服务端需主动获取用户信息时, 可重用access_token!
         # https://wohugb.gitbooks.io/wechat/content/qrconnent/refresh_token.html
         WechatPlatform.WECHAT_OAUTH.fetch_access_token(code)
         user_info = WechatPlatform.WECHAT_OAUTH.get_user_info()
