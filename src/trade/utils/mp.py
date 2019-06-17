@@ -9,14 +9,14 @@ from wechatpy.session.redisstorage import RedisStorage
 redis_client = get_redis_connection(alias='default')
 
 
-class MediaPlatform(object):
+class WechatPlatform(object):
     REDIRECT_URI = urljoin(settings.MP_WEB_URL, '')
-    WECHAT_CLIENT = WeChatClient(
+    CLIENT = WeChatClient(
         appid=settings.MP_APP_ID, secret=settings.MP_APP_SECRET, session=RedisStorage(redis_client, prefix="_wechatpy")
     )
 
+    # snsapi_base-不需授权; snsapi_userinfo-需授权
     WECHAT_OAUTH = WeChatOAuth(
-        # snsapi_base-不需授权; snsapi_userinfo-需授权
         app_id=settings.MP_APP_ID, secret=settings.MP_APP_SECRET, redirect_uri=REDIRECT_URI, scope='snsapi_userinfo',
         state='1'
     )
@@ -34,7 +34,7 @@ class MediaPlatform(object):
                     "name": '账号中心',
                     "type": 'view',
                     "url": f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}'
-                           f'&redirect_uri={MediaPlatform.REDIRECT_URI}&response_type=code&scope=snsapi_userinfo',
+                           f'&redirect_uri={WechatPlatform.REDIRECT_URI}&response_type=code&scope=snsapi_userinfo',
                 },
                 {
                     "name": '使用教程',
@@ -43,7 +43,7 @@ class MediaPlatform(object):
                 },
             ]
         }
-        MediaPlatform.WECHAT_CLIENT.menu.create(menu_data)
+        WechatPlatform.CLIENT.menu.create(menu_data)
 
     @staticmethod
     def get_user_info_from_wechat(code):
@@ -74,6 +74,6 @@ class MediaPlatform(object):
 
         # TODO: token 针对每个用户2小时内有效, 不需要每次都通过code获取新的token!!!
         # https://wohugb.gitbooks.io/wechat/content/qrconnent/refresh_token.html
-        MediaPlatform.WECHAT_OAUTH.fetch_access_token(code)
-        user_info = MediaPlatform.WECHAT_OAUTH.get_user_info()
+        WechatPlatform.WECHAT_OAUTH.fetch_access_token(code)
+        user_info = WechatPlatform.WECHAT_OAUTH.get_user_info()
         return user_info
