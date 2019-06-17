@@ -16,7 +16,7 @@ class WechatPlatform(object):
     )
 
     # snsapi_base-不需授权; snsapi_userinfo-需授权
-    WECHAT_OAUTH = WeChatOAuth(
+    OAUTH = WeChatOAuth(
         app_id=settings.MP_APP_ID, secret=settings.MP_APP_SECRET, redirect_uri=REDIRECT_URI, scope='snsapi_userinfo',
         state='1'
     )
@@ -74,6 +74,6 @@ class WechatPlatform(object):
 
         # TODO: access_token 针对每个用户2小时内有效. 服务端需主动获取用户信息时, 可重用access_token!
         # https://wohugb.gitbooks.io/wechat/content/qrconnent/refresh_token.html
-        WechatPlatform.WECHAT_OAUTH.fetch_access_token(code)
-        user_info = WechatPlatform.WECHAT_OAUTH.get_user_info()
+        openid_access_token = WechatPlatform.OAUTH.fetch_access_token(code)
+        user_info = WechatPlatform.OAUTH.get_user_info(openid=openid_access_token['openid'], access_token=openid_access_token['access_token'])
         return user_info
