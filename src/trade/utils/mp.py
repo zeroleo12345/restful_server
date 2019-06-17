@@ -16,6 +16,7 @@ class WechatPlatform(object):
     )
 
     # snsapi_base-不需授权; snsapi_userinfo-需授权
+    # state:  重定向后会带上此参数, 开发者可以填写a-zA-Z0-9的参数值，最多128字节
     OAUTH = WeChatOAuth(
         app_id=settings.MP_APP_ID, secret=settings.MP_APP_SECRET, redirect_uri=REDIRECT_URI, scope='snsapi_userinfo',
         state='1'
