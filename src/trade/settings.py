@@ -203,7 +203,7 @@ MP_APP_ID = config('MP_APP_ID')             # 开发者ID
 MP_APP_SECRET = config('MP_APP_SECRET')     # 开发者密码
 MP_TOKEN = config('MP_TOKEN')               # 令牌
 MP_AES_KEY = config('MP_AES_KEY')           # 消息加解密密钥
-MP_WEB_URL = config('MP_WEB_URL')           # 如: http://www.xxx.cn
+MP_WEB_URL = config('MP_WEB_URL')           # 如: http://www.xxx.com
 
 # 微信商户平台配置
 MP_MERCHANT_ID = config('MP_MERCHANT_ID')   # 商户号
