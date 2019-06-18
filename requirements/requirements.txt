@@ -1,3 +1,4 @@
+# wechatpy 依赖 cryptography 库! 只有alpine系统需增加 --no-binay
 cryptography==2.3.1 --no-binary cryptography
 wechatpy==1.7.0
 django==1.11.16
