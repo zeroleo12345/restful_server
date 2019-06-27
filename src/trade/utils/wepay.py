@@ -32,7 +32,7 @@ class WePay(object):
         :param attach: 用户自定义数据，在notify的时候会原样返回
         :param notify_url: 接收微信支付异步通知的回调地址。必须为可直接访问的URL，不能带参数、session验证、csrf验证。留空则不通知
         :return:
-            (order_params, wepay_params)
+            (order_params, jsapi_params)
         """
         # 统一下单. 微信官方参数地址:  https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1
         order_params = {
@@ -68,7 +68,7 @@ class WePay(object):
         #              ('trade_type', 'JSAPI')])
         # 把微信服务端返回的参数转换为微信客户端JSAPI使用的参数
         prepay_id = ret_json['prepay_id'].__str__()
-        wepay_params = WePay.WECHAT_PAY.jsapi.get_jsapi_params(prepay_id)
+        jsapi_params = WePay.WECHAT_PAY.jsapi.get_jsapi_params(prepay_id)
         # (Pdb) pprint(params_dict)
         # {'appId': 'wx54d296959ee50c0b',
         #  'nonceStr': '603sd7IpN4M2OqCVvZazxrXY9bT5lBcR',
@@ -76,7 +76,7 @@ class WePay(object):
         #  'paySign': '6D2340AC7276C93852461E130A404E87',
         #  'signType': 'MD5',
         #  'timeStamp': '1540391991'}
-        return order_params, wepay_params
+        return order_params, jsapi_params
 
     @staticmethod
     def qrcode(total_fee, title, client_ip, attach=None, notify_url=None):

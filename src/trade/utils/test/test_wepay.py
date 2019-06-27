@@ -16,12 +16,12 @@ def test_wepay_cashier():
     client_ip = '127.0.0.1'
     attach = None
     notify_url = urljoin(settings.MP_WEB_URL, 'pay_success_callback')
-    order_params, wepay_params = WePay.cashier(
+    order_params, jsapi_params = WePay.cashier(
         openid=openid, total_fee=total_fee, title=title, client_ip=client_ip, attach=attach, notify_url=notify_url
     )
-    assert 'appId' in wepay_params
-    assert 'nonceStr' in wepay_params
-    assert 'package' in wepay_params
-    assert 'paySign' in wepay_params
-    assert 'signType' in wepay_params
-    assert 'timeStamp' in wepay_params
+    assert 'appId' in jsapi_params
+    assert 'nonceStr' in jsapi_params
+    assert 'package' in jsapi_params
+    assert 'paySign' in jsapi_params
+    assert 'signType' in jsapi_params
+    assert 'timeStamp' in jsapi_params

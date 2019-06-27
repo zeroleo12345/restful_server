@@ -21,10 +21,10 @@ def test_order_create():
     json_response = response.json()
     assert json_response['code'] == 'ok'
 
-    wepay_params = json_response['data']
-    assert 'appId' in wepay_params
-    assert 'nonceStr' in wepay_params
-    assert 'package' in wepay_params
-    assert 'paySign' in wepay_params
-    assert 'signType' in wepay_params
-    assert 'timeStamp' in wepay_params
+    jsapi_params = json_response['data']
+    assert 'appId' in jsapi_params
+    assert 'nonceStr' in jsapi_params
+    assert 'package' in jsapi_params
+    assert 'paySign' in jsapi_params
+    assert 'signType' in jsapi_params
+    assert 'timeStamp' in jsapi_params
