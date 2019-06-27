@@ -79,12 +79,13 @@ class WePay(object):
         return order_params, jsapi_params
 
     @staticmethod
-    def qrcode(total_fee, title, client_ip, attach=None, notify_url=None):
+    def qrcode(total_fee, title, client_ip, product_id, attach=None, notify_url=None):
         """
         用户二维码支付.
         :param total_fee: 支付金额, 单位分
         :param title: 订单标题
         :param client_ip: APP和网页支付提交用户端ip, Native支付填调用微信支付API的机器IP
+        :param product_id: 当trade_type=NATIVE, 此参数必传. 此id为二维码中包含的商品ID, 商户自行定义. (实测None也可以)
         :param attach: 用户自定义数据，在notify的时候会原样返回
         :param notify_url: 接收微信支付异步通知的回调地址。必须为可直接访问的URL，不能带参数、session验证、csrf验证。留空则不通知
         :return:
@@ -105,7 +106,7 @@ class WePay(object):
             'time_start': None,         # 可选, 订单生成时间, 默认为当前时间
             'time_expire': None,        # 可选, 订单失效时间, 默认为订单生成时间后两小时
             'goods_tag': None,          # 可选, 商品标记, 代金券或立减优惠功能的参数
-            'product_id': None,         # 可选, 当trade_type=NATIVE, 此参数必传. 此id为二维码中包含的商品ID, 商户自行定义
+            'product_id': product_id,   # 可选, 当trade_type=NATIVE, 此参数必传. 此id为二维码中包含的商品ID, 商户自行定义
             'device_info': None,        # 可选, 终端设备号(门店号或收银设备ID), 注意:PC网页或公众号内支付请传"WEB"
             'limit_pay': None,          # 可选, 指定支付方式, no_credit-指定不能使用信用卡支付
         }
