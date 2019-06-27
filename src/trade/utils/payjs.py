@@ -96,7 +96,7 @@ class Payjs(object):
         return Payjs._post(url, data)
 
     @staticmethod
-    def Cashier(total_fee, title, attach=None, notify_url=None, callback_url=None):
+    def cashier(total_fee, title, attach=None, notify_url=None, callback_url=None):
         """
         用户跳转到收银台支付. (Note: 并没有实际调用接口)
         :param total_fee: 支付金额, 单位分
@@ -123,7 +123,7 @@ class Payjs(object):
         return url, param
 
     @staticmethod
-    def Query(payjs_order_id):
+    def query(payjs_order_id):
         # 查询订单状态
         url = 'https://payjs.cn/api/check'
         data = dict()

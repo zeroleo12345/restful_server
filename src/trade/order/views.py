@@ -32,7 +32,7 @@ class OrderView(APIView):
         title = '用户支付提示'
         client_ip = get_client_ip(request)
         openid = user.weixin.openid
-        order_params, wepay_params = WePay.Cashier(
+        order_params, wepay_params = WePay.cashier(
             openid=openid, total_fee=total_fee, title=title, client_ip=client_ip, attach=attach, notify_url=notify_url
         )
         out_trade_no = order_params['out_trade_no']
