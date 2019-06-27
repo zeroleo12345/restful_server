@@ -81,7 +81,7 @@ class WePay(object):
     @staticmethod
     def qrcode(total_fee, title, client_ip, product_id, attach=None, notify_url=None):
         """
-        用户二维码支付.
+        用户扫码支付.
         :param total_fee: 支付金额, 单位分
         :param title: 订单标题
         :param client_ip: APP和网页支付提交用户端ip, Native支付填调用微信支付API的机器IP
