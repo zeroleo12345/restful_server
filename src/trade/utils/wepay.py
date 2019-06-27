@@ -36,7 +36,7 @@ class WePay(object):
         """
         # 统一下单. 微信官方参数地址:  https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1
         order_params = {
-            'trade_type': 'JSAPI',      # 交易类型 JSAPI--公众号支付, NATIVE--原生扫码支付, APP--app支付, 而MICROPAY--刷卡支付有单独的>支付接口, 不能调用统一下单接口
+            'trade_type': 'JSAPI',      # 交易类型 JSAPI--公众号支付, NATIVE--原生扫码支付, APP--app支付, 而MICROPAY--刷卡支付有单独的支付接口, 不能调用统一下单接口
             'body': title,              # 商品描述
             'total_fee': total_fee,     # 订单金额
             'notify_url': notify_url,   # 订单通知地址
