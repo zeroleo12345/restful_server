@@ -69,7 +69,7 @@ class WePay(object):
         # 把微信服务端返回的参数转换为微信客户端JSAPI使用的参数
         prepay_id = ret_json['prepay_id'].__str__()
         jsapi_params = WePay.WECHAT_PAY.jsapi.get_jsapi_params(prepay_id)
-        # (Pdb) pprint(params_dict)
+        # (Pdb) pprint(jsapi_params)
         # {'appId': 'wx54d296959ee50c0b',
         #  'nonceStr': '603sd7IpN4M2OqCVvZazxrXY9bT5lBcR',
         #  'package': 'prepay_id=wx242238115691612efb08d4092661275602',
@@ -124,7 +124,6 @@ class WePay(object):
         #              ('prepay_id', 'wx27163152798783d24f7f81121395790900'),
         #              ('trade_type', 'NATIVE'),
         #              ('code_url', 'weixin://wxpay/bizpayurl?pr=LQjaKQI')])
-        # (Pdb) pprint(params_dict)
         return order_params, response
 
     @staticmethod
