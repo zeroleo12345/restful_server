@@ -38,7 +38,7 @@ class WePay(object):
         order_params = {
             'trade_type': 'JSAPI',      # 交易类型 JSAPI--公众号支付, NATIVE--原生扫码支付, APP--app支付, 而MICROPAY--刷卡支付有单独的支付接口, 不能调用统一下单接口
             'body': title,              # 商品描述
-            'total_fee': total_fee,     # 订单金额
+            'total_fee': total_fee,     # 订单金额. (单位分)
             'notify_url': notify_url,   # 订单通知地址
             'attach': attach,
             'user_id': openid,          # 可选. 缴费用户的openid. 当trade_type=JSAPI, 此参数必传
@@ -94,7 +94,7 @@ class WePay(object):
         order_params = {
             'trade_type': 'NATIVE',      # 交易类型 JSAPI--公众号支付, NATIVE--原生扫码支付, APP--app支付, 而MICROPAY--刷卡支付有单独的支付接口, 不能调用统一下单接口
             'body': title,              # 商品描述
-            'total_fee': total_fee,     # 订单金额
+            'total_fee': total_fee,     # 订单金额. (单位分)
             'notify_url': notify_url,   # 订单通知地址
             'attach': attach,
             'user_id': None,            # 可选. 缴费用户的openid. 当trade_type=JSAPI, 此参数必传
