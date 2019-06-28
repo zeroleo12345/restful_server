@@ -113,7 +113,7 @@ class WePay(object):
 
         # 统一下单, 生成微信支付参数返回给微信浏览器
         response = WePay.WECHAT_PAY.order.create(**order_params)
-        # (Pdb) pprint(ret_json)
+        # (Pdb) pprint(response)
         # OrderedDict([('return_code', 'SUCCESS'),
         #              ('return_msg', 'OK'),
         #              ('appid', 'wx54d296959ee50c0b'),
