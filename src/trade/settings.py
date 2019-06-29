@@ -203,12 +203,12 @@ MP_APP_ID = config('MP_APP_ID')             # 开发者ID
 MP_APP_SECRET = config('MP_APP_SECRET')     # 开发者密码
 MP_TOKEN = config('MP_TOKEN')               # 令牌
 MP_AES_KEY = config('MP_AES_KEY')           # 消息加解密密钥
-MP_WEB_URL = config('MP_WEB_URL')           # 如: http://www.xxx.com
+MP_WEB_URL = config('MP_WEB_URL')           # 如: http://www.example.com/notify
 
 # 微信商户平台配置
 MP_MERCHANT_ID = config('MP_MERCHANT_ID')   # 商户号
 MP_APP_KEY = config('MP_APP_KEY')           # API密钥
-MP_MERCHANT_CERT = config('MP_MERCHANT_CERT', default=None)         # 可选. 商户证书路径 (平台上下载). 申请退款, 拉取订单评价数据, 下载资金账单 等个别接口需要证书
+MP_MERCHANT_CERT = config('MP_MERCHANT_CERT', default=None)         # 可选. 商户证书路径 (平台上下载). 申请退款,拉取订单评价数据,下载资金账单接口需证书
 MP_MERCHANT_KEY = config('MP_MERCHANT_KEY', default=None)           # 可选. 商户证书私钥路径 (平台上下载).
 MP_SUB_MERCHANT_ID = config('MP_SUB_MERCHANT_ID', default=None)     # 可选(一般不需填). 子商户号, 受理模式下需填
 
