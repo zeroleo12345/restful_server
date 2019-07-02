@@ -212,6 +212,9 @@ MP_MERCHANT_CERT = config('MP_MERCHANT_CERT', default=None)         # 可选. �
 MP_MERCHANT_KEY = config('MP_MERCHANT_KEY', default=None)           # 可选. 商户证书私钥路径 (平台上下载).
 MP_SUB_MERCHANT_ID = config('MP_SUB_MERCHANT_ID', default=None)     # 可选(一般不需填). 子商户号, 受理模式下需填
 
+# 公众号下测试管理员的openid. (付款只需0.01)
+MP_ADMIN_OPENID = config('MP_ADMIN_OPENID', default='o0FSR0Zh3rotbOog_b2lytxzKrYo')
+
 # # 公众号客服
 # MP_KF_ACCOUNT = config('MP_KF_ACCOUNT')
 # MP_KF_NICKNAME = config('MP_KF_NICKNAME')

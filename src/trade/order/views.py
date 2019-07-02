@@ -27,7 +27,10 @@ class OrderView(APIView):
         #
         tariff = Tariff.get_object_or_404(tariff_name=tariff_name)
         attach = Tariff.tariff_to_attach(tariff=tariff)
-        total_fee = tariff.price
+        if user.weixin.openid == settings.MP_ADMIN_OPENID:
+            total_fee = 1 * tariff.duration  # 1分钱
+        else:
+            total_fee = tariff.price
         notify_url = f'{settings.API_SERVER_URL}/order/notify'      # 订单状态通知地址
         title = '用户支付提示'
         client_ip = get_client_ip(request)
