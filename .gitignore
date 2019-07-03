@@ -142,3 +142,4 @@ ENV/
 run/backup/*
 !run/backup/.gitkeep
 run/mysql
+*.pem
