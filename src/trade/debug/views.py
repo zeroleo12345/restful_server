@@ -11,12 +11,14 @@ class DebugView(APIView):
     permission_classes = ()
 
     def get(self, request):
+        log.i(f'GET method')
         log.i(f'GET: {request.GET}')
         log.i(f'POST: {request.POST}')
         log.i(f'data: {request.data}')
         return Response()
 
     def post(self, request):
+        log.i(f'POST method')
         log.i(f'GET: {request.GET}')
         log.i(f'POST: {request.POST}')
         log.i(f'data: {request.data}')
