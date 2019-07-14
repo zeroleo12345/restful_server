@@ -12,15 +12,17 @@ class DebugView(APIView):
 
     def get(self, request):
         log.i(f'GET method')
-        log.i(f'GET: {request.GET}')
-        log.i(f'POST: {request.POST}')
-        log.i(f'data: {request.data}')
+        log.i(f'request.body: {request.body}')
+        log.i(f'request.GET: {request.GET}')
+        log.i(f'request.POST: {request.POST}')
+        log.i(f'request.data: {request.data}')
         return Response()
 
     def post(self, request):
         log.i(f'POST method')
-        log.i(f'GET: {request.GET}')
-        log.i(f'POST: {request.POST}')
-        log.i(f'data: {request.data}')
+        log.i(f'request.body: {request.body}')
+        log.i(f'request.GET: {request.GET}')
+        log.i(f'request.POST: {request.POST}')
+        log.i(f'request.data: {request.data}')
         data = request.data
         return Response(data=data)
