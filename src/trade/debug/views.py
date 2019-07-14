@@ -11,16 +11,14 @@ class DebugView(APIView):
     permission_classes = ()
 
     def get(self, request):
-        if not settings.ENVIRONMENT.is_production():
-            log.i(f'GET: {request.GET}')
-            log.i(f'POST: {request.POST}')
-            log.i(f'data: {request.data}')
+        log.i(f'GET: {request.GET}')
+        log.i(f'POST: {request.POST}')
+        log.i(f'data: {request.data}')
         return Response()
 
     def post(self, request):
-        if not settings.ENVIRONMENT.is_production():
-            log.i(f'GET: {request.GET}')
-            log.i(f'POST: {request.POST}')
-            log.i(f'data: {request.data}')
+        log.i(f'GET: {request.GET}')
+        log.i(f'POST: {request.POST}')
+        log.i(f'data: {request.data}')
         data = request.data
         return Response(data=data)
