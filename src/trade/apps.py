@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from trade.utils.mp import WechatPlatform
+from trade.service.wechat.we_client import WeClient
 
 
 class TradeConfig(AppConfig):
@@ -7,4 +7,4 @@ class TradeConfig(AppConfig):
 
     def ready(self):
         # startup code here
-        WechatPlatform.create_mp_menu()
+        WeClient.create_mp_menu()
