@@ -10,17 +10,21 @@ class DebugView(APIView):
     authentication_classes = ()
     permission_classes = ()
 
+    def detail(self, request):
+        log.i(f'request.content_type: {request.content_type}')
+        log.i(f'request.encoding: {request.encoding}')
+        log.i(f'request.body: {request.body}')
+        log.i(f'request.GET: {request.GET}')
+        log.i(f'request.POST: {request.POST}')
+        log.i(f'request.data: {request.data}')
+
     def get(self, request):
-        if not settings.ENVIRONMENT.is_production():
-            log.i(f'GET: {request.GET}')
-            log.i(f'POST: {request.POST}')
-            log.i(f'data: {request.data}')
+        log.i(f'GET method')
+        self.detail(request)
         return Response()
 
     def post(self, request):
-        if not settings.ENVIRONMENT.is_production():
-            log.i(f'GET: {request.GET}')
-            log.i(f'POST: {request.POST}')
-            log.i(f'data: {request.data}')
+        log.i(f'POST method')
+        self.detail(request)
         data = request.data
         return Response(data=data)
