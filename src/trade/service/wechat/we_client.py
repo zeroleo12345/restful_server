@@ -1,7 +1,7 @@
 from trade import settings
 from django_redis import get_redis_connection
 from urllib.parse import urljoin
-
+#
 from wechatpy import WeChatClient
 from wechatpy.session.redisstorage import RedisStorage
 
@@ -37,4 +37,3 @@ class WeClient(object):
             ]
         }
         cls._client_api.menu.create(menu_data)
-

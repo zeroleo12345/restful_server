@@ -25,19 +25,19 @@ class UserView(generics.RetrieveAPIView):
             code = self.request.GET.get('code', '')
             if not code:
                 raise exceptions.ValidationError('code字段不能为空', 'invalid_code')
-            openid, nickname, avatar = WechatCode.get(oauth_code=oauth_code)    # https://blog.csdn.net/limenghua9112/article/details/81911658
+            openid, nickname, avatar = WechatCode.get(code)    # https://blog.csdn.net/limenghua9112/article/details/81911658
             if not openid:
-                openid, nickname, avatar = WeOAuth.get_user_info(code=oauth_code)
+                openid, nickname, avatar = WeOAuth.get_user_info(code=code)
                 if not openid:
                     raise exceptions.ValidationError('code无效, 请重试', 'invalid_code')
-                WechatCode.set(oauth_code, openid=openid, nickname=nickname, avatar=avatar)
+                WechatCode.set(code, openid=openid, nickname=nickname, avatar=avatar)
             # 获取用户信息, 不存在则创建
             user = User.objects.filter(weixin__openid=openid).first()
             if not user:
                 weixin_fields = {
                     'openid': openid,
                     'nickname': nickname,
-                    'headimgurl': headimgurl,
+                    'headimgurl': avatar,
                 }
                 user_fields = {
                     'weixin': Weixin.objects.create(**weixin_fields),

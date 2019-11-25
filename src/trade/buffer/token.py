@@ -31,4 +31,3 @@ class WechatCode(object):
         nickname = user_info['nickname']
         avatar = user_info['avatar']
         return openid, nickname, avatar
-
