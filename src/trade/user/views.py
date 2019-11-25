@@ -5,7 +5,6 @@ from django.db import transaction
 from trade.framework.authorization import JWTAuthentication
 from trade.user.models import User, Weixin
 from trade.user.serializer import UserWeixinSerializer, UserSyncSerializer
-from trade.user.validators import WeixinInfoValidator
 from trade.service.wechat.we_oauth import WeOAuth
 from trade.utils.myrandom import MyRandom
 from trade.resource.models import Resource
