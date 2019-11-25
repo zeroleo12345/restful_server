@@ -6,7 +6,7 @@ from trade.framework.authorization import JWTAuthentication
 from trade.user.models import User, Weixin
 from trade.user.serializer import UserWeixinSerializer, UserSyncSerializer
 from trade.user.validators import WeixinInfoValidator
-from trade.utils.mp import WechatPlatform
+from trade.service.wechat.mp import WechatPlatform
 from trade.utils.myrandom import MyRandom
 from trade.resource.models import Resource
 

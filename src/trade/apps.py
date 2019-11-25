@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from trade.utils.mp import WechatPlatform
+from trade.service.wechat.mp import WechatPlatform
 
 
 class TradeConfig(AppConfig):
