@@ -32,7 +32,7 @@ class OrderView(APIView):
         title = '用户支付提示'
         client_ip = get_client_ip(request)
         openid = user.weixin.openid
-        order_params, wepay_params = WePay.Cashier(
+        order_params, jsapi_params = WePay.cashier(
             openid=openid, total_fee=total_fee, title=title, client_ip=client_ip, attach=attach, notify_url=notify_url
         )
         out_trade_no = order_params['out_trade_no']
@@ -48,14 +48,20 @@ class OrderView(APIView):
             mch_id=settings.MP_MERCHANT_ID,
             status='unpaid',
         )
-        return Response(wepay_params)
+        return Response(jsapi_params)
 
 
 # /order/notify
 class OrderNotifyView(APIView):
     authentication_classes = ()
     permission_classes = ()
-    SUCCESS = """<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>"""
+
+    @classmethod
+    def response_success(cls):
+        return HttpResponse(
+            content="""<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>""",
+            content_type='text/xml',
+        )
 
     def post(self, request):
         # 1. 解析微信侧回调请求
@@ -68,7 +74,7 @@ class OrderNotifyView(APIView):
             data = WePay.WECHAT_PAY.parse_payment_result(xml)
         except (InvalidSignatureException, Exception) as exc:
             sentry_sdk.capture_exception(exc)
-            return HttpResponse(self.SUCCESS, content_type='text/xml')
+            return self.response_success()
 
         out_trade_no = data['out_trade_no']
         attach = data['attach']
@@ -78,7 +84,7 @@ class OrderNotifyView(APIView):
         if return_code != 'SUCCESS':
             return_msg = data.get('return_msg', '')
             log.e(f'wepay fail, return_msg: {return_msg}')
-            return HttpResponse(self.SUCCESS, content_type='text/xml')
+            return self.response_success()
 
         openid = data['openid']
         transaction_id = data['transaction_id']
@@ -87,7 +93,7 @@ class OrderNotifyView(APIView):
 
         # 增加用户免费资源
         OrderNotifyView.increase_user_resource(total_fee, out_trade_no, transaction_id, attach)
-        return HttpResponse(self.SUCCESS, content_type='text/xml')
+        return self.response_success()
 
     @staticmethod
     def increase_user_resource(total_fee, out_trade_no, transaction_id, attach):

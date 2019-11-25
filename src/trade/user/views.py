@@ -6,7 +6,7 @@ from trade.framework.authorization import JWTAuthentication
 from trade.user.models import User, Weixin
 from trade.user.serializer import UserWeixinSerializer, UserSyncSerializer
 from trade.user.validators import WeixinInfoValidator
-from trade.utils.mp import MediaPlatform
+from trade.utils.mp import WechatPlatform
 from trade.utils.myrandom import MyRandom
 from trade.resource.models import Resource
 
@@ -26,7 +26,7 @@ class UserView(generics.RetrieveAPIView):
             if not code:
                 raise exceptions.ValidationError('code字段不能为空', 'invalid_code')
             # 调用OAUTH
-            weixin_info = MediaPlatform.get_user_info_from_wechat(code)
+            weixin_info = WechatPlatform.get_user_info_from_wechat(code)
 
             serializer = WeixinInfoValidator(data=weixin_info)
             serializer.is_valid(raise_exception=True)

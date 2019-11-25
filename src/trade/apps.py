@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from trade.utils.mp import MediaPlatform
+from trade.utils.mp import WechatPlatform
 
 
 class TradeConfig(AppConfig):
@@ -7,4 +7,4 @@ class TradeConfig(AppConfig):
 
     def ready(self):
         # startup code here
-        MediaPlatform.create_mp_menu()
+        WechatPlatform.create_mp_menu()

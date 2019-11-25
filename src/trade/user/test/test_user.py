@@ -5,10 +5,10 @@ from rest_framework import status
 import pytest
 # 自己的库
 from trade.framework.unittest import get_user_and_token, UnitTestAPIClient
-from trade.utils.mp import MediaPlatform
+from trade.utils.mp import WechatPlatform
 from trade.resource.factories import ResourceFactory
 
-MediaPlatform.create_mp_menu = MagicMock()
+WechatPlatform.create_mp_menu = MagicMock()
 
 
 @pytest.mark.django_db
