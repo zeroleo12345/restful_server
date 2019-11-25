@@ -6,12 +6,13 @@ from trade.framework.authorization import JWTAuthentication
 from trade.user.models import User, Weixin
 from trade.user.serializer import UserWeixinSerializer, UserSyncSerializer
 from trade.user.validators import WeixinInfoValidator
-from trade.service.wechat.mp import WechatPlatform
+from trade.service.wechat.we_oauth import WeOAuth
 from trade.utils.myrandom import MyRandom
 from trade.resource.models import Resource
+from trade.buffer.token import WechatCode
 
 
-# /user 通过微信OAUTH接口, 获取微信用户信息
+# /user 通过微信oauth2接口, 获取微信用户信息
 class UserView(generics.RetrieveAPIView):
     authentication_classes = ()
     permission_classes = ()
@@ -25,15 +26,12 @@ class UserView(generics.RetrieveAPIView):
             code = self.request.GET.get('code', '')
             if not code:
                 raise exceptions.ValidationError('code字段不能为空', 'invalid_code')
-            # 调用OAUTH
-            weixin_info = WechatPlatform.get_user_info_from_wechat(code)
-
-            serializer = WeixinInfoValidator(data=weixin_info)
-            serializer.is_valid(raise_exception=True)
-            openid = serializer.validated_data['openid']
-            nickname = serializer.validated_data['nickname']
-            headimgurl = serializer.validated_data['headimgurl']
-
+            openid, nickname, avatar = WechatCode.get(oauth_code=oauth_code)    # https://blog.csdn.net/limenghua9112/article/details/81911658
+            if not openid:
+                openid, nickname, avatar = WeOAuth.get_user_info(code=oauth_code)
+                if not openid:
+                    raise exceptions.ValidationError('code无效, 请重试', 'invalid_code')
+                WechatCode.set(oauth_code, openid=openid, nickname=nickname, avatar=avatar)
             # 获取用户信息, 不存在则创建
             user = User.objects.filter(weixin__openid=openid).first()
             if not user:

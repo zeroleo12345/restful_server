@@ -6,9 +6,9 @@ import pytest
 # 自己的库
 from trade.resource.factories import ResourceFactory
 from trade.framework.unittest import get_user_and_token, UnitTestAPIClient
-from trade.service.wechat.mp import WechatPlatform
+from trade.service.wechat.we_client import WeClient
 
-WechatPlatform.create_mp_menu = MagicMock()
+WeClient.create_mp_menu = MagicMock()
 
 
 @pytest.mark.django_db
