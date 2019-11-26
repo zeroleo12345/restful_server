@@ -39,7 +39,7 @@ class WeOAuth(object):
                 'privilege': [],
                 'nickname': '测试账号'
             }
-            user_info['openid'] = oauth_code
+            user_info['openid'] = code
             return user_info['openid'], user_info['nickname'], user_info['avatar']
         try:
             openid_access_token = cls._oauth_api.fetch_access_token(code)
