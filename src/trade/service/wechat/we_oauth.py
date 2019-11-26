@@ -39,9 +39,8 @@ class WeOAuth(object):
                 'privilege': [],
                 'nickname': '测试账号'
             }
-            pass
             user_info['openid'] = oauth_code
-            return user_info
+            return user_info['openid'], user_info['nickname'], user_info['avatar']
         try:
             openid_access_token = cls._oauth_api.fetch_access_token(code)
         except WeChatOAuthException as e:
