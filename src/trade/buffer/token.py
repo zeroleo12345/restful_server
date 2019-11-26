@@ -17,7 +17,7 @@ class WechatCode(object):
             'nickname': nickname,
             'avatar': avatar,
         })
-        redis.set(key, value, ex=86400)
+        redis.set(key, value, ex=7200)
 
     @classmethod
     def get(cls, oauth_code):
