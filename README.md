@@ -3,6 +3,7 @@
 [![CircleCI](https://circleci.com/gh/zeroleo12345/restful_server/tree/master.svg?style=svg&circle-token=eece7116845f82f71da5effde84461ddfb3d33be)](https://circleci.com/gh/zeroleo12345/restful_server/tree/master)
 
 pppoe用户充值系统 (基于 python3 + django 1.11 + docker)
+公众号调试地址: `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx54d296959ee50c0b&redirect_uri=http://wechat.lynatgz.cn&response_type=code&scope=snsapi_userinfo`
 
 
 ## 环境变量说明
