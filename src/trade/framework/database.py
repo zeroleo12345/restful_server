@@ -3,7 +3,6 @@ import random
 from decimal import Decimal
 import datetime
 # 第三方库
-import sentry_sdk
 from django.db import models, connections
 from django_redis import get_redis_connection
 from django.utils.dateparse import parse_datetime
