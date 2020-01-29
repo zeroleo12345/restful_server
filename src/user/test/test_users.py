@@ -4,7 +4,7 @@ from django.conf import settings
 from rest_framework import status
 import pytest
 # 自己的库
-from resource import ResourceFactory
+from models.factories.resource import ResourceFactory
 from trade.framework.unittest import UnitTestAPIClient
 from models.factories.user import get_user_and_authorization
 from service.wechat.we_client import WeClient

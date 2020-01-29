@@ -7,7 +7,7 @@ import pytest
 from trade.framework.unittest import UnitTestAPIClient
 from models.factories.user import get_user_and_authorization
 from service.wechat.we_client import WeClient
-from resource import ResourceFactory
+from models.factories.resource import ResourceFactory
 
 WeClient.create_mp_menu = MagicMock()
 
