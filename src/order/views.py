@@ -12,13 +12,13 @@ from trade.utils.django import get_client_ip
 from trade.utils.wepay import WePay
 from models import Orders, Tariff
 from models import Resource, ResourceChange
-from trade.framework.authorization import JWTAuthentication, UserPermission
+from trade.framework.authorization import JWTAuthentication
 
 
 # /order
 class OrderView(APIView):
     authentication_classes = (JWTAuthentication, )      # 默认配置
-    permission_classes = (UserPermission, )             # 默认配置
+    permission_classes = ()
 
     def post(self, request):
         # 获取参数
