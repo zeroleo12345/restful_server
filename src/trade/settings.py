@@ -57,6 +57,10 @@ class ENV(object):
     def is_qa(cls):
         return cls.environment == 'qa'
 
+    @classmethod
+    def is_unittest(cls):
+        return cls.environment == 'unittest'
+
 
 ALLOWED_HOSTS = list(filter(None, settings.get('ALLOWED_HOSTS', default='*').split(',')))   # 127.0.0.1,.example.com 匹配域名和子域名
 
