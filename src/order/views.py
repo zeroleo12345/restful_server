@@ -1,5 +1,4 @@
 # 第三方库
-from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import HttpResponse
 from django.conf import settings
@@ -7,6 +6,8 @@ from django.db import transaction
 from wechatpy.exceptions import InvalidSignatureException
 import sentry_sdk
 # 自己的库
+from trade.framework.restful import BihuResponse
+from controls.auth import Authentication
 from trade.settings import log
 from trade.utils.django import get_client_ip
 from trade.utils.wepay import WePay
@@ -15,26 +16,26 @@ from models import Resource, ResourceChange
 from trade.framework.authorization import JWTAuthentication
 
 
-# /order
 class OrderView(APIView):
     authentication_classes = (JWTAuthentication, )      # 默认配置
     permission_classes = ()
 
+    # /order    下单
     def post(self, request):
         # 获取参数
-        user = request.user
+        auth = Authentication(request)
         tariff_name = request.data.get('tariff_name')
         #
         tariff = Tariff.get_object_or_404(tariff_name=tariff_name)
         attach = Tariff.tariff_to_attach(tariff=tariff)
-        if user.weixin.openid == settings.MP_ADMIN_OPENID:
+        if auth.openid == settings.MP_ADMIN_OPENID:
             total_fee = 1 * tariff.duration  # 1分钱
         else:
             total_fee = tariff.price
         notify_url = f'{settings.API_SERVER_URL}/order/notify'      # 订单状态通知地址
         title = '用户支付提示'
         client_ip = get_client_ip(request)
-        openid = user.weixin.openid
+        openid = auth.openid
         order_params, jsapi_params = WePay.cashier(
             openid=openid, total_fee=total_fee, title=title, client_ip=client_ip, attach=attach, notify_url=notify_url
         )
@@ -42,7 +43,7 @@ class OrderView(APIView):
         attach = order_params['attach']
         # 订单入库
         Orders.objects.create(
-            user=user,
+            user_id=auth.user_id,
             openid=openid,
             out_trade_no=out_trade_no,
             attach=attach,
@@ -51,7 +52,7 @@ class OrderView(APIView):
             mch_id=settings.MP_MERCHANT_ID,
             status='unpaid',
         )
-        return Response(jsapi_params)
+        return BihuResponse(jsapi_params)
 
 
 # /order/notify
