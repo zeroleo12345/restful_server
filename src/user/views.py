@@ -1,5 +1,6 @@
 from rest_framework import generics
 from rest_framework import exceptions
+from rest_framework.views import APIView
 from django.db import transaction
 # 自己的库
 from trade.framework.authorization import JWTAuthentication
@@ -9,6 +10,7 @@ from service.wechat.we_oauth import WeOAuth
 from trade.utils.myrandom import MyRandom
 from models import Resource
 from buffer.token import WechatCode
+from trade.framework.restful import BihuResponse
 
 
 class UserView(generics.RetrieveAPIView):
@@ -54,12 +56,12 @@ class UserView(generics.RetrieveAPIView):
         return user
 
 
-class UserSyncView(generics.ListAPIView):
+class UserSyncView(APIView):
     authentication_classes = ()
     permission_classes = ()
-    serializer_class = UserSyncSerializer
-    pagination_class = None
 
     # /user/sync    同步用户列表
-    def get_queryset(self):
-        return User.objects.all().select_related('resource')
+    def get(self, request):
+        users = User.objects.all().select_related('resource')
+        data = UserSyncSerializer(users, many=True).data
+        return BihuResponse(data=data)
