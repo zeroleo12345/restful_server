@@ -6,7 +6,7 @@ if [[ "$#" != "1" ]]; then
    exit
 fi
 if [[ "$app_lable" == "all" ]]; then
-    docker-compose exec shop  python manage.py makemigrations trade
+    docker-compose exec api  python manage.py makemigrations trade
 else
-    docker-compose exec shop  python manage.py makemigrations $1
+    docker-compose exec api  python manage.py makemigrations $1
 fi

@@ -20,9 +20,9 @@ services:
       - .:/app     # 主机路径:docker内部路径.(把主机下的src目录挂在到docker下, 实现边开发, 边调试)
       #- ./etc/supervisord.conf:/etc/supervisord.conf
       #- ./runtest:/bin/runtest
-    entrypoint: sh      # 用于调试
+    # entrypoint: sh      # 用于调试
     #entrypoint: /usr/bin/supervisord -c /app/etc/supervisord.conf
-    # entrypoint: /app/bin/web.sh      # docker启动期执行程序
+    entrypoint: /app/bin/web.sh      # docker启动期执行程序
     #command: dockerize -wait tcp://mysql:3306 -timeout 10s
     tty: true
     restart: unless-stopped
