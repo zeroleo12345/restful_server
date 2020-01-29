@@ -4,7 +4,8 @@ from django.conf import settings
 from rest_framework import status
 import pytest
 # 自己的库
-from trade.framework.unittest import get_user_and_token, UnitTestAPIClient
+from trade.framework.unittest import UnitTestAPIClient
+from models.factories.user import get_user_and_authorization
 from service.wechat.we_client import WeClient
 from resource import ResourceFactory
 
@@ -20,7 +21,7 @@ class TestUser:
 
     def test_user_with_token(self):
         settings.DEBUG = True
-        user, token = get_user_and_token()
+        user, token = get_user_and_authorization()
         client = UnitTestAPIClient(token=token)
         response = client.get('/user?code=001yROix1KtF1c0waVgx1k6Bix1yROiR')
         assert response.status_code == status.HTTP_200_OK
@@ -55,7 +56,7 @@ class TestUser:
 
     def test_user_resource_success(self):
         settings.DEBUG = True
-        user, token = get_user_and_token()
+        user, token = get_user_and_authorization()
         ResourceFactory(user=user)
         client = UnitTestAPIClient(token=token)
         response = client.get('/resource')

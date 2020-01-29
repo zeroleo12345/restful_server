@@ -3,15 +3,16 @@ import pytest
 from django.conf import settings
 from rest_framework import status
 # 自己的库
-from trade.framework.unittest import get_user_and_token, UnitTestAPIClient
+from trade.framework.unittest import UnitTestAPIClient
+from models.factories.user import get_user_and_authorization
 
 # 模块内测试案例需要使用数据库. 设置参考:  https://pytest-django.readthedocs.io/en/latest/database.html
 pytestmark = pytest.mark.django_db
 
 
-@pytest.mark.skipif(condition=settings.ENVIRONMENT.is_unittest(), reason="手动触发测试")
+@pytest.mark.skipif(condition=settings.ENV.is_unittest(), reason="手动触发测试")
 def test_order_create():
-    user, jwt_token = get_user_and_token()
+    user, jwt_token = get_user_and_authorization()
     client = UnitTestAPIClient(token=jwt_token)
     data = {
         'tariff_name': 'month1',

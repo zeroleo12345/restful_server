@@ -2,8 +2,8 @@
 from django.utils import timezone
 import factory
 # 自己的库
-from user.factories import UserFactory
-from models.models import Resource
+from models.factories.user import UserFactory
+from models import Resource
 
 
 class ResourceFactory(factory.DjangoModelFactory):

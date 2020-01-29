@@ -26,7 +26,7 @@ class WeOAuth(object):
                 'nickname': '测试账号'
             }
         """
-        if not settings.ENVIRONMENT.is_production():
+        if not settings.ENV.is_production():
             # 返回例子
             user_info = {
                 'province': '广东',

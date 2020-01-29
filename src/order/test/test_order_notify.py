@@ -5,8 +5,9 @@ from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 # 自己的库
-from trade.framework.unittest import get_user_and_token, UnitTestAPIClient
-from order.factories import OrdersFactory
+from trade.framework.unittest import UnitTestAPIClient
+from models.factories.user import get_user_and_authorization
+from models.factories.factories import OrdersFactory
 
 # 使全部测试案例能用数据库, 参考:  https://pytest-django.readthedocs.io/en/latest/database.html
 pytestmark = pytest.mark.django_db
@@ -14,7 +15,7 @@ pytestmark = pytest.mark.django_db
 
 @pytest.mark.skip(reason="手动触发测试")
 def test_payjs_notify_success():
-    user, token = get_user_and_token()
+    user, token = get_user_and_authorization()
     data = {
         'attach': '{"tariff_name": "month1"}', 'mchid': '1511573911', 'openid': 'o7LFAwUGHPZxyNahwjoNQtKh8EME',
         'out_trade_no': '1534167177710ovfltv6a8v7BsFAH0', 'payjs_order_id': '2018081321325600636471374',
@@ -57,7 +58,7 @@ def test_payjs_notify_success():
 
 @pytest.mark.skip(reason="手动触发测试")
 def test_payjs_notify_order_not_exist():
-    user, token = get_user_and_token()
+    user, token = get_user_and_authorization()
     data = {
         'attach': '{"tariff_name": "month1"}', 'mchid': '1511573911', 'openid': 'o7LFAwUGHPZxyNahwjoNQtKh8EME',
         'out_trade_no': '1534167177710ovfltv6a8v7BsFAH0', 'payjs_order_id': '2018081321325600636471374',
@@ -74,7 +75,7 @@ def test_payjs_notify_order_not_exist():
 
 @pytest.mark.skip(reason="手动触发测试")
 def test_payjs_notify_sign_error():
-    user, token = get_user_and_token()
+    user, token = get_user_and_authorization()
     client = UnitTestAPIClient(token=token)
     data = {
         'attach': ['{"tariff_name": "month1"}'], 'mchid': ['1511573911'], 'openid': ['o7LFAwUGHPZxyNahwjoNQtKh8EME'],

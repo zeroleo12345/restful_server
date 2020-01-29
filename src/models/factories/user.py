@@ -1,8 +1,9 @@
 from django.contrib.auth.hashers import make_password
 from django.utils import timezone
-
 import factory
-from models.models import Weixin, User
+#
+from models import Weixin, User
+from trade.framework.authorization import JWTAuthentication
 
 
 class WeixinFactory(factory.DjangoModelFactory):
@@ -25,3 +26,13 @@ class UserFactory(factory.DjangoModelFactory):
     password = factory.Sequence(lambda n: make_password(f'password_{n}'))
     is_enable = True
     role = factory.Iterator([role[0] for role in User.ROLE])
+
+
+def get_user_and_authorization():
+    user = UserFactory()
+    user_dict = {
+        'trader_id': user.trader_id,
+        'shop_id': user.shop_id,
+    }
+    jwt_token = JWTAuthentication.jwt_encode_handler(user_dict=user_dict)
+    return user, jwt_token

@@ -4,12 +4,12 @@ from urllib.parse import urljoin
 from django.conf import settings
 # 自己的库
 from trade.utils.wepay import WePay
-from trade.framework.unittest import get_user_and_token
+from models.factories.user import get_user_and_authorization
 
 
 @pytest.mark.skip(reason="手动触发测试, 因为只有一个微信号")
 def test_wepay_cashier():
-    user, jwt_token = get_user_and_token()
+    user, jwt_token = get_user_and_authorization()
     openid = user.weixin.openid
     total_fee = 1               # 单位分
     title = '用户支付提示'

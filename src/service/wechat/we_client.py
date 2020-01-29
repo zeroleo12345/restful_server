@@ -16,7 +16,7 @@ class WeClient(object):
 
     @classmethod
     def create_mp_menu(cls):
-        if not settings.ENVIRONMENT.is_production():
+        if not settings.ENV.is_production():
             return
 
         # TODO: 防止多次创建菜单
