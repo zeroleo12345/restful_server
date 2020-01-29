@@ -2,7 +2,7 @@
 
 # crond job
 cp /app/bin/crontab/root  /etc/crontabs/root
-crond
+service cron start
 
 if [ "$DEBUG" == "True" ]; then
     python manage.py migrate
