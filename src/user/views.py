@@ -4,11 +4,11 @@ from django.db import transaction
 # 自己的库
 from trade.framework.authorization import JWTAuthentication
 from models.models import User, Weixin
-from trade.user.serializer import UserWeixinSerializer, UserSyncSerializer
-from trade.service.wechat.we_oauth import WeOAuth
+from user import UserWeixinSerializer, UserSyncSerializer
+from service.wechat.we_oauth import WeOAuth
 from trade.utils.myrandom import MyRandom
 from models.models import Resource
-from trade.buffer.token import WechatCode
+from buffer.token import WechatCode
 
 
 # /user 通过微信oauth2接口, 获取微信用户信息

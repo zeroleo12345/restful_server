@@ -2,7 +2,7 @@
 from django.utils import timezone
 import factory
 # 自己的库
-from trade.user.factories import UserFactory
+from user.factories import UserFactory
 from models.models import Resource
 
 

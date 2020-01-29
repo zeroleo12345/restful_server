@@ -9,7 +9,7 @@ from rest_framework.settings import APISettings
 import jwt
 
 from models.models import User
-from trade.user.serializer import UserWeixinSerializer
+from user import UserWeixinSerializer
 
 jwt_settings = APISettings(user_settings=settings.JWT_AUTH, defaults=settings.JWT_AUTH)
 

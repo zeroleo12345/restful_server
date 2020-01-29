@@ -6,7 +6,7 @@ from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 # 自己的库
 from trade.framework.unittest import get_user_and_token, UnitTestAPIClient
-from trade.order.factories import OrdersFactory
+from order.factories import OrdersFactory
 
 # 使全部测试案例能用数据库, 参考:  https://pytest-django.readthedocs.io/en/latest/database.html
 pytestmark = pytest.mark.django_db

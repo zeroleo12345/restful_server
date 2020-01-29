@@ -1,6 +1,6 @@
 from rest_framework.test import APIClient
 
-from trade.user.factories import UserFactory
+from user.factories import UserFactory
 from trade.framework.authorization import JWTAuthentication
 
 

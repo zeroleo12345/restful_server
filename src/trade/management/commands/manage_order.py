@@ -7,7 +7,7 @@ import pytz
 from django.core.management.base import BaseCommand
 # 自己的类
 from trade.management.commands import Service
-from trade.order.views import OrderNotifyView
+from order.views import OrderNotifyView
 from models import Orders
 from trade.utils.wepay import WePay
 from trade.settings import log
