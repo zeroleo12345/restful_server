@@ -11,16 +11,16 @@ from models import Resource
 from buffer.token import WechatCode
 
 
-# /user 通过微信oauth2接口, 获取微信用户信息
 class UserView(generics.RetrieveAPIView):
     authentication_classes = ()
     permission_classes = ()
     serializer_class = UserWeixinSerializer
 
+    # /user     通过微信oauth2接口, 获取微信用户信息
     def get_object(self):
-        token = self.request.META.get('HTTP_AUTHORIZATION', '')
-        if token:
-            user = JWTAuthentication.jwt_decode_handler(token)
+        authorization = self.request.META.get('HTTP_AUTHORIZATION', '')
+        if authorization:
+            user = JWTAuthentication.jwt_decode_handler(authorization)
         else:
             code = self.request.GET.get('code', '')
             if not code:
@@ -54,12 +54,12 @@ class UserView(generics.RetrieveAPIView):
         return user
 
 
-# /user/sync 同步用户列表
 class UserSyncView(generics.ListAPIView):
     authentication_classes = ()
     permission_classes = ()
     serializer_class = UserSyncSerializer
     pagination_class = None
 
+    # /user/sync    同步用户列表
     def get_queryset(self):
         return User.objects.all().select_related('resource')

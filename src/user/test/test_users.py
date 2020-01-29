@@ -21,10 +21,10 @@ class TestUser:
 
     def test_user_sync(self):
         settings.DEBUG = True
-        user, token = get_user_and_authorization()
+        user, authorization = get_user_and_authorization()
         ResourceFactory(user=user)
 
-        client = UnitTestAPIClient(authorization=token)
+        client = UnitTestAPIClient(authorization=authorization)
         response = client.get('/user/sync')
         assert response.status_code == status.HTTP_200_OK
 

@@ -31,5 +31,5 @@ class UserFactory(factory.DjangoModelFactory):
 def get_user_and_authorization():
     user = UserFactory()
     user_dict = UserWeixinSerializer(user).data
-    jwt_token = JWTAuthentication.jwt_encode_handler(user_dict=user_dict)
-    return user, jwt_token
+    authorization = JWTAuthentication.jwt_encode_handler(user_dict=user_dict)
+    return user, authorization

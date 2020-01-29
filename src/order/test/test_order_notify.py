@@ -15,7 +15,7 @@ pytestmark = pytest.mark.django_db
 
 @pytest.mark.skip(reason="手动触发测试")
 def test_payjs_notify_success():
-    user, token = get_user_and_authorization()
+    user, authorization = get_user_and_authorization()
     data = {
         'attach': '{"tariff_name": "month1"}', 'mchid': '1511573911', 'openid': 'o7LFAwUGHPZxyNahwjoNQtKh8EME',
         'out_trade_no': '1534167177710ovfltv6a8v7BsFAH0', 'payjs_order_id': '2018081321325600636471374',
@@ -35,7 +35,7 @@ def test_payjs_notify_success():
     )
 
     # 充值状态通知
-    client = UnitTestAPIClient(authorization=token)
+    client = UnitTestAPIClient(authorization=authorization)
     response = client.post('/order/notify', data=data, format=None)
     assert response.status_code == status.HTTP_200_OK
 
@@ -58,7 +58,7 @@ def test_payjs_notify_success():
 
 @pytest.mark.skip(reason="手动触发测试")
 def test_payjs_notify_order_not_exist():
-    user, token = get_user_and_authorization()
+    user, authorization = get_user_and_authorization()
     data = {
         'attach': '{"tariff_name": "month1"}', 'mchid': '1511573911', 'openid': 'o7LFAwUGHPZxyNahwjoNQtKh8EME',
         'out_trade_no': '1534167177710ovfltv6a8v7BsFAH0', 'payjs_order_id': '2018081321325600636471374',
@@ -67,7 +67,7 @@ def test_payjs_notify_order_not_exist():
     }
 
     # 充值状态通知
-    client = UnitTestAPIClient(authorization=token)
+    client = UnitTestAPIClient(authorization=authorization)
     response = client.post('/order/notify', data=data, format=None)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.data == 'invalid_order'
@@ -75,8 +75,8 @@ def test_payjs_notify_order_not_exist():
 
 @pytest.mark.skip(reason="手动触发测试")
 def test_payjs_notify_sign_error():
-    user, token = get_user_and_authorization()
-    client = UnitTestAPIClient(authorization=token)
+    user, authorization = get_user_and_authorization()
+    client = UnitTestAPIClient(authorization=authorization)
     data = {
         'attach': ['{"tariff_name": "month1"}'], 'mchid': ['1511573911'], 'openid': ['o7LFAwUGHPZxyNahwjoNQtKh8EME'],
         'out_trade_no': ['1534167177710ovfltv6a8v7BsFAH0'], 'payjs_order_id': ['2018081321325600636471374'],

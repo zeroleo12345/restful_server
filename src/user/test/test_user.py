@@ -21,8 +21,8 @@ class TestUser:
 
     def test_user_with_token(self):
         settings.DEBUG = True
-        user, token = get_user_and_authorization()
-        client = UnitTestAPIClient(authorization=token)
+        user, authorization = get_user_and_authorization()
+        client = UnitTestAPIClient(authorization=authorization)
         response = client.get('/user?code=001yROix1KtF1c0waVgx1k6Bix1yROiR')
         assert response.status_code == status.HTTP_200_OK
 
@@ -38,7 +38,7 @@ class TestUser:
 
     def test_user_without_token(self):
         settings.DEBUG = True
-        # httpClient 没有 token
+        # httpClient 没有 authorization
         client = UnitTestAPIClient()
         response = client.get('/user?code=001yROix1KtF1c0waVgx1k6Bix1yROiR')
         assert response.status_code == status.HTTP_200_OK
@@ -56,8 +56,8 @@ class TestUser:
 
     def test_user_resource_success(self):
         settings.DEBUG = True
-        user, token = get_user_and_authorization()
+        user, authorization = get_user_and_authorization()
         ResourceFactory(user=user)
-        client = UnitTestAPIClient(authorization=token)
+        client = UnitTestAPIClient(authorization=authorization)
         response = client.get('/resource')
         assert response.status_code == status.HTTP_200_OK
