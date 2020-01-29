@@ -1,4 +1,15 @@
+import os
+import time
 import logging
+
+
+class MyFormatter(logging.Formatter):
+    pass
+    # def format(self, record):
+    #     msg = logging.Formatter.format(self, record)
+    #     if isinstance(msg, str):
+    #         msg = msg.decode('utf8', 'replace')
+    #     return msg
 
 
 class Logger(object):
@@ -19,6 +30,7 @@ class Logger(object):
         #
         self._logger = logging.getLogger(name)  # if no name is specified, return root logger of the hierarchy
         self._logger.addHandler(hdlr=self.get_stream_handler())
+        self._logger.addHandler(hdlr=self.get_file_handler())
         self.set_level(log_level='debug')
         self.set_header(log_header=header)
 
@@ -31,6 +43,19 @@ class Logger(object):
         #
         handler = logging.StreamHandler(stream=None)
         handler.setFormatter(fmt=formatter)
+        return handler
+
+    def get_filename(self) -> str:
+        """ {header}_{yyyymmdd}_{pid}.log """
+        yyyymmdd = time.strftime("%Y%m%d", time.localtime())
+        pid = os.getpid()
+        return os.path.join(self._log_directory, f'{self._log_header}_{yyyymmdd}_{pid}.log')
+
+    @staticmethod
+    def get_file_handler(self):
+        filename = self.get_filename()
+        handler = logging.FileHandler(filename=filename, mode='a', encoding='utf-8')
+        handler.setFormatter(MyFormatter(fmt=self.fmt, datefmt=self.datefmt))
         return handler
 
     def set_level(self, log_level: str):
