@@ -33,7 +33,6 @@ class Logger(object):
         #
         self._logger = logging.getLogger(name)  # if no name is specified, return root logger of the hierarchy
         self._logger.addHandler(hdlr=self.get_stream_handler())
-        self._logger.addHandler(hdlr=self.get_file_handler())
         self.set_level(log_level='debug')
         self.set_header(log_header=header)
 
@@ -71,6 +70,10 @@ class Logger(object):
 
     def set_header(self, log_header: str):
         self._log_header = log_header
+
+    def toggle_log_in_file(self, toggle=False):
+        if toggle:
+            self._logger.addHandler(hdlr=self.get_file_handler())
 
     def set_directory(self, log_directory: str):
         self._log_directory = log_directory
