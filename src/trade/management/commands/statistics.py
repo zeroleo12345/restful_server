@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.db.models import Sum
 # 自己的类
 from trade.management.commands import Service
-from trade.order.models import Orders
+from models.models import Orders
 from mybase3.mylog3 import log
 from trade.utils.slack import send_slack_message
 

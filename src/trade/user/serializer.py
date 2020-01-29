@@ -1,6 +1,6 @@
 from rest_framework import serializers
 # 自己的库
-from trade.user.models import Weixin, User
+from models import Weixin, User
 
 
 class WeixinSerializer(serializers.ModelSerializer):

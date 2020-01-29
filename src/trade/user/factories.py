@@ -2,7 +2,7 @@ from django.contrib.auth.hashers import make_password
 from django.utils import timezone
 
 import factory
-from trade.user.models import Weixin, User
+from models.models import Weixin, User
 
 
 class WeixinFactory(factory.DjangoModelFactory):

@@ -1,7 +1,7 @@
 from rest_framework import generics
 # 自己的库
 from trade.framework.authorization import JWTAuthentication, UserPermission
-from trade.resource.models import Resource
+from models.models import Resource
 from trade.resource.serializer import ResourceSerializer
 
 

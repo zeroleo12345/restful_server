@@ -1,7 +1,7 @@
 from django.utils import timezone
 
 import factory
-from trade.order.models import Orders
+from models.models import Orders
 
 
 class OrdersFactory(factory.DjangoModelFactory):

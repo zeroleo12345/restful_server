@@ -1,7 +1,7 @@
 from django.db import models
 # 自己的库
-from trade.user.models import User
-from trade.order.models import Orders
+from models import User
+from models import Orders
 
 
 # 用户免费资源

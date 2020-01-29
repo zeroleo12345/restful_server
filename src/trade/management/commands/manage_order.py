@@ -8,7 +8,7 @@ from django.core.management.base import BaseCommand
 # 自己的类
 from trade.management.commands import Service
 from trade.order.views import OrderNotifyView
-from trade.order.models import Orders
+from models.models import Orders
 from trade.utils.wepay import WePay
 from mybase3.mylog3 import log
 

@@ -10,8 +10,8 @@ import sentry_sdk
 from mybase3.mylog3 import log
 from trade.utils.django import get_client_ip
 from trade.utils.wepay import WePay
-from trade.order.models import Orders, Tariff
-from trade.resource.models import Resource, ResourceChange
+from models import Orders, Tariff
+from models import Resource, ResourceChange
 from trade.framework.authorization import JWTAuthentication, UserPermission
 
 

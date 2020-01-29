@@ -3,7 +3,7 @@ from django.utils import timezone
 import factory
 # 自己的库
 from trade.user.factories import UserFactory
-from trade.resource.models import Resource
+from models.models import Resource
 
 
 class ResourceFactory(factory.DjangoModelFactory):

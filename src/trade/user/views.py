@@ -3,11 +3,11 @@ from rest_framework import exceptions
 from django.db import transaction
 # 自己的库
 from trade.framework.authorization import JWTAuthentication
-from trade.user.models import User, Weixin
+from models.models import User, Weixin
 from trade.user.serializer import UserWeixinSerializer, UserSyncSerializer
 from trade.service.wechat.we_oauth import WeOAuth
 from trade.utils.myrandom import MyRandom
-from trade.resource.models import Resource
+from models.models import Resource
 from trade.buffer.token import WechatCode
 
 
