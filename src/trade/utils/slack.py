@@ -1,8 +1,8 @@
 import requests
 # 第三方库
-from decouple import config
+from dynaconf import settings
 
-SLACK_WEB_HOOK = config('SLACK_WEB_HOOK')
+SLACK_WEB_HOOK = settings.get('SLACK_WEB_HOOK')
 
 
 def send_slack_message(text):
