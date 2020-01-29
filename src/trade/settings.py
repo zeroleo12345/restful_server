@@ -114,6 +114,7 @@ WSGI_APPLICATION = 'trade.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 pymysql.install_as_MySQLdb()
 DATABASE_ROUTERS = ['trade.framework.database.DatabaseAppsRouter']
+from pprint import pprint; import pdb; pdb.set_trace()
 DATABASES = {
     'default': {
         # {'NAME': 'trade', 'USER': 'root', 'PASSWORD': 'root', 'HOST': 'mysql', 'PORT': '', 'CONN_MAX_AGE': 0, 'ENGINE': 'django.db.backends.mysql'}
