@@ -22,7 +22,7 @@ class TestUser:
     def test_user_with_token(self):
         settings.DEBUG = True
         user, token = get_user_and_authorization()
-        client = UnitTestAPIClient(token=token)
+        client = UnitTestAPIClient(authorization=token)
         response = client.get('/user?code=001yROix1KtF1c0waVgx1k6Bix1yROiR')
         assert response.status_code == status.HTTP_200_OK
 
@@ -58,6 +58,6 @@ class TestUser:
         settings.DEBUG = True
         user, token = get_user_and_authorization()
         ResourceFactory(user=user)
-        client = UnitTestAPIClient(token=token)
+        client = UnitTestAPIClient(authorization=token)
         response = client.get('/resource')
         assert response.status_code == status.HTTP_200_OK

@@ -13,7 +13,7 @@ pytestmark = pytest.mark.django_db
 @pytest.mark.skipif(condition=settings.ENV.is_unittest(), reason="手动触发测试")
 def test_order_create():
     user, jwt_token = get_user_and_authorization()
-    client = UnitTestAPIClient(token=jwt_token)
+    client = UnitTestAPIClient(authorization=jwt_token)
     data = {
         'tariff_name': 'month1',
     }

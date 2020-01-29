@@ -24,7 +24,7 @@ class TestUser:
         user, token = get_user_and_authorization()
         ResourceFactory(user=user)
 
-        client = UnitTestAPIClient(token=token)
+        client = UnitTestAPIClient(authorization=token)
         response = client.get('/user/sync')
         assert response.status_code == status.HTTP_200_OK
 
