@@ -79,7 +79,7 @@ INSTALLED_APPS = [
     'trade',
     # 独立程序
 ]
-# AUTH_USER_MODEL = 'trader.Seller'
+# AUTH_USER_MODEL = 'trade.Seller'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -130,9 +130,7 @@ DATABASES = {
 }
 DATABASE_APPS_MAPPING = {
     # 'app_name':'database_name',
-    'console': 'default',
-    'trader': 'default',
-    'escrow': 'default',
+    'trade': 'default',
 }
 REDIS_MAX_CONNECTIONS = settings.get('REDIS_MAX_CONNECTIONS', default=100, cast='@int')
 CACHES = {
