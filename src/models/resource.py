@@ -7,6 +7,7 @@ from models import Orders
 # 用户免费资源
 class Resource(models.Model):
     class Meta:
+        app_label = 'trade'
         db_table = 'resource'
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
@@ -17,6 +18,7 @@ class Resource(models.Model):
 # 账本变更明细
 class ResourceChange(models.Model):
     class Meta:
+        app_label = 'trade'
         db_table = 'resource_change'
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)

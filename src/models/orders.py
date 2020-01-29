@@ -8,6 +8,7 @@ from models import User
 # 订单
 class Orders(models.Model):
     class Meta:
+        app_label = 'trade'
         db_table = 'orders'
 
     STATUS = (

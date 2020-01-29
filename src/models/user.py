@@ -4,6 +4,7 @@ from django.db import models
 # 微信号
 class Weixin(models.Model):
     class Meta:
+        app_label = 'trade'
         db_table = 'weixin'
 
     openid = models.CharField(max_length=255, null=False, unique=True)
@@ -16,6 +17,7 @@ class Weixin(models.Model):
 # 账户, 密码
 class User(models.Model):
     class Meta:
+        app_label = 'trade'
         db_table = 'user'
 
     ROLE = (
