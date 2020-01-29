@@ -7,7 +7,7 @@ from django.db import transaction
 from wechatpy.exceptions import InvalidSignatureException
 import sentry_sdk
 # 自己的库
-from mybase3.mylog3 import log
+from trade.settings import log
 from trade.utils.django import get_client_ip
 from trade.utils.wepay import WePay
 from models import Orders, Tariff

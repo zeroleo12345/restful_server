@@ -5,11 +5,11 @@ from django.utils import timezone
 from django.db.models import Sum
 # 自己的类
 from trade.management.commands import Service
-from models.models import Orders
-from mybase3.mylog3 import log
+from models import Orders
+from trade.settings import log
 from trade.utils.slack import send_slack_message
 
-log.setLogHeader('statistics')
+log.set_header('statistics')
 
 
 # 使用方法:  python manage.py statistics

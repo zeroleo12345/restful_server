@@ -15,4 +15,3 @@ gunicorn==19.9.0
 django-cors-headers==3.0.1
 qiniu==7.2.2
 sentry_sdk==0.8.0
-git+https://github.com/zeroleo12345/myclog-python.git

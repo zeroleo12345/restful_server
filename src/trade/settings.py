@@ -18,7 +18,7 @@ import dj_database_url
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 # 自己的库
-from mybase3.mylog3 import log
+from trade.utils.logger import log
 
 LOG_HEADER = config('LOG_HEADER', default='restful')
 LOG_DIR = config('LOG_DIR', default='../run/log')

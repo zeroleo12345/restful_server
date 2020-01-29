@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 # 第三方类
 import sentry_sdk
 # 自己的类
-from mybase3.mylog3 import log
+from trade.settings import log
 
 
 class Service(ABC):

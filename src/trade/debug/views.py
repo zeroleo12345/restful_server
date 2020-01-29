@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 # 自己的库
-from mybase3.mylog3 import log
+from trade.settings import log
 
 
 # /debug 调试接口, 用于打印 HTTP body 和 HTTP 参数

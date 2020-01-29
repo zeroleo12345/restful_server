@@ -8,11 +8,11 @@ from django.core.management.base import BaseCommand
 # 自己的类
 from trade.management.commands import Service
 from trade.order.views import OrderNotifyView
-from models.models import Orders
+from models import Orders
 from trade.utils.wepay import WePay
-from mybase3.mylog3 import log
+from trade.settings import log
 
-log.setLogHeader('order')
+log.set_header('order')
 TZ = pytz.timezone('Asia/Shanghai')
 INTERVAL = datetime.timedelta(minutes=10)  # 超时10分钟
 TAG_FILE_PATH = 'time.tag'

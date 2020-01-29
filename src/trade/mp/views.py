@@ -12,7 +12,7 @@ from wechatpy.replies import TextReply
 from wechatpy import parse_message
 import sentry_sdk
 # 自己的库
-# from mybase3.mylog3 import log
+# from trade.settings import log
 
 
 # /mp/echostr
