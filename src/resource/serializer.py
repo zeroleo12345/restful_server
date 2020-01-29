@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.utils import timezone
 # 自己的库
-from models.models import Resource
+from models import Resource
 
 
 class ResourceSerializer(serializers.ModelSerializer):

@@ -22,7 +22,7 @@ class ResourceChange(models.Model):
         db_table = 'resource_change'
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
-    orders = models.ForeignKey(Orders, null=False)
+    orders = models.ForeignKey(Orders, on_delete=models.CASCADE, null=False)
     before = models.DateTimeField()
     after = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)    # ﻿auto_now_add only generated on 新创建
