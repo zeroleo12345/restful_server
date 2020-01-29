@@ -27,6 +27,9 @@ class Logger(object):
     def __init__(self, header='', name='default'):
         self._log_header = 'header'
         self._log_directory = './'
+        # 日志格式示例: 2019-08-04 07:52:25.210 [INFO] text
+        self.fmt = "%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s"     # 查看源码: logging/__init__.py: class Formatter
+        self.date_fmt = "%Y-%m-%d %H:%M:%S"
         #
         self._logger = logging.getLogger(name)  # if no name is specified, return root logger of the hierarchy
         self._logger.addHandler(hdlr=self.get_stream_handler())
@@ -34,15 +37,14 @@ class Logger(object):
         self.set_level(log_level='debug')
         self.set_header(log_header=header)
 
-    @staticmethod
-    def get_stream_handler():
-        # 日志格式示例: 2019-08-04 07:52:25.210 [INFO] text
-        date_fmt = "%Y-%m-%d %H:%M:%S"
-        fmt = "%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s"     # 查看源码: logging/__init__.py: class Formatter
-        formatter = logging.Formatter(fmt=fmt, datefmt=date_fmt)        # 查看源码: logging/__init__.py: def formatTime
-        #
+    def get_stream_handler(self):
         handler = logging.StreamHandler(stream=None)
-        handler.setFormatter(fmt=formatter)
+        handler.setFormatter(fmt=logging.Formatter(fmt=self.fmt, datefmt=self.date_fmt))
+        return handler
+
+    def get_file_handler(self):
+        handler = logging.FileHandler(filename=self.get_filename(), mode='a', encoding='utf-8')
+        handler.setFormatter(MyFormatter(fmt=self.fmt, datefmt=self.date_fmt))
         return handler
 
     def get_filename(self) -> str:
@@ -50,13 +52,6 @@ class Logger(object):
         yyyymmdd = time.strftime("%Y%m%d", time.localtime())
         pid = os.getpid()
         return os.path.join(self._log_directory, f'{self._log_header}_{yyyymmdd}_{pid}.log')
-
-    @staticmethod
-    def get_file_handler(self):
-        filename = self.get_filename()
-        handler = logging.FileHandler(filename=filename, mode='a', encoding='utf-8')
-        handler.setFormatter(MyFormatter(fmt=self.fmt, datefmt=self.datefmt))
-        return handler
 
     def set_level(self, log_level: str):
         """
