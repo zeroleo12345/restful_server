@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 # 自己的库
 from trade.framework.unittest import UnitTestAPIClient
 from models.factories.user import get_user_and_authorization
-from models.factories.factories import OrdersFactory
+from models.factories.orders import OrdersFactory
 
 # 使全部测试案例能用数据库, 参考:  https://pytest-django.readthedocs.io/en/latest/database.html
 pytestmark = pytest.mark.django_db
