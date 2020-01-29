@@ -5,7 +5,7 @@ services:
     container_name: restful_api
     build:
        context: .
-       dockerfile: ./Dockerfile
+       dockerfile: ./docker/api/Dockerfile
     depends_on:
       - mysql
       - redis
@@ -34,7 +34,7 @@ services:
     container_name: api_order
     build:
        context: .
-       dockerfile: ./Dockerfile
+       dockerfile: ./docker/api/Dockerfile
     depends_on:
       - mysql
       - redis
