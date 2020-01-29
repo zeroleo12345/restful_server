@@ -6,6 +6,7 @@ from user.serializer import UserWeixinSerializer, UserSyncSerializer
 from service.wechat.we_oauth import WeOAuth
 from trade.utils.myrandom import MyRandom
 from trade.framework.exception import GlobalException
+from trade.framework.authorization import JWTAuthentication
 from models import Resource
 from buffer.token import WechatCode
 from trade.framework.restful import BihuResponse
@@ -45,7 +46,11 @@ class UserView(APIView):
                 user = User.objects.create(**user_fields)   # create 返回 Model 实例
                 Resource.objects.create(user=user)
         data = UserWeixinSerializer(user).data
-        # request.user = user    # 用于Response时, 设置JsonWebToken
+        authorization = JWTAuthentication.jwt_encode_handler(user_dict=data)
+        data = {
+            'user': data,
+            'authorization': authorization,
+        }
         return BihuResponse(data=data)
 
 
