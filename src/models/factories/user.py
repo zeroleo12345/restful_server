@@ -2,6 +2,7 @@ from django.utils import timezone
 import factory
 #
 from models import Weixin, User
+from user.serializer import UserWeixinSerializer
 from trade.framework.authorization import JWTAuthentication
 
 
@@ -29,9 +30,6 @@ class UserFactory(factory.DjangoModelFactory):
 
 def get_user_and_authorization():
     user = UserFactory()
-    user_dict = {
-        'trader_id': user.trader_id,
-        'shop_id': user.shop_id,
-    }
+    user_dict = UserWeixinSerializer(user).data
     jwt_token = JWTAuthentication.jwt_encode_handler(user_dict=user_dict)
     return user, jwt_token
