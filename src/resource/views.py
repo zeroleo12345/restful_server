@@ -3,16 +3,17 @@ from rest_framework.views import APIView
 from trade.framework.authorization import JWTAuthentication
 from models import Resource
 from resource.serializer import ResourceSerializer
+from controls.auth import Authentication
+from trade.framework.restful import BihuResponse
 
 
-# /resource
 class UserResourceView(APIView):
     authentication_classes = (JWTAuthentication, )      # 默认配置
     permission_classes = ()
-    serializer_class = ResourceSerializer
 
-    def get(self):
-        user = self.request.user
-        resource = Resource.objects.get(user=user)
+    # /resource     获取免费资源
+    def get(self, request):
+        auth = Authentication(request)
+        resource = Resource.objects.get(user_id=auth.user_id)
         data = ResourceSerializer(resource).data
-        return data
+        return BihuResponse(data=data)

@@ -12,7 +12,7 @@ class WeixinSerializer(serializers.ModelSerializer):
 class UserWeixinSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        exclude = ('id',)
+        fields = '__all__'
 
     weixin = WeixinSerializer()
 
