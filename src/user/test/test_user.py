@@ -28,13 +28,13 @@ class TestUser:
 
         res_dict = response.json()
         assert 'ok' == res_dict['code']
-        assert 'openid' in res_dict['data']['weixin']
-        assert 'nickname' in res_dict['data']['weixin']
-        assert 'headimgurl' in res_dict['data']['weixin']
-        assert 'created_at' in res_dict['data']['weixin']
-        assert 'username' in res_dict['data']
-        assert 'is_enable' in res_dict['data']
-        assert 'role' in res_dict['data']
+        assert 'openid' in res_dict['data']['user']['weixin']
+        assert 'nickname' in res_dict['data']['user']['weixin']
+        assert 'headimgurl' in res_dict['data']['user']['weixin']
+        assert 'created_at' in res_dict['data']['user']['weixin']
+        assert 'username' in res_dict['data']['user']
+        assert 'is_enable' in res_dict['data']['user']
+        assert 'role' in res_dict['data']['user']
 
     def test_user_without_token(self):
         settings.DEBUG = True
