@@ -14,7 +14,8 @@ class Logger(object):
     #
 
     def __init__(self, header='', name='default'):
-        self._log_header = ''
+        self._log_header = 'header'
+        self._log_directory = './'
         #
         self._logger = logging.getLogger(name)  # if no name is specified, return root logger of the hierarchy
         self._logger.addHandler(hdlr=self.get_stream_handler())
@@ -50,6 +51,13 @@ class Logger(object):
 
     def set_header(self, log_header: str):
         self._log_header = log_header
+
+    def set_directory(self, log_directory: str):
+        self._log_directory = log_directory
+
+    def set_buffer(self, log_buffer_size: int):
+        # TODO 未完成
+        pass
 
     def i(self, msg, *args, **kwargs):
         self._logger.info(msg, *args, **kwargs)
