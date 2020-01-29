@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
 
 
 # 微信号
@@ -15,7 +14,7 @@ class Weixin(models.Model):
 
 
 # 账户, 密码
-class User(AbstractBaseUser):
+class User(models.Model):
     class Meta:
         db_table = 'user'
 

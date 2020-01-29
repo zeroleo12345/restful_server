@@ -39,10 +39,11 @@ class UserView(generics.RetrieveAPIView):
                     'nickname': nickname,
                     'headimgurl': avatar,
                 }
+                username = MyRandom.random_digit(length=8)
                 user_fields = {
                     'weixin': Weixin.objects.create(**weixin_fields),
-                    'username': MyRandom.random_digit(length=8),
-                    'password': MyRandom.random_digit(length=8),
+                    'username': username,
+                    'password': username,
                     'role': 'user',
                 }
                 with transaction.atomic():
