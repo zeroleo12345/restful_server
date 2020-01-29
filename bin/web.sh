@@ -1,10 +1,10 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # crond job
-cp /app/bin/crontab/root  /etc/crontabs/root
+cp /app/bin/crontab/root  /etc/crontab
 service cron start
 
-if [ "$DEBUG" == "True" ]; then
+if [[ "$DEBUG" == "True" ]]; then
     python manage.py migrate
     exec python manage.py runserver 0.0.0.0:8000
 else
