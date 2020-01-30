@@ -2,10 +2,9 @@
 from rest_framework.views import APIView
 from django.http import HttpResponse
 from django.conf import settings
-from django.db import transaction
 from wechatpy.exceptions import InvalidSignatureException
 import sentry_sdk
-# 自己的库
+# 项目库
 from framework.restful import BihuResponse
 from controls.auth import Authentication
 from trade.settings import log
@@ -55,18 +54,15 @@ class OrderView(APIView):
         return BihuResponse(jsapi_params)
 
 
-# /order/notify
 class OrderNotifyView(APIView):
     authentication_classes = ()
     permission_classes = ()
+    SUCCESS_RESPONSE = HttpResponse(
+        content="""<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>""",
+        content_type='text/xml',
+    )
 
-    @classmethod
-    def response_success(cls):
-        return HttpResponse(
-            content="""<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>""",
-            content_type='text/xml',
-        )
-
+    # /order/notify     付款结果通知
     def post(self, request):
         # 1. 解析微信侧回调请求
         try:
@@ -76,9 +72,9 @@ class OrderNotifyView(APIView):
             # (Pdb) request.body
             # b'<xml><appid><![CDATA[wx54d296959ee50c0b]]></appid>\n<attach><![CDATA[{"tariff_name": "month1"}]]></attach>\n<bank_type><![CDATA[CFT]]></bank_type>\n<cash_fee><![CDATA[1]]></cash_fee>\n<fee_type><![CDATA[CNY]]></fee_type>\n<is_subscribe><![CDATA[Y]]></is_subscribe>\n<mch_id><![CDATA[1517154171]]></mch_id>\n<nonce_str><![CDATA[dJ1t73xXmCrOjn8z5DP6BKyNqgI0cwvS]]></nonce_str>\n<openid><![CDATA[o0FSR0Zh3rotbOog_b2lytxzKrYo]]></openid>\n<out_trade_no><![CDATA[1540483879395x3Oko4Ta9RWamsQCW]]></out_trade_no>\n<result_code><![CDATA[SUCCESS]]></result_code>\n<return_code><![CDATA[SUCCESS]]></return_code>\n<sign><![CDATA[22BE162C29D8558541F04475C379E18B]]></sign>\n<time_end><![CDATA[20181026001122]]></time_end>\n<total_fee>1</total_fee>\n<trade_type><![CDATA[JSAPI]]></trade_type>\n<transaction_id><![CDATA[4200000206201810263667544938]]></transaction_id>\n</xml>'
             data = WePay.WECHAT_PAY.parse_payment_result(xml)
-        except (InvalidSignatureException, Exception) as exc:
-            sentry_sdk.capture_exception(exc)
-            return self.response_success()
+        except (InvalidSignatureException, Exception) as e:
+            sentry_sdk.capture_exception(e)
+            return self.SUCCESS_RESPONSE
 
         out_trade_no = data['out_trade_no']
         attach = data['attach']
@@ -88,7 +84,7 @@ class OrderNotifyView(APIView):
         if return_code != 'SUCCESS':
             return_msg = data.get('return_msg', '')
             log.e(f'wepay fail, return_msg: {return_msg}')
-            return self.response_success()
+            return self.SUCCESS_RESPONSE
 
         openid = data['openid']
         transaction_id = data['transaction_id']
@@ -97,34 +93,6 @@ class OrderNotifyView(APIView):
 
         # 增加用户免费资源
         OrderNotifyView.increase_user_resource(total_fee, out_trade_no, transaction_id, attach)
-        return self.response_success()
+        return self.SUCCESS_RESPONSE
 
-    @staticmethod
-    def increase_user_resource(total_fee, out_trade_no, transaction_id, attach):
-        # 根据out_trade_no检查数据库订单
-        order = Orders.objects.filter(out_trade_no=out_trade_no, total_fee=total_fee).select_related('user').first()
-        if not order:
-            log.e(f'order not exist')
-            return
-        # 去重逻辑
-        if order.is_paid():
-            log.w(f'order notify duplicate')
-            return
 
-        # 计算时长叠加
-        user = order.user
-        resource = Resource.objects.get(user=user)
-        tariff = Tariff.attach_to_tariff(attach)
-        before = resource.expired_at
-        after = tariff.increase_duration(before)
-
-        with transaction.atomic():
-            # 变更免费资源
-            resource.expired_at = after
-            resource.save()
-            # 变更订单状态 和 微信订单号
-            order.status = 'paid'
-            order.transaction_id = transaction_id
-            order.save()
-            # 插入免费资源历史变更表
-            ResourceChange.objects.create(user=user, orders=order, before=before, after=after)

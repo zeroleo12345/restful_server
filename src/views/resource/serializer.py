@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.utils import timezone
-# 自己的库
+# 项目库
 from models import Resource
 
 

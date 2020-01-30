@@ -11,7 +11,7 @@ from wechatpy.messages import TextMessage
 from wechatpy.replies import TextReply
 from wechatpy import parse_message
 import sentry_sdk
-# 自己的库
+# 项目库
 # from trade.settings import log
 
 

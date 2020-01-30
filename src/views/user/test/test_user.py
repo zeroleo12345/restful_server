@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 from django.conf import settings
 from rest_framework import status
 import pytest
-# 自己的库
+# 项目库
 from framework.unittest import UnitTestAPIClient
 from models.factories.user import get_user_and_authorization
 from service.wechat.we_client import WeClient

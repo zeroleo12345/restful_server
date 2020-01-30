@@ -1,5 +1,5 @@
 from rest_framework import serializers
-# 自己的库
+# 项目库
 from models import Weixin, User
 
 

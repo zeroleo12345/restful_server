@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from django.db import transaction
-# 自己的库
+# 项目库
 from models import User, Weixin
 from views.user.serializer import UserWeixinSerializer, UserSyncSerializer
 from service.wechat.we_oauth import WeOAuth

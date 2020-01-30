@@ -2,7 +2,7 @@ import time
 # 第三方库
 from django.conf import settings
 from wechatpy.pay import WeChatPay
-# 自己的库
+# 项目库
 from utils.myrandom import MyRandom
 
 

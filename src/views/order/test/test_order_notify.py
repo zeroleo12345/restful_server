@@ -4,7 +4,7 @@ from rest_framework import status
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
-# 自己的库
+# 项目库
 from framework.unittest import UnitTestAPIClient
 from models.factories.user import get_user_and_authorization
 from models.factories.orders import OrdersFactory

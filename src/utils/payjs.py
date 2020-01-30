@@ -4,7 +4,7 @@ from urllib.parse import urlencode, unquote_plus, urlparse, parse_qsl, urlunpars
 # 第三方库
 from dynaconf import settings
 import requests
-# 自己的库
+# 项目库
 from utils.myrandom import MyRandom
 
 # 参考:   https://gist.github.com/motord/c0d6979d7685708b02950216290e255f

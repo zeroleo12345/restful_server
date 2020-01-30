@@ -1,5 +1,7 @@
+from __future__ import annotations
+#
 from django.db import models
-# 自己的库
+# 项目库
 from models import User
 from models import Orders
 
@@ -14,6 +16,12 @@ class Resource(models.Model):
     expired_at = models.DateTimeField(auto_now_add=True)    # ﻿auto_now_add only generated on 新创建
     updated_at = models.DateTimeField(auto_now=True)        # ﻿auto_now is generated on 每次修改
 
+    def get(self, user_id):
+        resource = Resource.objects.filter(user_id=user_id).first()
+        if not resource:
+            return None
+        return resource
+
 
 # 账本变更明细
 class ResourceChange(models.Model):
@@ -26,3 +34,10 @@ class ResourceChange(models.Model):
     before = models.DateTimeField()
     after = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)    # ﻿auto_now_add only generated on 新创建
+
+    @classmethod
+    def create(cls, **kwargs) -> ResourceChange:
+        kwargs['card_id'] = get_increase_id(key=cls._meta.db_table)
+        card = cls.objects.create(**kwargs)
+        transaction.on_commit(lambda: CiccBankCard.CompanyCardCache.set(card=card))
+        return card

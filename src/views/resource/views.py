@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-# 自己的库
+# 项目库
 from framework.authorization import JWTAuthentication
 from models import Resource
 from views.resource.serializer import ResourceSerializer

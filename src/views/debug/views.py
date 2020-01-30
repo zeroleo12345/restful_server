@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-# 自己的库
+# 项目库
 from trade.settings import log
 from framework.restful import BihuResponse
 

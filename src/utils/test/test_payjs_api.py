@@ -3,7 +3,7 @@ from urllib.parse import urljoin
 # 第三方库
 from django.conf import settings
 from rest_framework import status
-# 自己的库
+# 项目库
 from utils.payjs import Payjs
 
 

@@ -2,7 +2,7 @@ import pytest
 from urllib.parse import urljoin
 # 第三方库
 from django.conf import settings
-# 自己的库
+# 项目库
 from utils.wepay import WePay
 from models.factories.user import get_user_and_authorization
 

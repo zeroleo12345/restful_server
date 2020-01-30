@@ -1,7 +1,7 @@
 # 第三方库
 from django.utils import timezone
 import factory
-# 自己的库
+# 项目库
 from models.factories.user import UserFactory
 from models import Resource
 
