@@ -42,8 +42,11 @@ jobs:
             flake8 src --config=.test/flake8.ini
             pytest src/ -c .test/pytest.ini
           environment:
-            REDIS_URI: "redis://localhost:6379/0"
+            DOTENV_PATH_FOR_DYNACONF: "data/etc/example.env"
+            ENVVAR_PREFIX_FOR_DYNACONF: "false"
+            DOTENV_OVERRIDE: "false"
             DATABASE_URI: "mysql://root:@127.0.0.1:3306/trade"
+            REDIS_URI: "redis://localhost:6379/0"
 
 workflows:
   version: 2
