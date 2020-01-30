@@ -55,6 +55,7 @@ def upload(file_path):
 
     # 上传
     ret, info = put_file(token, key=key, file_path=file_path)
+    print(f'文件上传结果: {ret}, 细节: {info}')
 
 
 def main():
