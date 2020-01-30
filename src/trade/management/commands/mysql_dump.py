@@ -1,4 +1,3 @@
-# coding:utf-8
 import os
 import subprocess
 import datetime
@@ -28,10 +27,11 @@ def init_args():
     return parser.parse_args()
 
 
-def gzip(file_path):
+def compress(file_path):
+    """ 压缩 """
     cmd = 'gzip {file_path}'.format(file_path=file_path)
     ret = subprocess.check_output(cmd, shell=True)
-    print(ret)
+    print(f'压缩命令: {cmd}, 结果: {ret}')
 
     gzip_file_path = file_path + '.gz'
     ret = os.path.isfile(gzip_file_path)
@@ -66,7 +66,7 @@ def main():
         directory=args.directory
     )
     # 压缩文件
-    file_path = gzip(file_path)
+    file_path = compress(file_path)
     # 上传文件到七牛
     upload(file_path)
 
@@ -83,10 +83,9 @@ def dump(host, port, username, password, db, directory):
     cmd = 'mysqldump -h{host} -P{port} -u{user} -p"{password}" --single-transaction {db} > {output}'.format(
         host=host, port=port, user=username,  password=password, db=db, output=output
     )
-    print(cmd)
 
     ret = subprocess.check_output(cmd, shell=True)
-    print(ret)
+    print(f'数据库导出命令: {cmd}, 结果: {ret}')
 
     # File check
     ret = os.path.isfile(output)
