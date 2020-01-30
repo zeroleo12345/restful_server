@@ -2,8 +2,8 @@ from django.utils import timezone
 import factory
 #
 from models import Weixin, User
-from user.serializer import UserWeixinSerializer
-from trade.framework.authorization import JWTAuthentication
+from views.user.serializer import UserWeixinSerializer
+from framework.authorization import JWTAuthentication
 
 
 class WeixinFactory(factory.DjangoModelFactory):

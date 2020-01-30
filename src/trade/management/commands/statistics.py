@@ -7,7 +7,7 @@ from django.db.models import Sum
 from trade.management.commands import Service
 from models import Orders
 from trade.settings import log
-from trade.utils.slack import send_slack_message
+from utils.slack import send_slack_message
 
 log.set_header('statistics')
 

@@ -21,8 +21,8 @@ import sentry_sdk
 from sentry_sdk.integrations.logging import ignore_logger
 from sentry_sdk.integrations.django import DjangoIntegration
 # 项目库
-from trade.utils.logger import log
-from trade.utils.signal import SigTerm
+from utils.logger import log
+from utils.signal import SigTerm
 SigTerm.register()
 
 
