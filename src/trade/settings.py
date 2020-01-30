@@ -21,8 +21,8 @@ import sentry_sdk
 from sentry_sdk.integrations.logging import ignore_logger
 from sentry_sdk.integrations.django import DjangoIntegration
 # 项目库
-from trade.utils.logger import log
-from trade.utils.signal import SigTerm
+from utils.logger import log
+from utils.signal import SigTerm
 SigTerm.register()
 
 
@@ -117,7 +117,7 @@ WSGI_APPLICATION = 'trade.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 pymysql.install_as_MySQLdb()
-DATABASE_ROUTERS = ['trade.framework.database.DatabaseAppsRouter']
+DATABASE_ROUTERS = ['framework.database.DatabaseAppsRouter']
 DATABASES = {
     'default': {
         # {'NAME': 'trade', 'USER': 'root', 'PASSWORD': 'root', 'HOST': 'mysql', 'PORT': '', 'CONN_MAX_AGE': 0, 'ENGINE': 'django.db.backends.mysql'}
@@ -138,7 +138,7 @@ CACHES = {
         'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': settings.get('REDIS_URI'),
         'OPTIONS': {
-            'CONNECTION_POOL_CLASS': 'trade.framework.database.MyBlockingConnectionPool',
+            'CONNECTION_POOL_CLASS': 'framework.database.MyBlockingConnectionPool',
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
             'SOCKET_TIMEOUT': 3,
             'SOCKET_CONNECT_TIMEOUT': 3,
@@ -191,17 +191,17 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
-    'EXCEPTION_HANDLER': 'trade.framework.restful.custom_exception_handler',
+    'EXCEPTION_HANDLER': 'framework.restful.custom_exception_handler',
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'trade.framework.authorization.JWTAuthentication',
+        'framework.authorization.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
     ),
     # 'DEFAULT_RENDERER_CLASSES': (
-    #     'trade.framework.restful.MyJSONRenderer',
+    #     'framework.restful.MyJSONRenderer',
     # ),
-    # 'DEFAULT_PAGINATION_CLASS': 'trade.framework.restful.MyPageNumberPagination',
+    # 'DEFAULT_PAGINATION_CLASS': 'framework.restful.MyPageNumberPagination',
     'UNAUTHENTICATED_USER': None,   # https://github.com/encode/django-rest-framework/issues/3262
 }
 

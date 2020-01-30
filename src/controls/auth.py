@@ -1,4 +1,4 @@
-from trade.framework.exception import GlobalException
+from framework.exception import GlobalException
 
 
 class Authentication(object):

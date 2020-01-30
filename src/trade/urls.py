@@ -1,10 +1,10 @@
 from django.conf.urls import url, include
-from user.urls import user_urls
-from resource.urls import resource_urls
-from order.urls import order_urls
-from mp.urls import mp_urls
-from heartbeat.views import HeartBeatView
-from debug.views import DebugView
+from views.user.urls import user_urls
+from views.resource.urls import resource_urls
+from views.order.urls import order_urls
+from views.mp.urls import mp_urls
+from views.heartbeat.views import HeartBeatView
+from views.debug.views import DebugView
 
 urlpatterns = [
     url(r'^heartbeat$', HeartBeatView.as_view()),
