@@ -32,8 +32,9 @@ class User(models.Model):
     is_enable = models.BooleanField(default=True)
     role = models.CharField(max_length=32, choices=ROLE, default='user')
 
-    def get(self, id):
-        user = User.objects.filter(id=id).first()
+    @classmethod
+    def get(cls, id):
+        user = cls.objects.filter(id=id).first()
         if not user:
             return None
         return user

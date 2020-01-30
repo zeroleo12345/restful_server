@@ -31,11 +31,18 @@ class Orders(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def get(self, out_trade_no):
-        order = Orders.objects.filter(out_trade_no=out_trade_no).first()
+    @classmethod
+    def get(cls, out_trade_no) -> Orders:
+        order = cls.objects.filter(out_trade_no=out_trade_no).first()
         if not order:
             return None
         return order
+
+    def update(self, **kwargs):
+        for k, v in kwargs.items():
+            assert hasattr(self, k)
+            setattr(self, k, v)
+        self.save()
 
     def is_paid(self):
         if self.status == 'paid':
@@ -59,11 +66,8 @@ class Orders(models.Model):
         after = tariff.increase_duration(before)
         with transaction.atomic():
             # 变更免费资源
-            resource.expired_at = after
-            resource.save()
+            resource.update(expired_at=after)
             # 变更订单状态 和 微信订单号
-            order.status = 'paid'
-            order.transaction_id = transaction_id
-            order.save()
+            order.update(status='paid', transaction_id=transaction_id)
             # 插入免费资源历史变更表
-            ResourceChange.objects.create(user=user, orders=order, before=before, after=after)
+            ResourceChange.create(user=user, orders=order, before=before, after=after)

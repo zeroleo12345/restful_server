@@ -22,6 +22,12 @@ class Resource(models.Model):
             return None
         return resource
 
+    def update(self, **kwargs):
+        for k, v in kwargs.items():
+            assert hasattr(self, k)
+            setattr(self, k, v)
+        self.save()
+
 
 # 账本变更明细
 class ResourceChange(models.Model):
@@ -37,7 +43,5 @@ class ResourceChange(models.Model):
 
     @classmethod
     def create(cls, **kwargs) -> ResourceChange:
-        kwargs['card_id'] = get_increase_id(key=cls._meta.db_table)
-        card = cls.objects.create(**kwargs)
-        transaction.on_commit(lambda: CiccBankCard.CompanyCardCache.set(card=card))
-        return card
+        resource_change = cls.objects.create(**kwargs)
+        return resource_change
