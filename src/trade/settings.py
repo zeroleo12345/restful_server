@@ -291,12 +291,11 @@ if DEBUG and PRINT_SQL:
 #
 POD_UID = settings.get('POD_UID', default=uuid.uuid4().hex)
 # 日志
-LOG_HEADER = settings.get('LOG_HEADER', default='restful')
 LOG_DIR = settings.get('LOG_DIR', default='../run/log')
 LOG_LEVEL = settings.get('LOG_LEVEL', default='debug')
 LOG_IN_FILE_TOGGLE = settings.get('LOG_IN_FILE_TOGGLE', default=0, cast='@bool')
 #
-log.set_header(LOG_HEADER)
+log.set_header('restful')
 log.set_directory(LOG_DIR)
 log.set_level(LOG_LEVEL)
 log.set_buffer(0)
