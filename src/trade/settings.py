@@ -293,13 +293,13 @@ POD_UID = settings.get('POD_UID', default=uuid.uuid4().hex)
 # 日志
 LOG_DIR = settings.get('LOG_DIR', default='../run/log')
 LOG_LEVEL = settings.get('LOG_LEVEL', default='debug')
-LOG_IN_FILE_TOGGLE = settings.get('LOG_IN_FILE_TOGGLE', default=0, cast='@bool')
+LOG_TOGGLE_FILE_HANDLER = settings.get('LOG_TOGGLE_FILE_HANDLER', default=0, cast='@bool')
 #
 log.set_header('restful')
 log.set_directory(LOG_DIR)
 log.set_level(LOG_LEVEL)
 log.set_buffer(0)
-log.toggle_log_in_file(toggle=LOG_IN_FILE_TOGGLE)
+log.toggle_file_handler(toggle=LOG_TOGGLE_FILE_HANDLER)
 #
 ignore_logger(log._logger.name)     # 不忽略的话, log.e会上报消息到sentry
 

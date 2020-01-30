@@ -12,6 +12,10 @@ class MyFormatter(logging.Formatter):
     #     return msg
 
 
+class EmptyFileHandler(object):
+    pass
+
+
 class Logger(object):
     _logger = None
     #
@@ -32,25 +36,10 @@ class Logger(object):
         self.date_fmt = "%Y-%m-%d %H:%M:%S"
         #
         self._logger = logging.getLogger(name)  # if no name is specified, return root logger of the hierarchy
-        self._logger.addHandler(hdlr=self.get_stream_handler())
+        self._steam_handler = None
+        self._file_handler = None
         self.set_level(log_level='debug')
         self.set_header(log_header=header)
-
-    def get_stream_handler(self):
-        handler = logging.StreamHandler(stream=None)
-        handler.setFormatter(fmt=logging.Formatter(fmt=self.fmt, datefmt=self.date_fmt))
-        return handler
-
-    def get_file_handler(self):
-        handler = logging.FileHandler(filename=self.get_filename(), mode='a', encoding='utf-8')
-        handler.setFormatter(MyFormatter(fmt=self.fmt, datefmt=self.date_fmt))
-        return handler
-
-    def get_filename(self) -> str:
-        """ {header}_{yyyymmdd}_{pid}.log """
-        yyyymmdd = time.strftime("%Y%m%d", time.localtime())
-        pid = os.getpid()
-        return os.path.join(self._log_directory, f'{self._log_header}_{yyyymmdd}_{pid}.log')
 
     def set_level(self, log_level: str):
         """
@@ -71,9 +60,11 @@ class Logger(object):
     def set_header(self, log_header: str):
         self._log_header = log_header
 
-    def toggle_log_in_file(self, toggle=False):
+    def toggle_file_handler(self, toggle=False):
         if toggle:
-            self._logger.addHandler(hdlr=self.get_file_handler())
+            pass
+        else:
+            self._file_handler = EmptyFileHandler()
 
     def set_directory(self, log_directory: str):
         self._log_directory = log_directory
@@ -82,19 +73,48 @@ class Logger(object):
         # TODO 未完成
         pass
 
+    def _get_stream_handler(self):
+        handler = logging.StreamHandler(stream=None)
+        handler.setFormatter(fmt=logging.Formatter(fmt=self.fmt, datefmt=self.date_fmt))
+        return handler
+
+    def _get_file_handler(self):
+        handler = logging.FileHandler(filename=self._get_filename(), mode='a', encoding='utf-8', delay=True)
+        handler.setFormatter(MyFormatter(fmt=self.fmt, datefmt=self.date_fmt))
+        return handler
+
+    def _get_filename(self) -> str:
+        """ {header}_{yyyymmdd}_{pid}.log """
+        yyyymmdd = time.strftime("%Y%m%d", time.localtime())
+        pid = os.getpid()
+        return os.path.join(self._log_directory, f'{self._log_header}_{yyyymmdd}_{pid}.log')
+
+    def _setup_handler(self):
+        if not self._steam_handler:
+            self._steam_handler = self._get_stream_handler()
+            self._logger.addHandler(hdlr=self._steam_handler)
+        if not self._file_handler:
+            self._file_handler = self._get_file_handler()
+            self._logger.addHandler(hdlr=self._file_handler)
+
     def i(self, msg, *args, **kwargs):
+        self._setup_handler()
         self._logger.info(msg, *args, **kwargs)
 
     def e(self, msg, *args, **kwargs):
+        self._setup_handler()
         self._logger.error(msg, *args, **kwargs)
 
     def w(self, msg, *args, **kwargs):
+        self._setup_handler()
         self._logger.warning(msg, *args, **kwargs)
 
     def d(self, msg, *args, **kwargs):
+        self._setup_handler()
         self._logger.debug(msg, *args, **kwargs)
 
     def t(self, msg, *args, **kwargs):  # more debug info
+        self._setup_handler()
         if self.get_level_int() == self.TRACE:
             self._logger.debug(msg, *args, **kwargs)
 
