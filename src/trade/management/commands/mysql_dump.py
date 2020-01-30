@@ -3,15 +3,15 @@ import os
 import subprocess
 import datetime
 # 第三方库
-from decouple import config
+from dynaconf import settings
 from qiniu import Auth, put_file
 
 HOME = os.path.expanduser("~")
 # 七牛秘钥
-QN_ACCESS_KEY = config('QN_ACCESS_KEY')
-QN_SECRET_KEY = config('QN_SECRET_KEY')
+QN_ACCESS_KEY = settings.get('QN_ACCESS_KEY')
+QN_SECRET_KEY = settings.get('QN_SECRET_KEY')
 # 上传空间
-QN_BUCKET = config('QN_BUCKET')
+QN_BUCKET = settings.get('QN_BUCKET')
 # 构建鉴权对象
 qn_auth = Auth(QN_ACCESS_KEY, QN_SECRET_KEY)
 

@@ -1,25 +1,31 @@
 from rest_framework.test import APIClient
-
-from trade.user.factories import UserFactory
+#
 from trade.framework.authorization import JWTAuthentication
 
 
-def get_user_and_token():
-    user = UserFactory()
-    jwt_token = JWTAuthentication.jwt_encode_handler(user)
-    return user, jwt_token
-
-
 class UnitTestAPIClient(APIClient):
-    def __init__(self, token=None):
-        http_token = 'HTTP_AUTHORIZATION'
-        token = str(token) if token else None
+    """
+    workaround:
+        https://github.com/encode/django-rest-framework/blob/master/tests/test_api_client.py
+        https://www.django-rest-framework.org/api-guide/testing/
+
+    Client 设置头部:
+        client.defaults['HTTP_X_FORWARDED_FOR'] = '127.0.0.1'
+    """
+
+    def __init__(self, authorization=None):
+        http_authorization = 'HTTP_AUTHORIZATION'
+        authorization = str(authorization) if authorization else None
 
         super().__init__(**{
-            http_token: token
+            http_authorization: authorization
         })
+        self.user = JWTAuthentication.jwt_decode_handler(jwt_token=authorization)['user'] if authorization else {}
 
     def post(self, path, data=None, format='json', *args, **kwargs):
+        # client.post(f'/debug', data='', format=None, content_type='application/xml')
+        # client.post(f'/debug', data={}, format='json')
+        # client.post(f'/debug', data=urlencode(data), format=None, content_type='application/x-www-form-urlencoded; charset=UTF-8')
         """
         :param path:
         :param data:

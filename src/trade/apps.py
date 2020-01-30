@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from trade.service.wechat.we_client import WeClient
+from service.wechat.we_client import WeClient
 
 
 class TradeConfig(AppConfig):

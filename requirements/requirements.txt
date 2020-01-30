@@ -1,23 +1,19 @@
-# wechatpy 依赖 cryptography 库! 只有alpine系统需增加 --no-binary cryptography
-cryptography==2.3.1 --no-binary cryptography
-wechatpy==1.7.0
-django==1.11.16
-djangorestframework==3.9.0
-PyJWT==1.6.4
-mysqlclient==1.3.13
-dj-database-url==0.4.2
+# wechatpy 依赖 cryptography 库!
+cryptography==2.7
+wechatpy==1.8.3
+django==2.1.13
+djangorestframework==3.9.4
+PyJWT==1.7.1
+PyMySQL==0.9.3
+gevent==1.4.0
+dynaconf==2.0.3
+dj-database-url==0.5.0
 django-hvad==1.8.0
 django-filter==1.1.0
 django-redis==4.10.0
-#django-crontab==0.7.1
-#whitenoise<4
 requests==2.20.1
-python-decouple==3.1
 pytz==2018.4
-gunicorn==19.7.1
-#celery==4.0.2
-pycurl==7.43.0.1
-django-cors-headers==2.4.0
+gunicorn==19.9.0
+django-cors-headers==3.0.1
 qiniu==7.2.2
-sentry_sdk==0.5.5
-git+https://github.com/zeroleo12345/myclog-python.git
+sentry_sdk==0.8.0

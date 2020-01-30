@@ -2,7 +2,7 @@ import time
 import hashlib
 from urllib.parse import urlencode, unquote_plus, urlparse, parse_qsl, urlunparse
 # 第三方库
-from decouple import config
+from dynaconf import settings
 import requests
 # 自己的库
 from trade.utils.myrandom import MyRandom
@@ -10,8 +10,8 @@ from trade.utils.myrandom import MyRandom
 # 参考:   https://gist.github.com/motord/c0d6979d7685708b02950216290e255f
 
 # PayJS
-PAYJS_MERCHANT_ID = config('PAYJS_MERCHANT_ID', default=None)     # payjs 商户号
-PAYJS_MERCHANT_KEY = config('PAYJS_MERCHANT_KEY', default=None)   # payjs API密钥
+PAYJS_MERCHANT_ID = settings.get('PAYJS_MERCHANT_ID', default=None)     # payjs 商户号
+PAYJS_MERCHANT_KEY = settings.get('PAYJS_MERCHANT_KEY', default=None)   # payjs API密钥
 
 
 def url_join_param(host, params):
