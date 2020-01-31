@@ -1,20 +1,6 @@
 from rest_framework import serializers
 # 项目库
-from models import Weixin, User
-
-
-class WeixinSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Weixin
-        fields = '__all__'
-
-
-class UserWeixinSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = '__all__'
-
-    weixin = WeixinSerializer()
+from models import User
 
 
 class UserSyncSerializer(serializers.ModelSerializer):

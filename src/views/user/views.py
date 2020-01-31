@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from django.db import transaction
 # 项目库
-from models import User, Weixin
-from views.user.serializer import UserWeixinSerializer, UserSyncSerializer
+from models import User
+from views.user.serializer import UserSyncSerializer
 from service.wechat.we_oauth import WeOAuth
 from utils.myrandom import MyRandom
 from framework.exception import GlobalException
@@ -28,18 +28,13 @@ class UserView(APIView):
                 raise GlobalException(data={'code': 'invalid_code', 'message': f'code无效, 请退出重试'}, status=400)
             WechatCode.set(code, openid=openid, nickname=nickname, avatar=avatar)
         # 获取用户信息, 不存在则创建
-        weixin = Weixin.get(openid=openid)
-        if not weixin:
-            weixin_fields = {
+        user = User.get(openid=openid)
+        if not user:
+            username = MyRandom.random_digit(length=8)
+            user_fields = {
                 'openid': openid,
                 'nickname': nickname,
                 'headimgurl': avatar,
-            }
-            weixin = Weixin.create(**weixin_fields)
-        if not weixin.user_id:
-            username = MyRandom.random_digit(length=8)
-            user_fields = {
-                'weixin_id': weixin.id,
                 'username': username,
                 'password': username,
                 'role': 'user',
@@ -47,10 +42,10 @@ class UserView(APIView):
             with transaction.atomic():
                 user = User.create(**user_fields)   # create 返回 Model 实例
                 Resource.create(user_id=user.id)
-        data = UserWeixinSerializer(user).data
-        authorization = JWTAuthentication.jwt_encode_handler(user_dict=data)
+        user_info = user.to_dict()
+        authorization = JWTAuthentication.jwt_encode_handler(user_dict=user_info)
         data = {
-            'user': data,
+            'user': user_info,
             'authorization': authorization,
         }
         return BihuResponse(data=data)

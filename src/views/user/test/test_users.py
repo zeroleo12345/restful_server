@@ -22,7 +22,7 @@ class TestUser:
     def test_user_sync(self):
         settings.DEBUG = True
         user, authorization = get_user_and_authorization()
-        ResourceFactory(user=user)
+        ResourceFactory(user_id=user.id)
 
         client = UnitTestAPIClient(authorization=authorization)
         response = client.get('/user/sync')
