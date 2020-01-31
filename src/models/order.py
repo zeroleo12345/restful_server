@@ -4,7 +4,7 @@ import uuid
 from framework.database import models, BaseModel
 
 
-# 订单
+# 宽带订单
 class BroadBandOrder(models.Model, BaseModel):
     class Meta:
         app_label = 'trade'

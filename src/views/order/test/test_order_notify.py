@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 # 项目库
 from framework.unittest import UnitTestAPIClient
 from models.factories.user import UserFactory
-from models.factories.order import OrdersFactory
+from models.factories.order import BroadbandOrderFactory
 
 
 @pytest.mark.skip(reason="手动触发测试")
@@ -15,7 +15,7 @@ def test_payjs_notify_success():
     client = UnitTestAPIClient()
     user, authorization = UserFactory.new_user_and_authorization(client)
     client = UnitTestAPIClient(authorization=authorization)
-    OrdersFactory.new_order(client)
+    BroadbandOrderFactory.new_order(client)
 
     # FIXME
     # 充值状态通知

@@ -5,7 +5,7 @@ from rest_framework import status
 from service.wechat.we_pay import WePay
 
 
-class OrdersFactory(object):
+class BroadbandOrderFactory(object):
     @classmethod
     def new_order(cls, client):
         with patch('service.wechat.we_pay.WePay.create_jsapi_order') as _mock:

@@ -98,13 +98,13 @@ class ServiceLoop(Service):
             # 增加用户免费资源
             increase_user_resource(total_fee, out_trade_no, transaction_id, attach)
             BroadBandOrder.objects.filter(out_trade_no=out_trade_no).update(status='paid', transaction_id=transaction_id)
-            log.i(f"UPDATE orders SET status = 'paid', transaction_id = '{transaction_id}' WHERE out_trade_no = '{out_trade_no}'")
+            log.i(f"UPDATE broadband_order SET status = 'paid', transaction_id = '{transaction_id}' WHERE out_trade_no = '{out_trade_no}'")
 
         elif trade_state in ['NOTPAY', 'CLOSED', 'PAYERROR']:
 
             # 超时还未支付或订单已经关闭, 需把charge记录状态从0改为-1
             BroadBandOrder.objects.filter(out_trade_no=out_trade_no).update(status='expired')
-            log.i(f"UPDATE orders SET status = 'expired' WHERE out_trade_no = '{out_trade_no}'")
+            log.i(f"UPDATE broadband_order SET status = 'expired' WHERE out_trade_no = '{out_trade_no}'")
 
     def save_start_time(self):
         with open(TAG_FILE_PATH, 'w', encoding='utf8') as f:
