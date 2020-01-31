@@ -5,10 +5,10 @@ from framework.database import models, BaseModel
 
 
 # 订单
-class Order(models.Model, BaseModel):
+class BroadBandOrder(models.Model, BaseModel):
     class Meta:
         app_label = 'trade'
-        db_table = 'orders'
+        db_table = 'broadband_order'
 
     STATUS = (
         ('unpaid', '未支付'),
@@ -30,7 +30,7 @@ class Order(models.Model, BaseModel):
     updated_at = models.DateTimeField(auto_now=True)
 
     @classmethod
-    def get(cls, out_trade_no) -> Order:
+    def get(cls, out_trade_no) -> BroadBandOrder:
         order = cls.objects.filter(out_trade_no=out_trade_no).first()
         if not order:
             return None

@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.db.models import Sum
 # 自己的类
 from trade.management.commands import Service
-from models import Order
+from models import BroadBandOrder
 from trade.settings import log
 from utils.slack import send_slack_message
 
@@ -26,14 +26,14 @@ class ServiceLoop(Service):
         # 累计昨天成交
         today = timezone.localtime().replace(hour=0, minute=0, second=0, microsecond=0)
         yesterday = today - datetime.timedelta(days=1)
-        today_sum = Order.objects.filter(
+        today_sum = BroadBandOrder.objects.filter(
             status='paid', updated_at__gt=yesterday, updated_at__lt=today
         ).aggregate(sum=Sum('total_fee'))['sum']
         if not today_sum:
             today_sum = 0
 
         # 累计所有成交
-        total_sum = Order.objects.filter(status='paid').aggregate(sum=Sum('total_fee'))['sum']
+        total_sum = BroadBandOrder.objects.filter(status='paid').aggregate(sum=Sum('total_fee'))['sum']
         if not total_sum:
             total_sum = 0
 
