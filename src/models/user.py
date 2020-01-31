@@ -7,7 +7,7 @@ from framework.database import models, BaseModel
 class User(models.Model, BaseModel):
     class Meta:
         app_label = 'trade'
-        db_table = 'user'
+        db_table = 'broadband_user'
 
     ROLE = (
         ('vip', 'VIP用户'),
