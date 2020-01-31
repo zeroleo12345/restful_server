@@ -14,5 +14,7 @@ class UserResourceView(APIView):
     def get(self, request):
         auth = Authentication(request)
         user = User.get(id=auth.user_id)
-        data = user.get_resource_status()
+        data = {
+            'status': user.get_resource_status(),
+        }
         return BihuResponse(data=data)
