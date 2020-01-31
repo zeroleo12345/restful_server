@@ -13,7 +13,7 @@ from models.factories.orders import OrdersFactory
 @pytest.mark.skip(reason="手动触发测试")
 def test_payjs_notify_success():
     client = UnitTestAPIClient()
-    user, authorization = UserFactory.new_user_and_authorization()
+    user, authorization = UserFactory.new_user_and_authorization(client)
     data = {
         'attach': '{"tariff_name": "month1"}', 'mchid': '1511573911', 'openid': 'o7LFAwUGHPZxyNahwjoNQtKh8EME',
         'out_trade_no': '1534167177710ovfltv6a8v7BsFAH0', 'payjs_order_id': '2018081321325600636471374',

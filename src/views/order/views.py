@@ -41,7 +41,7 @@ class OrderView(APIView):
         out_trade_no = order_params['out_trade_no']
         attach = order_params['attach']
         # 订单入库
-        Orders.objects.create(
+        Orders.create(
             user_id=auth.user_id,
             openid=openid,
             out_trade_no=out_trade_no,
