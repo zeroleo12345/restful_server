@@ -3,7 +3,7 @@ from django.http.response import HttpResponse
 from rest_framework import exceptions
 # 项目库
 from framework.database import get_redis
-from framework import MyJSONRenderer
+from framework.restful import MyJSONRenderer
 from framework.exception import GlobalException
 
 render = MyJSONRenderer()
