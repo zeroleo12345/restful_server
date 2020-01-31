@@ -14,7 +14,7 @@ from controls.resource import increase_user_resource
 
 log.set_header('order')
 TZ = pytz.timezone('Asia/Shanghai')
-INTERVAL = datetime.timedelta(minutes=10)  # 超时10分钟
+TEN_MINUTE_DELTA = datetime.timedelta(minutes=10)  # 超时10分钟
 TAG_FILE_PATH = 'time.tag'
 
 
@@ -26,7 +26,6 @@ class Command(BaseCommand):
 
 
 class ServiceLoop(Service):
-    interval = INTERVAL.total_seconds()    # 单位秒
     start_time_dict = {"file": os.path.basename(__file__), "start_time": "2018-01-01 00:00:00"}
 
     def __init__(self):
@@ -35,8 +34,8 @@ class ServiceLoop(Service):
 
     def cal_end_time(self):
         now_datetime = datetime.datetime.now(TZ)
-        # 距离当前时间 INTERVAL 的时间点作为结束时间
-        end_time = now_datetime - INTERVAL
+        # 距离当前时间 TEN_MINUTE_DELTA 的时间点作为结束时间
+        end_time = now_datetime - TEN_MINUTE_DELTA
         return end_time
 
     def run(self):
@@ -125,11 +124,11 @@ class ServiceLoop(Service):
         start_time = TZ.localize(datetime.datetime.strptime(self.start_time_dict['start_time'], "%Y-%m-%d %H:%M:%S"))
 
         now_datetime = datetime.datetime.now(TZ)
-        if now_datetime - start_time < INTERVAL:
-            time.sleep(INTERVAL.total_seconds())   # 睡眠X秒, 再处理
+        if now_datetime - start_time < TEN_MINUTE_DELTA:
+            time.sleep(TEN_MINUTE_DELTA.total_seconds())   # 睡眠X秒, 再处理
 
-        # 距离当前时间 INTERVAL 的时间点作为结束时间
-        end_time = now_datetime - INTERVAL
+        # 距离当前时间 TEN_MINUTE_DELTA 的时间点作为结束时间
+        end_time = now_datetime - TEN_MINUTE_DELTA
 
         log.i(f'init start_time: {start_time}, end_time: {end_time}')
         return start_time, end_time
