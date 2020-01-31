@@ -60,7 +60,7 @@ class ServiceLoop(Service):
         total_fee = order.total_fee
 
         # 1. 查询订单API, 获取查询结果
-        ret_json = WePay.WECHAT_PAY.order.query(None, out_trade_no)
+        ret_json = WePay.query_order(out_trade_no)
         # OrderedDict([
         #  ('return_code', 'SUCCESS'), ('return_msg', 'OK'), ('appid', 'wx54d296959ee50c0b'), ('mch_id', '1517154171'),
         #  ('nonce_str', 'LQ36VyPkbS7tK7Nk'), ('sign', '5182234EB26EBFB718D5FDD1189E6056'), ('result_code', 'SUCCESS'),
@@ -74,7 +74,7 @@ class ServiceLoop(Service):
             return
 
         # 2. 检查签名
-        if not WePay.WECHAT_PAY.check_signature(ret_json):
+        if not WePay.check_signature(ret_json):
             log.e('sign illegal, sign:{}', ret_json['sign'])
             return
 

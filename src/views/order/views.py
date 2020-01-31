@@ -76,7 +76,7 @@ class OrderNotifyView(APIView):
             xml = request.body
             # (Pdb) request.body
             # b'<xml><appid><![CDATA[wx54d296959ee50c0b]]></appid>\n<attach><![CDATA[{"tariff_name": "month1"}]]></attach>\n<bank_type><![CDATA[CFT]]></bank_type>\n<cash_fee><![CDATA[1]]></cash_fee>\n<fee_type><![CDATA[CNY]]></fee_type>\n<is_subscribe><![CDATA[Y]]></is_subscribe>\n<mch_id><![CDATA[1517154171]]></mch_id>\n<nonce_str><![CDATA[dJ1t73xXmCrOjn8z5DP6BKyNqgI0cwvS]]></nonce_str>\n<openid><![CDATA[o0FSR0Zh3rotbOog_b2lytxzKrYo]]></openid>\n<out_trade_no><![CDATA[1540483879395x3Oko4Ta9RWamsQCW]]></out_trade_no>\n<result_code><![CDATA[SUCCESS]]></result_code>\n<return_code><![CDATA[SUCCESS]]></return_code>\n<sign><![CDATA[22BE162C29D8558541F04475C379E18B]]></sign>\n<time_end><![CDATA[20181026001122]]></time_end>\n<total_fee>1</total_fee>\n<trade_type><![CDATA[JSAPI]]></trade_type>\n<transaction_id><![CDATA[4200000206201810263667544938]]></transaction_id>\n</xml>'
-            data = WePay.WECHAT_PAY.parse_payment_result(xml)
+            data = WePay.parse_payment_result(xml)
         except (InvalidSignatureException, Exception) as e:
             sentry_sdk.capture_exception(e)
             return self.SUCCESS_RESPONSE

@@ -2,7 +2,7 @@ from unittest.mock import patch
 #
 from rest_framework import status
 #
-from service.wechat.we_pay import WePay
+from models import BroadBandOrder
 
 
 class BroadbandOrderFactory(object):
@@ -34,3 +34,7 @@ class BroadbandOrderFactory(object):
         assert 'paySign' in data['param']
         assert 'signType' in data['param']
         assert 'timeStamp' in data['param']
+        out_trade_no = res_dict['order']['out_trade_no']
+        order = BroadBandOrder.get(out_trade_no=out_trade_no)
+        assert order
+        return order

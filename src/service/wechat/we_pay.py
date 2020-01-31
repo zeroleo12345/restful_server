@@ -2,11 +2,13 @@
 from trade import settings
 from wechatpy.pay import WeChatPay
 from wechatpy.exceptions import WeChatPayException
+from wechatpy.utils import check_signature
 # 项目库
 from framework.field import EnumBase
 
 
 class WePay(object):
+    check_signature = check_signature
     _pay_api = WeChatPay(
         appid=settings.MP_APP_ID,
         api_key=settings.MP_APP_KEY,
@@ -218,3 +220,4 @@ class WePay(object):
     @classmethod
     def parse_payment_result(cls, xml):
         return cls._pay_api.parse_payment_result(xml)
+
