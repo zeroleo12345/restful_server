@@ -15,9 +15,8 @@ def test_payjs_notify_success():
     client = UnitTestAPIClient()
     user, authorization = UserFactory.new_user_and_authorization(client)
     client = UnitTestAPIClient(authorization=authorization)
-    BroadbandOrderFactory.new_order(client)
-
-    # FIXME
+    # FIXME 返回order
+    order = BroadbandOrderFactory.new_order(client)
     # 充值状态通知
     data = {
         'attach': '{"tariff_name": "month1"}', 'mchid': '1511573911', 'openid': 'o7LFAwUGHPZxyNahwjoNQtKh8EME',
