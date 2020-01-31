@@ -6,7 +6,6 @@ from models import BroadBandOrder, User, Tariff, ResourceChange
 def increase_user_resource(total_fee, out_trade_no, transaction_id, attach):
     # 根据out_trade_no检查数据库订单
     order = BroadBandOrder.get(out_trade_no=out_trade_no)
-    from pprint import pprint; import pdb; pdb.set_trace()
     assert order
     assert not order.is_paid()
     user = User.get(id=order.user_id)
@@ -21,4 +20,4 @@ def increase_user_resource(total_fee, out_trade_no, transaction_id, attach):
         # 变更订单状态 和 微信订单号
         order.update(status='paid', transaction_id=transaction_id)
         # 插入免费资源历史变更表
-        ResourceChange.create(user=user, order_id=order.id, before=before, after=after)
+        ResourceChange.create(user_id=user.id, order_id=order.id, before=before, after=after)

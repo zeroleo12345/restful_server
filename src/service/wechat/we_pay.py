@@ -220,4 +220,3 @@ class WePay(object):
     @classmethod
     def parse_payment_result(cls, xml):
         return cls._pay_api.parse_payment_result(xml)
-

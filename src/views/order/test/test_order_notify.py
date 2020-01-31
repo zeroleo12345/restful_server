@@ -19,6 +19,9 @@ def test_payjs_notify_success():
     order = BroadbandOrderFactory.new_order(client)
     with patch('service.wechat.we_pay.WePay.parse_payment_result') as _mock:
         _mock.return_value = {
+            'appid': order.appid,
+            'attach': order.attach,
+            'bank_type': 'CFT',
             'return_code': 'SUCCESS',
             'out_trade_no': order.out_trade_no,
             'total_fee': order.total_fee,

@@ -14,8 +14,6 @@ class UserResourceView(APIView):
     def get(self, request):
         auth = Authentication(request)
         user = User.get(id=auth.user_id)
-        data = {
-            'status': user.get_resource_status(),
-        }
-        from pprint import pprint; import pdb; pdb.set_trace()
+        data = user.to_dict()
+        data['status'] = user.get_resource_status()
         return BihuResponse(data=data)
