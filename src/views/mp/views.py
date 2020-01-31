@@ -15,12 +15,12 @@ import sentry_sdk
 # from trade.settings import log
 
 
-# /mp/echostr
 class EchoStrView(APIView):
     authentication_classes = ()
     permission_classes = ()
     renderer_classes = (StaticHTMLRenderer,)    # response的content-type方式, 会使用指定类序列化body
 
+    # /mp/echostr
     def get(self, request):
         """
         URL样例:  {URL}/echostr?signature=40lenString&echostr=16809769573550014143&timestamp=1527776959&nonce=1011789502

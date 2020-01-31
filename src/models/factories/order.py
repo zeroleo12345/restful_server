@@ -20,6 +20,7 @@ class BroadbandOrderFactory(object):
                 'prepay_id': 'wx242238115691612efb08d4092661000000',
                 'trade_type': 'JSAPI',
             }
+            #
             data = {
                 'tariff_name': 'month1',
             }
