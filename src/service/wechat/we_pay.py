@@ -4,7 +4,7 @@ from wechatpy.pay import WeChatPay
 from wechatpy.exceptions import WeChatPayException
 from wechatpy.utils import check_signature
 # 项目库
-from framework.field import EnumBase
+from framework.field import BaseEnum
 
 
 class WePay(object):
@@ -20,7 +20,7 @@ class WePay(object):
         sandbox=settings.MP_PAY_SANDBOX,
     )
 
-    class TradeState(EnumBase):
+    class TradeState(BaseEnum):
         PAID = 'SUCCESS'            # 支付成功
         REFUND = 'REFUND'           # 转入退款
         NOTPAY = 'NOTPAY'           # 未支付

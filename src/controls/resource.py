@@ -6,9 +6,9 @@ from models import BroadBandOrder, User, Tariff, ResourceChange
 def increase_user_resource(total_fee, out_trade_no, transaction_id, attach):
     # 根据out_trade_no检查数据库订单
     order = BroadBandOrder.get(out_trade_no=out_trade_no)
+    from pprint import pprint; import pdb; pdb.set_trace()
     assert order
-    if order.is_paid():
-        return
+    assert not order.is_paid()
     user = User.get(id=order.user_id)
     assert user
     # 计算时长叠加

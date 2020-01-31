@@ -2,6 +2,7 @@ from __future__ import annotations
 import uuid
 # 第三方库
 from framework.database import models, BaseModel
+from framework.field import BaseEnum
 
 
 # 宽带订单
@@ -10,11 +11,10 @@ class BroadBandOrder(models.Model, BaseModel):
         app_label = 'trade'
         db_table = 'broadband_order'
 
-    STATUS = (
-        ('unpaid', '未支付'),
-        ('paid', '已支付'),
-        ('expired', '已过期'),
-    )
+    class Status(BaseEnum):
+        UNPAID = 'unpaid'       # 未支付
+        PAID = 'paid'           # 已支付
+        EXPIRED = 'expired'     # 已过期
 
     uuid = models.UUIDField(editable=False, default=uuid.uuid4)
     user_id = models.IntegerField(null=False)
@@ -25,7 +25,7 @@ class BroadBandOrder(models.Model, BaseModel):
     total_fee = models.IntegerField()                                   # 单位分
     appid = models.CharField(max_length=32)                             # appid
     mch_id = models.CharField(max_length=32)                            # 商户号
-    status = models.CharField(default='unpaid', max_length=32, choices=STATUS)
+    status = models.CharField(default='unpaid', max_length=32, choices=Status.model_choices())
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -36,7 +36,5 @@ class BroadBandOrder(models.Model, BaseModel):
             return None
         return order
 
-    def is_paid(self):
-        if self.status == 'paid':
-            return True
-        return False
+    def is_paid(self) -> bool:
+        return self.status == BroadBandOrder.Status.PAID.value
