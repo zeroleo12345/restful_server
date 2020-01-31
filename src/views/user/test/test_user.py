@@ -27,10 +27,10 @@ class TestUser:
 
         res_dict = response.json()
         assert 'ok' == res_dict['code']
-        assert 'openid' in res_dict['data']['user']['weixin']
-        assert 'nickname' in res_dict['data']['user']['weixin']
-        assert 'headimgurl' in res_dict['data']['user']['weixin']
-        assert 'created_at' in res_dict['data']['user']['weixin']
+        assert 'openid' in res_dict['data']['user']
+        assert 'nickname' in res_dict['data']['user']
+        assert 'headimgurl' in res_dict['data']['user']
+        assert 'created_at' in res_dict['data']['user']
         assert 'username' in res_dict['data']['user']
         assert 'is_enable' in res_dict['data']['user']
         assert 'role' in res_dict['data']['user']
@@ -44,10 +44,10 @@ class TestUser:
 
         res_dict = response.json()
         assert 'ok' == res_dict['code']
-        assert 'openid' in res_dict['data']['user']['weixin']
-        assert 'nickname' in res_dict['data']['user']['weixin']
-        assert 'headimgurl' in res_dict['data']['user']['weixin']
-        assert 'created_at' in res_dict['data']['user']['weixin']
+        assert 'openid' in res_dict['data']['user']
+        assert 'nickname' in res_dict['data']['user']
+        assert 'headimgurl' in res_dict['data']['user']
+        assert 'created_at' in res_dict['data']['user']
         assert 'username' in res_dict['data']['user']
         assert 'is_enable' in res_dict['data']['user']
         assert 'role' in res_dict['data']['user']

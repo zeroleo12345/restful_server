@@ -1,4 +1,6 @@
 from __future__ import annotations
+from django.utils import timezone
+#
 from framework.database import models, BaseModel
 
 
@@ -28,7 +30,7 @@ class User(models.Model, BaseModel):
     expired_at = models.DateTimeField(auto_now_add=True)    # ﻿auto_now_add only generated on 新创建
 
     @classmethod
-    def get(cls, id, openid):
+    def get(cls, id=None, openid=None):
         if id:
             user = cls.objects.filter(id=id).first()
         elif openid:
@@ -39,12 +41,12 @@ class User(models.Model, BaseModel):
             return None
         return user
 
-    def get_resource_status(self, row):
+    def get_resource_status(self):
         # expired: 已过期; working: 使用中; inactive: 已停用
-        if not row.user.is_enable:
+        if not self.is_enable:
             return 'inactive'
 
-        if row.expired_at > timezone.localtime():
+        if self.expired_at > timezone.localtime():
             return 'working'
 
         return 'expired'
