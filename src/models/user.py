@@ -15,6 +15,7 @@ class User(models.Model, BaseModel):
         ('guest', '访客'),
     )
 
+    id = models.AutoField(primary_key=True)
     openid = models.CharField(max_length=255, unique=True, null=False)
     nickname = models.CharField(max_length=255)
     headimgurl = models.URLField(max_length=512)

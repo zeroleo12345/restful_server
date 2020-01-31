@@ -16,6 +16,7 @@ class BroadBandOrder(models.Model, BaseModel):
         PAID = 'paid'           # 已支付
         EXPIRED = 'expired'     # 已过期
 
+    id = models.AutoField(primary_key=True)
     uuid = models.UUIDField(editable=False, default=uuid.uuid4)
     user_id = models.IntegerField(null=False)
     openid = models.CharField(max_length=255)

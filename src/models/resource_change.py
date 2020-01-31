@@ -9,6 +9,7 @@ class ResourceChange(models.Model, BaseModel):
         app_label = 'trade'
         db_table = 'resource_change'
 
+    id = models.AutoField(primary_key=True)
     user_id = models.IntegerField(null=False)
     order_id = models.IntegerField(null=False)
     before = models.DateTimeField()
