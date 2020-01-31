@@ -39,10 +39,3 @@ class UserFactory(factory.DjangoModelFactory):
         user = User.get(id=res_dict['data']['user']['id'])
         assert user
         return user, authorization
-
-
-def get_user_and_authorization():
-    user = UserFactory()
-    user_dict = user.to_dict()
-    authorization = JWTAuthentication.jwt_encode_handler(user_dict=user_dict)
-    return user, authorization

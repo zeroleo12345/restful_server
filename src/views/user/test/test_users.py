@@ -5,7 +5,7 @@ from rest_framework import status
 import pytest
 # 项目库
 from framework.unittest import UnitTestAPIClient
-from models.factories.user import get_user_and_authorization
+from models.factories.user import UserFactory
 from service.wechat.we_client import WeClient
 
 WeClient.create_mp_menu = MagicMock()
@@ -20,7 +20,8 @@ class TestUser:
 
     def test_user_sync(self):
         settings.DEBUG = True
-        user, authorization = get_user_and_authorization()
+        client = UnitTestAPIClient()
+        user, authorization = UserFactory.new_user_and_authorization(client)
         client = UnitTestAPIClient(authorization=authorization)
         response = client.get('/user/sync')
         assert response.status_code == status.HTTP_200_OK

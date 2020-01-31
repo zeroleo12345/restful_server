@@ -3,12 +3,13 @@ import pytest
 from rest_framework import status
 # 项目库
 from framework.unittest import UnitTestAPIClient
-from models.factories.user import get_user_and_authorization
+from models.factories.user import UserFactory
 
 
 @pytest.mark.skip(reason="手动触发测试")
 def test_order_create():
-    user, authorization = get_user_and_authorization()
+    client = UnitTestAPIClient()
+    user, authorization = UserFactory.new_user_and_authorization(client)
     client = UnitTestAPIClient(authorization=authorization)
     data = {
         'tariff_name': 'month1',
