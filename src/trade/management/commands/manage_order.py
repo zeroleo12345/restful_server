@@ -130,5 +130,5 @@ class ServiceLoop(Service):
         # 距离当前时间 TEN_MINUTE_DELTA 的时间点作为结束时间
         end_time = now_datetime - TEN_MINUTE_DELTA
 
-        log.i(f'init start_time: {start_time}, end_time: {end_time}')
+        log.i(f'init. start_time: {start_time}, end_time: {end_time}')
         return start_time, end_time
