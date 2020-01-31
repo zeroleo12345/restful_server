@@ -94,5 +94,3 @@ class OrderNotifyView(APIView):
         # 增加用户免费资源
         increase_user_resource(total_fee, out_trade_no, transaction_id, attach)
         return self.SUCCESS_RESPONSE
-
-

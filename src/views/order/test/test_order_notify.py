@@ -9,9 +9,6 @@ from framework.unittest import UnitTestAPIClient
 from models.factories.user import get_user_and_authorization
 from models.factories.orders import OrdersFactory
 
-# 使全部测试案例能用数据库, 参考:  https://pytest-django.readthedocs.io/en/latest/database.html
-pytestmark = pytest.mark.django_db
-
 
 @pytest.mark.skip(reason="手动触发测试")
 def test_payjs_notify_success():
