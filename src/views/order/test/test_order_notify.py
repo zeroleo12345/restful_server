@@ -12,7 +12,7 @@ from models.factories.user import UserFactory
 from models.factories.order import BroadbandOrderFactory
 
 
-@pytest.mark.skip(reason="手动触发测试")
+# @pytest.mark.skip(reason="手动触发测试")
 def test_payjs_notify_success():
     client = UnitTestAPIClient()
     user, authorization = UserFactory.new_user_and_authorization(client)

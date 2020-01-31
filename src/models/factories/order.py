@@ -28,14 +28,15 @@ class BroadbandOrderFactory(object):
         assert response.status_code == status.HTTP_200_OK
         res_dict = response.json()
         assert 'ok' == res_dict['code']
-        data = res_dict['data']
-        assert 'appId' in data['param']
-        assert 'nonceStr' in data['param']
-        assert 'package' in data['param']
-        assert 'paySign' in data['param']
-        assert 'signType' in data['param']
-        assert 'timeStamp' in data['param']
-        out_trade_no = res_dict['order']['out_trade_no']
+        order = res_dict['data']['order']
+        param = res_dict['data']['param']
+        assert 'appId' in param
+        assert 'nonceStr' in param
+        assert 'package' in param
+        assert 'paySign' in param
+        assert 'signType' in param
+        assert 'timeStamp' in param
+        out_trade_no = order['out_trade_no']
         order = BroadBandOrder.get(out_trade_no=out_trade_no)
         assert order
         return order
