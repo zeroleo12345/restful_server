@@ -21,4 +21,4 @@ def increase_user_resource(total_fee, out_trade_no, transaction_id, attach):
         # 变更订单状态 和 微信订单号
         order.update(status='paid', transaction_id=transaction_id)
         # 插入免费资源历史变更表
-        ResourceChange.create(user=user, orders=order, before=before, after=after)
+        ResourceChange.create(user=user, order_id=order.id, before=before, after=after)
