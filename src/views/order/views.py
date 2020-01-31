@@ -11,8 +11,8 @@ from trade.settings import log
 from utils.django import get_client_ip
 from utils.wepay import WePay
 from models import Orders, Tariff
-from models import Resource, ResourceChange
 from framework.authorization import JWTAuthentication
+from controls.resource import increase_user_resource
 
 
 class OrderView(APIView):
@@ -92,7 +92,7 @@ class OrderNotifyView(APIView):
         log.i(f'openid: {openid}, transaction_id: {transaction_id}, total_fee: {total_fee}')
 
         # 增加用户免费资源
-        OrderNotifyView.increase_user_resource(total_fee, out_trade_no, transaction_id, attach)
+        increase_user_resource(total_fee, out_trade_no, transaction_id, attach)
         return self.SUCCESS_RESPONSE
 
 

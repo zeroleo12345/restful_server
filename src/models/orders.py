@@ -1,9 +1,9 @@
 from __future__ import annotations
 import uuid
 # 第三方库
-from django.db import models, transaction
+from django.db import models
 # 项目库
-from models import User, Resource, Tariff, ResourceChange
+from models import User
 
 
 # 订单
@@ -48,26 +48,3 @@ class Orders(models.Model):
         if self.status == 'paid':
             return True
         return False
-
-    @staticmethod
-    def increase_user_resource(total_fee, out_trade_no, transaction_id, attach):
-        # 根据out_trade_no检查数据库订单
-        order = Orders.get(out_trade_no=out_trade_no)
-        assert order
-        if order.is_paid():
-            return
-        user = User.get(id=order.user_id)
-        assert user
-        resource = Resource.get(user_id=order.user_id)
-        assert resource
-        # 计算时长叠加
-        tariff = Tariff.attach_to_tariff(attach)
-        before = resource.expired_at
-        after = tariff.increase_duration(before)
-        with transaction.atomic():
-            # 变更免费资源
-            resource.update(expired_at=after)
-            # 变更订单状态 和 微信订单号
-            order.update(status='paid', transaction_id=transaction_id)
-            # 插入免费资源历史变更表
-            ResourceChange.create(user=user, orders=order, before=before, after=after)

@@ -7,10 +7,10 @@ import pytz
 from django.core.management.base import BaseCommand
 # 自己的类
 from trade.management.commands import Service
-from views.order.views import OrderNotifyView
 from models import Orders
 from utils.wepay import WePay
 from trade.settings import log
+from controls.resource import increase_user_resource
 
 log.set_header('order')
 TZ = pytz.timezone('Asia/Shanghai')
@@ -96,7 +96,7 @@ class ServiceLoop(Service):
                 return
 
             # 增加用户免费资源
-            OrderNotifyView.increase_user_resource(total_fee, out_trade_no, transaction_id, attach)
+            increase_user_resource(total_fee, out_trade_no, transaction_id, attach)
             Orders.objects.filter(out_trade_no=out_trade_no).update(status='paid', transaction_id=transaction_id)
             log.i(f"UPDATE orders SET status = 'paid', transaction_id = '{transaction_id}' WHERE out_trade_no = '{out_trade_no}'")
 
