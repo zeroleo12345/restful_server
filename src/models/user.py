@@ -1,5 +1,5 @@
+from __future__ import annotations
 from django.db import models
-
 
 # 微信号
 class Weixin(models.Model):
@@ -10,8 +10,26 @@ class Weixin(models.Model):
     openid = models.CharField(max_length=255, null=False, unique=True)
     nickname = models.CharField(max_length=255)
     headimgurl = models.URLField(max_length=512)
+    user_id = models.IntegerField(unique=True, null=True)
     #
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @classmethod
+    def get(cls, openid=None, user_id=None):
+        if openid:
+            weixin = cls.objects.filter(openid=openid).first()
+        elif user_id:
+            weixin = cls.objects.filter(user_id=user_id).first()
+        else:
+            raise Exception('param error')
+        if not weixin:
+            return None
+        return weixin
+
+    @classmethod
+    def create(cls, **kwargs):
+        obj = cls.objects.create(**kwargs)
+        return obj
 
 
 # 账户, 密码
@@ -38,3 +56,8 @@ class User(models.Model):
         if not user:
             return None
         return user
+
+    @classmethod
+    def create(cls, **kwargs):
+        obj = cls.objects.create(**kwargs)
+        return obj

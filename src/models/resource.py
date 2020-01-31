@@ -28,6 +28,11 @@ class Resource(models.Model):
             setattr(self, k, v)
         self.save()
 
+    @classmethod
+    def create(cls, **kwargs):
+        obj = cls.objects.create(**kwargs)
+        return obj
+
 
 # 账本变更明细
 class ResourceChange(models.Model):
@@ -42,6 +47,6 @@ class ResourceChange(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)    # ﻿auto_now_add only generated on 新创建
 
     @classmethod
-    def create(cls, **kwargs) -> ResourceChange:
-        resource_change = cls.objects.create(**kwargs)
-        return resource_change
+    def create(cls, **kwargs):
+        obj = cls.objects.create(**kwargs)
+        return obj

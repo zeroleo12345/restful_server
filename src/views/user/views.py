@@ -28,23 +28,25 @@ class UserView(APIView):
                 raise GlobalException(data={'code': 'invalid_code', 'message': f'code无效, 请退出重试'}, status=400)
             WechatCode.set(code, openid=openid, nickname=nickname, avatar=avatar)
         # 获取用户信息, 不存在则创建
-        user = User.objects.filter(weixin__openid=openid).first()
-        if not user:
+        weixin = Weixin.get(openid=openid)
+        if not weixin:
             weixin_fields = {
                 'openid': openid,
                 'nickname': nickname,
                 'headimgurl': avatar,
             }
+            weixin = Weixin.create(**weixin_fields)
+        if not weixin.user_id:
             username = MyRandom.random_digit(length=8)
             user_fields = {
-                'weixin': Weixin.objects.create(**weixin_fields),
+                'weixin': weixin.id,
                 'username': username,
                 'password': username,
                 'role': 'user',
             }
             with transaction.atomic():
-                user = User.objects.create(**user_fields)   # create 返回 Model 实例
-                Resource.objects.create(user=user)
+                user = User.create(**user_fields)   # create 返回 Model 实例
+                Resource.create(user_id=user.id)
         data = UserWeixinSerializer(user).data
         authorization = JWTAuthentication.jwt_encode_handler(user_dict=data)
         data = {

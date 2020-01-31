@@ -14,6 +14,6 @@ class UserResourceView(APIView):
     # /resource     获取免费资源
     def get(self, request):
         auth = Authentication(request)
-        resource = Resource.objects.get(user_id=auth.user_id)
+        resource = Resource.get(user_id=auth.user_id)
         data = ResourceSerializer(resource).data
         return BihuResponse(data=data)
