@@ -10,7 +10,7 @@ class ResourceChange(models.Model, BaseModel):
         db_table = 'resource_change'
 
     user_id = models.IntegerField(null=False)
-    orders_id = models.IntegerField(null=False)
+    order_id = models.IntegerField(null=False)
     before = models.DateTimeField()
     after = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)    # ﻿auto_now_add only generated on 新创建
