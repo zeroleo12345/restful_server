@@ -4,7 +4,7 @@ from django.utils import timezone
 from rest_framework import exceptions
 from django.http.response import Http404
 from dateutil.relativedelta import relativedelta
-# 自己的库
+# 项目库
 
 
 # 资费

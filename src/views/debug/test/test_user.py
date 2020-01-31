@@ -1,7 +1,7 @@
 # 第三方库
 from rest_framework import status
 import pytest
-# 自己的库
+# 项目库
 from framework.unittest import UnitTestAPIClient
 
 

@@ -1,5 +1,6 @@
 import signal
 import time
+import traceback
 from abc import ABC, abstractmethod
 # 第三方类
 import sentry_sdk
@@ -35,8 +36,9 @@ class Service(ABC):
                 time.sleep(self.interval)    # 睡眠 X 秒
         except KeyboardInterrupt:
             log.d('KeyboardInterrupt, break')
-        except Exception as exc:
-            sentry_sdk.capture_exception(exc)
+        except Exception as e:
+            log.e(traceback.format_exc())
+            sentry_sdk.capture_exception(e)
         finally:
             log.i(f'exit, term: {self.term}')
             log.close()

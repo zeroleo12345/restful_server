@@ -20,6 +20,6 @@ class Authentication(object):
         self.role = str(request.user.get('role', ''))
         self.is_enable = str(request.user.get('is_enable', ''))
         self.user_id = str(request.user.get('id', ''))
-        self.openid = str(request.user['weixin']['openid'])
+        self.openid = str(request.user['openid'])
         if not self.user_id:
             raise GlobalException({'code': 'invalid_authorization', 'message': 'authorization缺失user_id'}, status=400)

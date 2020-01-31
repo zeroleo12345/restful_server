@@ -2,7 +2,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 # 第三方库
-# 自己的库
+# 项目库
 
 
 # /heartbeat

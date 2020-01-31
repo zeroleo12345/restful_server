@@ -62,7 +62,7 @@ class ENV(object):
         return cls.environment == 'unittest'
 
 
-ALLOWED_HOSTS = list(filter(None, settings.get('ALLOWED_HOSTS', default='*').split(',')))   # 127.0.0.1,.example.com 匹配域名和子域名
+ALLOWED_HOSTS = list(filter(None, settings.get('ALLOWED_HOSTS', default='*').split(',')))   # 127.0.0.1,.example.cn 匹配域名和子域名
 
 # Application definition
 # 'django.contrib.admin',
@@ -123,7 +123,7 @@ DATABASES = {
         # {'NAME': 'trade', 'USER': 'root', 'PASSWORD': 'root', 'HOST': 'mysql', 'PORT': '', 'CONN_MAX_AGE': 0, 'ENGINE': 'django.db.backends.mysql'}
         **dj_database_url.parse(settings.get('DATABASE_URI')),
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO'",   # workaround:   https://django-mysql.readthedocs.io/en/latest/checks.html
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_AUTO_CREATE_USER,ERROR_FOR_DIVISION_BY_ZERO'",   # workaround:   https://django-mysql.readthedocs.io/en/latest/checks.html
             'charset': 'utf8mb4',   # 手动建库语句: CREATE DATABASE db1 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
         },
     },
@@ -303,17 +303,16 @@ log.toggle_file_handler(toggle=LOG_TOGGLE_FILE_HANDLER)
 #
 ignore_logger(log._logger.name)     # 不忽略的话, log.e会上报消息到sentry
 
-
-# API服务器域名
-API_SERVER_URL = settings.get('API_SERVER_URL')   # 如: http://api.xxx.cn
-
 # 微信公众平台配置
 MP_APP_ID = settings.get('MP_APP_ID')             # 开发者ID
 MP_APP_SECRET = settings.get('MP_APP_SECRET')     # 开发者密码
 MP_TOKEN = settings.get('MP_TOKEN')               # 令牌
 MP_AES_KEY = settings.get('MP_AES_KEY')           # 消息加解密密钥
-MP_WEB_URL = settings.get('MP_WEB_URL')           # 如: http://www.example.com/notify
-
+MP_REDIRECT_URI = settings.get('MP_REDIRECT_URI')           # 如: http://www.xxx.cn/notify
+# 微信支付其他配置
+MP_PAY_SANDBOX = settings.get('MP_PAY_SANDBOX', default=0, cast='@bool')
+MP_PAY_NOTIFY_URL = settings.get('MP_PAY_NOTIFY_URL')         # 微信支付结果通知回调地址:   https://api.xxx.cn/order/notify
+PAY_ECS_IP = settings.get('PAY_ECS_IP', default='127.0.0.1')
 # 微信商户平台配置
 MP_MERCHANT_ID = settings.get('MP_MERCHANT_ID')   # 商户号
 MP_APP_KEY = settings.get('MP_APP_KEY')           # API密钥

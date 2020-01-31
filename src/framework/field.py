@@ -32,7 +32,7 @@ class Char32Field(models.Field):
         return 'char(32)'
 
 
-class EnumBase(Enum):
+class BaseEnum(Enum):
     @classmethod
     def model_choices(cls):
         return [(e.value, e.name) for e in cls]

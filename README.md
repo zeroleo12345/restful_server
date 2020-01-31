@@ -69,6 +69,12 @@ docker-compose exec api  python manage.py migrate --database=default
 
 # 清理历史migrations文件, 并重新生成表结构
   - 清理目录文件:  rm -rf migrations/*
-  - 清理数据库:    drop database trade; create database trade;
+  - 清理数据库:    DROP DATABASE trade; CREATE DATABASE trade CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
   - 执行上面的Migration动作
+```
+
+
+## 导出数据库
+``` bash
+mysqldump --default-character-set=utf8mb4 -h 127.0.0.1 -P 33333 -u root --password=root -c --databases trade > ./dump.sql
 ```

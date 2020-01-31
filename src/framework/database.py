@@ -27,56 +27,68 @@ def dict_fetchall(cursor):
     ]
 
 
-def to_dict(self, fields=None, exclude=None):
-    data = {}
-    for f in self._meta.concrete_fields:
-        value = f.value_from_object(self)
+class BaseModel(object):
+    def update(self, **kwargs):
+        for k, v in kwargs.items():
+            assert hasattr(self, k)
+            setattr(self, k, v)
+        self.save()
 
-        if fields and f.name not in fields:
-            continue
+    @classmethod
+    def create(cls, **kwargs):
+        obj = cls.objects.create(**kwargs)
+        return obj
 
-        if exclude and f.name in exclude:
-            continue
+    def to_dict(self, fields=None, exclude=None):
+        data = {}
+        for f in self._meta.concrete_fields:
+            value = f.value_from_object(self)
 
-        if isinstance(f, models.DateTimeField):
-            value = Datetime.convert_timezone(value).isoformat() if value else ''
-        elif isinstance(f, models.DateField):
-            value = value.strftime('%Y-%m-%d') if value else ''
-        elif isinstance(f, models.DecimalField):
-            value = None if value is None else float(value)
+            if fields and f.name not in fields:
+                continue
 
-        data[f.name] = value
+            if exclude and f.name in exclude:
+                continue
 
-    return data
+            if isinstance(f, models.DateTimeField):
+                value = Datetime.convert_timezone(value).isoformat() if value else ''
+            elif isinstance(f, models.DateField):
+                value = value.strftime('%Y-%m-%d') if value else ''
+            elif isinstance(f, models.DecimalField):
+                value = None if value is None else float(value)
 
+            data[f.name] = value
 
-def to_model(model, dct, fields=None, exclude=None):
-    data = {}
-    for f in model._meta.concrete_fields:
-        value = dct[f.name]
+        return data
 
-        if fields and f.name not in fields:
-            continue
+    @staticmethod
+    def to_model(model, dct, fields=None, exclude=None):
+        data = {}
+        for f in model._meta.concrete_fields:
+            value = dct[f.name]
 
-        if exclude and f.name in exclude:
-            continue
+            if fields and f.name not in fields:
+                continue
 
-        if isinstance(f, models.DateTimeField):
-            if value:
-                value = parse_datetime(value)
-            else:
-                value = None
-        elif isinstance(f, models.DateField):
-            if value:
-                value = datetime.datetime.strptime(value, "%Y-%m-%d").date()
-            else:
-                value = None
-        elif isinstance(f, models.DecimalField):
-            value = Decimal(value)
+            if exclude and f.name in exclude:
+                continue
 
-        data[f.name] = value
+            if isinstance(f, models.DateTimeField):
+                if value:
+                    value = parse_datetime(value)
+                else:
+                    value = None
+            elif isinstance(f, models.DateField):
+                if value:
+                    value = datetime.datetime.strptime(value, "%Y-%m-%d").date()
+                else:
+                    value = None
+            elif isinstance(f, models.DecimalField):
+                value = Decimal(value)
 
-    return model(**data)
+            data[f.name] = value
+
+        return model(**data)
 
 
 def get_redis() -> Redis:

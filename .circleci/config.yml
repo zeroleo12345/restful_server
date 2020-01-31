@@ -7,7 +7,7 @@ jobs:
   unittest:
     working_directory: ~/app
     docker:
-      - image: circleci/python:3.6
+      - image: circleci/python:3.7.3
       - image: circleci/mysql:5.7
       - image: redis:alpine
     steps:

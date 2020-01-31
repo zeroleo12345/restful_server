@@ -7,14 +7,14 @@ import pytz
 from django.core.management.base import BaseCommand
 # 自己的类
 from trade.management.commands import Service
-from views.order.views import OrderNotifyView
-from models import Orders
-from utils.wepay import WePay
+from models import BroadBandOrder
+from service.wechat.we_pay import WePay
 from trade.settings import log
+from controls.resource import increase_user_resource
 
 log.set_header('order')
 TZ = pytz.timezone('Asia/Shanghai')
-INTERVAL = datetime.timedelta(minutes=10)  # 超时10分钟
+TEN_MINUTE_DELTA = datetime.timedelta(minutes=10)  # 超时10分钟
 TAG_FILE_PATH = 'time.tag'
 
 
@@ -26,7 +26,6 @@ class Command(BaseCommand):
 
 
 class ServiceLoop(Service):
-    interval = INTERVAL.total_seconds()    # 单位秒
     start_time_dict = {"file": os.path.basename(__file__), "start_time": "2018-01-01 00:00:00"}
 
     def __init__(self):
@@ -35,15 +34,19 @@ class ServiceLoop(Service):
 
     def cal_end_time(self):
         now_datetime = datetime.datetime.now(TZ)
-        # 距离当前时间 INTERVAL 的时间点作为结束时间
-        end_time = now_datetime - INTERVAL
+        # 距离当前时间 TEN_MINUTE_DELTA 的时间点作为结束时间
+        end_time = now_datetime - TEN_MINUTE_DELTA
         return end_time
 
     def run(self):
         self.end_time = self.cal_end_time()
-        log.d(f'start_time: {self.start_time}, end_time: {self.end_time}')
-
-        orders = Orders.objects.filter(created_at__gt=self.start_time, created_at__lte=self.end_time, status='unpaid')
+        log.d(f'select unpaid order where start_time > {self.start_time} and end_time <= {self.end_time}')
+        #
+        orders = BroadBandOrder.objects.filter(
+            created_at__gt=self.start_time,
+            created_at__lte=self.end_time,
+            status=BroadBandOrder.Status.UNPAID.value
+        )
         for order in orders:
             self.handle_charge_status0(order)
         # 保存标签
@@ -54,13 +57,12 @@ class ServiceLoop(Service):
         # 查询订单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2
         # 关闭订单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_3
         # 下载对账单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6
-
         out_trade_no = order.out_trade_no           # 商户订单号
         attach = order.attach
         total_fee = order.total_fee
 
         # 1. 查询订单API, 获取查询结果
-        ret_json = WePay.WECHAT_PAY.order.query(None, out_trade_no)
+        ret_json = WePay.query_order(out_trade_no)
         # OrderedDict([
         #  ('return_code', 'SUCCESS'), ('return_msg', 'OK'), ('appid', 'wx54d296959ee50c0b'), ('mch_id', '1517154171'),
         #  ('nonce_str', 'LQ36VyPkbS7tK7Nk'), ('sign', '5182234EB26EBFB718D5FDD1189E6056'), ('result_code', 'SUCCESS'),
@@ -68,13 +70,13 @@ class ServiceLoop(Service):
         #  ('trade_state_desc', '订单未支付')
         # ])
         log.d(f'order query from weixin: {ret_json}')
-
+        #
         if ret_json['return_code'] != 'SUCCESS':
             log.e('order query not success')
             return
 
         # 2. 检查签名
-        if not WePay.WECHAT_PAY.check_signature(ret_json):
+        if not WePay.is_right_sign(ret_json):
             log.e('sign illegal, sign:{}', ret_json['sign'])
             return
 
@@ -96,15 +98,15 @@ class ServiceLoop(Service):
                 return
 
             # 增加用户免费资源
-            OrderNotifyView.increase_user_resource(total_fee, out_trade_no, transaction_id, attach)
-            Orders.objects.filter(out_trade_no=out_trade_no).update(status='paid', transaction_id=transaction_id)
-            log.i(f"UPDATE orders SET status = 'paid', transaction_id = '{transaction_id}' WHERE out_trade_no = '{out_trade_no}'")
+            increase_user_resource(total_fee, out_trade_no, transaction_id, attach)
+            BroadBandOrder.objects.filter(out_trade_no=out_trade_no).update(status='paid', transaction_id=transaction_id)
+            log.i(f"UPDATE broadband_order SET status = 'paid', transaction_id = '{transaction_id}' WHERE out_trade_no = '{out_trade_no}'")
 
         elif trade_state in ['NOTPAY', 'CLOSED', 'PAYERROR']:
 
             # 超时还未支付或订单已经关闭, 需把charge记录状态从0改为-1
-            Orders.objects.filter(out_trade_no=out_trade_no).update(status='expired')
-            log.i(f"UPDATE orders SET status = 'expired' WHERE out_trade_no = '{out_trade_no}'")
+            BroadBandOrder.objects.filter(out_trade_no=out_trade_no).update(status='expired')
+            log.i(f"UPDATE broadband_order SET status = 'expired' WHERE out_trade_no = '{out_trade_no}'")
 
     def save_start_time(self):
         with open(TAG_FILE_PATH, 'w', encoding='utf8') as f:
@@ -122,11 +124,11 @@ class ServiceLoop(Service):
         start_time = TZ.localize(datetime.datetime.strptime(self.start_time_dict['start_time'], "%Y-%m-%d %H:%M:%S"))
 
         now_datetime = datetime.datetime.now(TZ)
-        if now_datetime - start_time < INTERVAL:
-            time.sleep(INTERVAL.total_seconds())   # 睡眠X秒, 再处理
+        if now_datetime - start_time < TEN_MINUTE_DELTA:
+            time.sleep(TEN_MINUTE_DELTA.total_seconds())   # 睡眠X秒, 再处理
 
-        # 距离当前时间 INTERVAL 的时间点作为结束时间
-        end_time = now_datetime - INTERVAL
+        # 距离当前时间 TEN_MINUTE_DELTA 的时间点作为结束时间
+        end_time = now_datetime - TEN_MINUTE_DELTA
 
-        log.i(f'init start_time: {start_time}, end_time: {end_time}')
+        log.i(f'init. start_time: {start_time}, end_time: {end_time}')
         return start_time, end_time
