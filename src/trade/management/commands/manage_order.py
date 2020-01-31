@@ -40,7 +40,7 @@ class ServiceLoop(Service):
 
     def run(self):
         self.end_time = self.cal_end_time()
-        log.d(f'query unpaid order where start_time > {self.start_time} and end_time <= {self.end_time}')
+        log.d(f'select unpaid order where start_time > {self.start_time} and end_time <= {self.end_time}')
         #
         orders = BroadBandOrder.objects.filter(
             created_at__gt=self.start_time,
