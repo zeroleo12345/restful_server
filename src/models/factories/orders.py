@@ -25,15 +25,12 @@ class OrdersFactory(object):
             }
             response = client.post('/order', data=data)
         assert response.status_code == status.HTTP_200_OK
-        data = response.json()
-        assert data['code'] == 'ok'
-        prepay_id = data['prepay_id']
-        #
-        jsapi_params = WePay.get_jsapi_params(prepay_id=prepay_id)
-        assert data
-        assert 'appId' in jsapi_params
-        assert 'nonceStr' in jsapi_params
-        assert 'package' in jsapi_params
-        assert 'paySign' in jsapi_params
-        assert 'signType' in jsapi_params
-        assert 'timeStamp' in jsapi_params
+        res_dict = response.json()
+        assert 'ok' == res_dict['code']
+        data = res_dict['data']
+        assert 'appId' in data
+        assert 'nonceStr' in data
+        assert 'package' in data
+        assert 'paySign' in data
+        assert 'signType' in data
+        assert 'timeStamp' in data
