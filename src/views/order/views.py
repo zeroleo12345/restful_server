@@ -35,12 +35,11 @@ class OrderView(APIView):
         title = '用户支付提示'
         client_ip = get_client_ip(request)
         openid = auth.openid
-        order_params, jsapi_params = WePay.create_jsapi_order(
-            out_trade_no=new_uuid(),
+        out_trade_no = new_uuid()
+        jsapi_params = WePay.create_jsapi_order(
+            out_trade_no=out_trade_no,
             openid=openid, total_fee=total_fee, title=title, client_ip=client_ip, attach=attach, notify_url=settings.MP_PAY_NOTIFY_URL
         )
-        out_trade_no = order_params['out_trade_no']
-        attach = order_params['attach']
         # 订单入库
         Orders.create(
             user_id=auth.user_id,

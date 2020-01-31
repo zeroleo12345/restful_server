@@ -1,5 +1,4 @@
 import pytest
-from urllib.parse import urljoin
 # 第三方库
 from django.conf import settings
 # 项目库
@@ -18,7 +17,7 @@ def test_wepay_jsapi():
     title = '用户支付提示'
     client_ip = '127.0.0.1'
     attach = None
-    order_params, jsapi_params = WePay.create_jsapi_order(
+    jsapi_params = WePay.create_jsapi_order(
         out_trade_no=new_uuid(),
         openid=openid, total_fee=total_fee, title=title, client_ip=client_ip, attach=attach, notify_url=settings.MP_PAY_NOTIFY_URL
     )
