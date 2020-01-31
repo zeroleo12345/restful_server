@@ -63,7 +63,7 @@ class OrderNotifyView(APIView):
     authentication_classes = ()
     permission_classes = ()
     SUCCESS_RESPONSE = HttpResponse(
-        content="""<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>""",
+        content=r"<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>",
         content_type='text/xml',
     )
 
