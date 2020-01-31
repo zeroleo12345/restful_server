@@ -39,7 +39,7 @@ class UserView(APIView):
         if not weixin.user_id:
             username = MyRandom.random_digit(length=8)
             user_fields = {
-                'weixin': weixin.id,
+                'weixin_id': weixin.id,
                 'username': username,
                 'password': username,
                 'role': 'user',

@@ -16,7 +16,8 @@ class Resource(models.Model):
     expired_at = models.DateTimeField(auto_now_add=True)    # ﻿auto_now_add only generated on 新创建
     updated_at = models.DateTimeField(auto_now=True)        # ﻿auto_now is generated on 每次修改
 
-    def get(self, user_id):
+    @classmethod
+    def get(cls, user_id):
         resource = Resource.objects.filter(user_id=user_id).first()
         if not resource:
             return None
