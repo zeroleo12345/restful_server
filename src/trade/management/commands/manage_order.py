@@ -8,7 +8,7 @@ from django.core.management.base import BaseCommand
 # 自己的类
 from trade.management.commands import Service
 from models import Orders
-from utils.wepay import WePay
+from service.wechat.we_pay import WePay
 from trade.settings import log
 from controls.resource import increase_user_resource
 

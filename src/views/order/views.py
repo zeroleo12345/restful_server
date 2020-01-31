@@ -7,7 +7,7 @@ import sentry_sdk
 # 项目库
 from trade.settings import log
 from utils.django import get_client_ip
-from utils.wepay import WePay
+from service.wechat.we_pay import WePay
 from models import Orders, Tariff
 from framework.restful import BihuResponse
 from framework.authorization import JWTAuthentication

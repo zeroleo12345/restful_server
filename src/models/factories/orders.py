@@ -2,7 +2,7 @@ from unittest.mock import patch
 #
 from rest_framework import status
 #
-from utils.wepay import WePay
+from service.wechat.we_pay import WePay
 
 
 class OrdersFactory(object):
