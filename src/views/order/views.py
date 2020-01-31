@@ -36,10 +36,11 @@ class OrderView(APIView):
         client_ip = get_client_ip(request)
         openid = auth.openid
         out_trade_no = new_uuid()
-        jsapi_params = WePay.create_jsapi_order(
+        response = WePay.create_jsapi_order(
             out_trade_no=out_trade_no,
             openid=openid, total_fee=total_fee, title=title, client_ip=client_ip, attach=attach, notify_url=settings.MP_PAY_NOTIFY_URL
         )
+        prepay_id = response['prepay_id']
         # 订单入库
         Orders.create(
             user_id=auth.user_id,
@@ -51,7 +52,8 @@ class OrderView(APIView):
             mch_id=settings.MP_MERCHANT_ID,
             status='unpaid',
         )
-        return BihuResponse(jsapi_params)
+        data = WePay.get_jsapi_params(prepay_id=prepay_id)
+        return BihuResponse(data=data)
 
 
 class OrderNotifyView(APIView):
