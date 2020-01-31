@@ -1,5 +1,4 @@
 from unittest.mock import patch
-import pytest
 # 第三方库
 from rest_framework import status
 from django.utils.dateparse import parse_datetime
