@@ -28,9 +28,9 @@ class OrdersFactory(object):
         res_dict = response.json()
         assert 'ok' == res_dict['code']
         data = res_dict['data']
-        assert 'appId' in data
-        assert 'nonceStr' in data
-        assert 'package' in data
-        assert 'paySign' in data
-        assert 'signType' in data
-        assert 'timeStamp' in data
+        assert 'appId' in data['param']
+        assert 'nonceStr' in data['param']
+        assert 'package' in data['param']
+        assert 'paySign' in data['param']
+        assert 'signType' in data['param']
+        assert 'timeStamp' in data['param']

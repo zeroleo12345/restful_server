@@ -1,7 +1,7 @@
 # 项目库
 from framework.unittest import UnitTestAPIClient
 from models.factories.user import UserFactory
-from models.factories.orders import OrdersFactory
+from models.factories.order import OrdersFactory
 
 
 def test_order_create():

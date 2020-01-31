@@ -7,31 +7,24 @@ from dateutil.relativedelta import relativedelta
 # 项目库
 from framework.unittest import UnitTestAPIClient
 from models.factories.user import UserFactory
-from models.factories.orders import OrdersFactory
+from models.factories.order import OrdersFactory
 
 
 @pytest.mark.skip(reason="手动触发测试")
 def test_payjs_notify_success():
     client = UnitTestAPIClient()
     user, authorization = UserFactory.new_user_and_authorization(client)
+    client = UnitTestAPIClient(authorization=authorization)
+    OrdersFactory.new_order(client)
+
+    # FIXME
+    # 充值状态通知
     data = {
         'attach': '{"tariff_name": "month1"}', 'mchid': '1511573911', 'openid': 'o7LFAwUGHPZxyNahwjoNQtKh8EME',
         'out_trade_no': '1534167177710ovfltv6a8v7BsFAH0', 'payjs_order_id': '2018081321325600636471374',
         'return_code': '1', 'time_end': '2018-08-13 21:33:02', 'total_fee': '1',
         'transaction_id': '4200000149201808138100178561', 'sign': '061BC78497952DB19B3F337760A95647'
     }
-    # 插入订单
-    OrdersFactory(
-        user=user,
-        openid=user.weixin.openid,
-        out_trade_no=data['out_trade_no'],
-        attach=data['attach'],
-        transaction_id=data['transaction_id'],
-        total_fee=data['total_fee'],
-        mch_id=data['mchid'],
-        status='unpaid',
-    )
-
     # 充值状态通知
     client = UnitTestAPIClient(authorization=authorization)
     response = client.post('/order/notify', data=data, format=None)
@@ -42,10 +35,11 @@ def test_payjs_notify_success():
     assert response.status_code == status.HTTP_200_OK
     """
     {
-        'code': 'ok', 'data': {
+        'code': 'ok',
+        'data': {
             'id': 1, 'status': 'working', 'expired_at': '2018-09-18T12:28:50.649466+08:00',
             'updated_at': '2018-08-18T12:28:50.650826+08:00'
-         }
+        }
     }
     """
     json_resposne = response.json()

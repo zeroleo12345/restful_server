@@ -42,7 +42,7 @@ class OrderView(APIView):
         )
         prepay_id = response['prepay_id']
         # 订单入库
-        Orders.create(
+        order = Orders.create(
             user_id=auth.user_id,
             openid=openid,
             out_trade_no=out_trade_no,
@@ -52,7 +52,10 @@ class OrderView(APIView):
             mch_id=settings.MP_MERCHANT_ID,
             status='unpaid',
         )
-        data = WePay.get_jsapi_params(prepay_id=prepay_id)
+        data = {
+            'order': order.to_dict(),
+            'param': WePay.get_jsapi_params(prepay_id=prepay_id),
+        }
         return BihuResponse(data=data)
 
 
