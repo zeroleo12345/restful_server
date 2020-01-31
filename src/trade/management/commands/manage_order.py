@@ -76,8 +76,7 @@ class ServiceLoop(Service):
             return
 
         # 2. 检查签名
-        check_signature(settings.MP_TOKEN, signature, timestamp, nonce)
-        if not WePay.check_signature(ret_json):
+        if not WePay.is_right_sign(ret_json):
             log.e('sign illegal, sign:{}', ret_json['sign'])
             return
 

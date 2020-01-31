@@ -2,7 +2,6 @@
 from trade import settings
 from wechatpy.pay import WeChatPay
 from wechatpy.exceptions import WeChatPayException
-from wechatpy.utils import check_signature
 # 项目库
 from framework.field import BaseEnum
 
@@ -19,9 +18,9 @@ class WePay(object):
         sandbox=settings.MP_PAY_SANDBOX,
     )
 
-    @staticmethod
-    def check_signature(token, signature, timestamp, nonce):
-        return check_signature(token, signature, timestamp, nonce)
+    @classmethod
+    def is_right_sign(cls, params) -> bool:
+        return cls._pay_api.check_signature(params)
 
     class TradeState(BaseEnum):
         PAID = 'SUCCESS'            # 支付成功
