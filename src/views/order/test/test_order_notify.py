@@ -12,13 +12,11 @@ from models.factories.user import UserFactory
 from models.factories.order import BroadbandOrderFactory
 
 
-# @pytest.mark.skip(reason="手动触发测试")
 def test_payjs_notify_success():
     client = UnitTestAPIClient()
     user, authorization = UserFactory.new_user_and_authorization(client)
     client = UnitTestAPIClient(authorization=authorization)
     order = BroadbandOrderFactory.new_order(client)
-    client = UnitTestAPIClient(authorization=authorization)
     with patch('service.wechat.we_pay.WePay.parse_payment_result') as _mock:
         _mock.return_value = {
             'return_code': 'SUCCESS',
@@ -29,8 +27,7 @@ def test_payjs_notify_success():
             'time_end': '20190101000000',
         }
         #
-        # FIXME 返回order
-        # 充值状态通知
+        # 充值通知
         data = {
             'attach': order.attach, 'mchid': order.mch_id, 'openid': order.openid,
             'out_trade_no': order.out_trade_no,

@@ -17,4 +17,5 @@ class UserResourceView(APIView):
         data = {
             'status': user.get_resource_status(),
         }
+        from pprint import pprint; import pdb; pdb.set_trace()
         return BihuResponse(data=data)
