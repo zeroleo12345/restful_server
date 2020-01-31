@@ -41,8 +41,8 @@ class ServiceLoop(Service):
 
     def run(self):
         self.end_time = self.cal_end_time()
-        log.d(f'start_time: {self.start_time}, end_time: {self.end_time}')
-
+        log.d(f'query unpaid order where start_time > {self.start_time} and end_time <= self.end_time}')
+        #
         orders = BroadBandOrder.objects.filter(created_at__gt=self.start_time, created_at__lte=self.end_time, status='unpaid')
         for order in orders:
             self.handle_charge_status0(order)
@@ -54,7 +54,6 @@ class ServiceLoop(Service):
         # 查询订单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2
         # 关闭订单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_3
         # 下载对账单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6
-
         out_trade_no = order.out_trade_no           # 商户订单号
         attach = order.attach
         total_fee = order.total_fee
@@ -68,7 +67,7 @@ class ServiceLoop(Service):
         #  ('trade_state_desc', '订单未支付')
         # ])
         log.d(f'order query from weixin: {ret_json}')
-
+        #
         if ret_json['return_code'] != 'SUCCESS':
             log.e('order query not success')
             return
