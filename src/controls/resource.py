@@ -1,11 +1,11 @@
 from django.db import transaction
 # 项目库
-from models import Orders, User, Tariff, ResourceChange
+from models import Order, User, Tariff, ResourceChange
 
 
 def increase_user_resource(total_fee, out_trade_no, transaction_id, attach):
     # 根据out_trade_no检查数据库订单
-    order = Orders.get(out_trade_no=out_trade_no)
+    order = Order.get(out_trade_no=out_trade_no)
     assert order
     if order.is_paid():
         return

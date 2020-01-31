@@ -5,7 +5,7 @@ from framework.database import models, BaseModel
 
 
 # 订单
-class Orders(models.Model, BaseModel):
+class Order(models.Model, BaseModel):
     class Meta:
         app_label = 'trade'
         db_table = 'orders'
@@ -30,7 +30,7 @@ class Orders(models.Model, BaseModel):
     updated_at = models.DateTimeField(auto_now=True)
 
     @classmethod
-    def get(cls, out_trade_no) -> Orders:
+    def get(cls, out_trade_no) -> Order:
         order = cls.objects.filter(out_trade_no=out_trade_no).first()
         if not order:
             return None
