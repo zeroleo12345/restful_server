@@ -1,30 +1,36 @@
-import time
 # 第三方库
-from django.conf import settings
+from trade import settings
 from wechatpy.pay import WeChatPay
 # 项目库
-from utils.myrandom import MyRandom
+from framework.field import EnumBase
 
 
 class WePay(object):
-    WECHAT_PAY = WeChatPay(
-        settings.MP_APP_ID, settings.MP_APP_KEY,
-        settings.MP_MERCHANT_ID, settings.MP_SUB_MERCHANT_ID,
-        settings.MP_MERCHANT_CERT, settings.MP_MERCHANT_KEY
+    _pay_api = WeChatPay(
+        appid=settings.MP_APP_ID,
+        api_key=settings.MP_APP_KEY,
+        mch_id=settings.MP_MERCHANT_ID,
+        sub_mch_id=None if not settings.MP_SUB_MERCHANT_ID else settings.MP_SUB_MERCHANT_ID,
+        mch_cert=settings.MP_MERCHANT_CERT,
+        mch_key=settings.MP_MERCHANT_KEY,
+        timeout=10,
+        sandbox=settings.MP_PAY_SANDBOX,
     )
 
-    @staticmethod
-    def create_out_trade_no():
-        # 商户订单号(32个字符内,只能是>数字、大小写字母_-|*@), 默认自动生成
-        return ''.join((
-            str(int(time.time()*1000)),
-            MyRandom.random_string(17, lowercase=True, uppercase=True)
-        ))
+    class TradeState(EnumBase):
+        PAID = 'SUCCESS'            # 支付成功
+        REFUND = 'REFUND'           # 转入退款
+        NOTPAY = 'NOTPAY'           # 未支付
+        CLOSED = 'CLOSED'           # 已关闭
+        REVOKED = 'REVOKED'         # 已撤销. (付款码支付)
+        USERPAYING = 'USERPAYING'   # 用户支付中. (付款码支付)
+        PAYERROR = 'PAYERROR'       # 支付失败. (其他原因，如银行返回失败)
 
-    @staticmethod
-    def cashier(openid, total_fee, title, client_ip, attach=None, notify_url=None):
+    @classmethod
+    def create_jsapi_order(cls, out_trade_no, total_fee, title, openid, client_ip, attach=None, notify_url=None):
         """
         用户点击button跳转到收银台支付.
+        :param out_trade_no:
         :param openid: 缴费用户的openid. 当trade_type=JSAPI, 此参数必传
         :param total_fee: 支付金额, 单位分
         :param title: 订单标题
@@ -43,7 +49,7 @@ class WePay(object):
             'attach': attach,
             'user_id': openid,          # 可选. 缴费用户的openid. 当trade_type=JSAPI, 此参数必传
             'client_ip': client_ip,     # 可选. APP和网页支付提交用户端ip, Native支付填调用微信支付API的机器IP
-            'out_trade_no': WePay.create_out_trade_no(),
+            'out_trade_no': out_trade_no,
             'detail': None,             # 可选, 商品详情
             'fee_type': 'CNY',          # 可选, 符合ISO 4217标准的三位字母代码, 默认人民币: CNY
             'time_start': None,         # 可选, 订单生成时间, 默认为当前时间
@@ -78,29 +84,27 @@ class WePay(object):
         #  'timeStamp': '1540391991'}
         return order_params, jsapi_params
 
-    @staticmethod
-    def qrcode(total_fee, title, client_ip, product_id, attach=None, notify_url=None):
+    @classmethod
+    def create_native_order(cls, out_trade_no, total_fee, title, product_id, client_ip, attach=None, notify_url=None):
         """
         用户扫码支付.
+        :param out_trade_no:
         :param total_fee: 支付金额, 单位分
         :param title: 订单标题
-        :param client_ip: APP和网页支付提交用户端ip, Native支付填调用微信支付API的机器IP
         :param product_id: 当trade_type=NATIVE, 此参数必传. 此id为二维码中包含的商品ID, 商户自行定义. (实测None也可以)
+        :param client_ip: APP和网页支付提交用户端ip, Native支付填调用微信支付API的机器IP
         :param attach: 用户自定义数据，在notify的时候会原样返回
-        :param notify_url: 接收微信支付异步通知的回调地址。必须为可直接访问的URL，不能带参数、session验证、csrf验证。留空则不通知
-        :return:
-            (order_params, response)
+        :param notify_url: 接收微信支付异步通知的回调地址。必须为可直接访问的URL，不能带参数、session验证、csrf验证。不能留空!
         """
         # 统一下单. 微信官方参数地址:  https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_1
         order_params = {
             'trade_type': 'NATIVE',      # 交易类型 JSAPI--公众号支付, NATIVE--原生扫码支付, APP--app支付, 而MICROPAY--刷卡支付有单独的支付接口, 不能调用统一下单接口
             'body': title,              # 商品描述
             'total_fee': total_fee,     # 订单金额. (单位分)
-            'notify_url': notify_url,   # 订单通知地址
             'attach': attach,
             'user_id': None,            # 可选. 缴费用户的openid. 当trade_type=JSAPI, 此参数必传
             'client_ip': client_ip,     # 可选. APP和网页支付提交用户端ip, Native支付填调用微信支付API的机器IP
-            'out_trade_no': WePay.create_out_trade_no(),
+            'out_trade_no': out_trade_no,
             'detail': None,             # 可选, 商品详情
             'fee_type': 'CNY',          # 可选, 符合ISO 4217标准的三位字母代码, 默认人民币: CNY
             'time_start': None,         # 可选, 订单生成时间, 默认为当前时间
@@ -109,14 +113,14 @@ class WePay(object):
             'product_id': product_id,   # 可选, 当trade_type=NATIVE, 此参数必传. 此id为二维码中包含的商品ID, 商户自行定义
             'device_info': None,        # 可选, 终端设备号(门店号或收银设备ID), 注意:PC网页或公众号内支付请传"WEB"
             'limit_pay': None,          # 可选, 指定支付方式, no_credit-指定不能使用信用卡支付
+            'notify_url': notify_url,   # 订单通知地址
         }
 
         # 统一下单, 生成微信支付参数返回给微信浏览器
-        response = WePay.WECHAT_PAY.order.create(**order_params)
-        # (Pdb) pprint(response)
+        response = cls._pay_api.order.create(**order_params)
         # OrderedDict([('return_code', 'SUCCESS'),
         #              ('return_msg', 'OK'),
-        #              ('appid', 'wx54d296959ee50c0b'),
+        #              ('appid', 'wx54d296959ee50c01'),
         #              ('mch_id', '1517154171'),
         #              ('nonce_str', 'IvST3Mh4a5cQEUdN'),
         #              ('sign', 'BF402367D8C84BE53D0DCE942FA676AB'),
@@ -124,7 +128,7 @@ class WePay(object):
         #              ('prepay_id', 'wx27163152798783d24f7f81121395790900'),
         #              ('trade_type', 'NATIVE'),
         #              ('code_url', 'weixin://wxpay/bizpayurl?pr=LQjaKQI')])
-        return order_params, response
+        return response
 
     @staticmethod
     def query(payjs_order_id):

@@ -1,6 +1,5 @@
 from trade import settings
 from django_redis import get_redis_connection
-from urllib.parse import urljoin
 #
 from wechatpy import WeChatClient
 from wechatpy.session.redisstorage import RedisStorage
@@ -9,7 +8,7 @@ redis_client = get_redis_connection(alias='default')
 
 
 class WeClient(object):
-    REDIRECT_URI = urljoin(settings.MP_WEB_URL, '')
+    _redirect_uri = settings.MP_REDIRECT_URI
     _client_api = WeChatClient(
         appid=settings.MP_APP_ID, secret=settings.MP_APP_SECRET, session=RedisStorage(redis_client, prefix="wechat")
     )
@@ -27,7 +26,7 @@ class WeClient(object):
                     "name": '账号中心',
                     "type": 'view',
                     "url": f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}'
-                           f'&redirect_uri={cls.REDIRECT_URI}&response_type=code&scope=snsapi_userinfo',
+                           f'&redirect_uri={cls._redirect_uri}&response_type=code&scope=snsapi_userinfo',
                 },
                 {
                     "name": '使用教程',

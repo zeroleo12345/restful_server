@@ -5,13 +5,14 @@ from django.conf import settings
 from wechatpy.exceptions import InvalidSignatureException
 import sentry_sdk
 # 项目库
-from framework.restful import BihuResponse
-from controls.auth import Authentication
 from trade.settings import log
 from utils.django import get_client_ip
 from utils.wepay import WePay
 from models import Orders, Tariff
+from framework.restful import BihuResponse
 from framework.authorization import JWTAuthentication
+from framework.field import new_uuid
+from controls.auth import Authentication
 from controls.resource import increase_user_resource
 
 
@@ -31,12 +32,12 @@ class OrderView(APIView):
             total_fee = 1 * tariff.duration  # 1分钱
         else:
             total_fee = tariff.price
-        notify_url = f'{settings.API_SERVER_URL}/order/notify'      # 订单状态通知地址
         title = '用户支付提示'
         client_ip = get_client_ip(request)
         openid = auth.openid
-        order_params, jsapi_params = WePay.cashier(
-            openid=openid, total_fee=total_fee, title=title, client_ip=client_ip, attach=attach, notify_url=notify_url
+        order_params, jsapi_params = WePay.create_jsapi_order(
+            out_trade_no=new_uuid(),
+            openid=openid, total_fee=total_fee, title=title, client_ip=client_ip, attach=attach, notify_url=settings.MP_PAY_NOTIFY_URL
         )
         out_trade_no = order_params['out_trade_no']
         attach = order_params['attach']
