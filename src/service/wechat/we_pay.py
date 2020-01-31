@@ -8,7 +8,6 @@ from framework.field import BaseEnum
 
 
 class WePay(object):
-    check_signature = check_signature
     _pay_api = WeChatPay(
         appid=settings.MP_APP_ID,
         api_key=settings.MP_APP_KEY,
@@ -19,6 +18,10 @@ class WePay(object):
         timeout=10,
         sandbox=settings.MP_PAY_SANDBOX,
     )
+
+    @staticmethod
+    def check_signature(token, signature, timestamp, nonce):
+        return check_signature(token, signature, timestamp, nonce)
 
     class TradeState(BaseEnum):
         PAID = 'SUCCESS'            # 支付成功
