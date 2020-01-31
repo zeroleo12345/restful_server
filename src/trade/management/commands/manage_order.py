@@ -43,7 +43,11 @@ class ServiceLoop(Service):
         self.end_time = self.cal_end_time()
         log.d(f'query unpaid order where start_time > {self.start_time} and end_time <= {self.end_time}')
         #
-        orders = BroadBandOrder.objects.filter(created_at__gt=self.start_time, created_at__lte=self.end_time, status='unpaid')
+        orders = BroadBandOrder.objects.filter(
+            created_at__gt=self.start_time,
+            created_at__lte=self.end_time,
+            status=BroadBandOrder.Status.UNPAID.value
+        )
         for order in orders:
             self.handle_charge_status0(order)
         # 保存标签
