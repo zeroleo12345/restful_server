@@ -1,6 +1,7 @@
 from __future__ import annotations
 from django.db import models
 
+
 # 微信号
 class Weixin(models.Model):
     class Meta:
