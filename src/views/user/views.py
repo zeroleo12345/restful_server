@@ -2,12 +2,10 @@ from rest_framework.views import APIView
 from django.db import transaction
 # 项目库
 from models import User
-from views.user.serializer import UserSyncSerializer
 from service.wechat.we_oauth import WeOAuth
 from utils.myrandom import MyRandom
 from framework.exception import GlobalException
 from framework.authorization import JWTAuthentication
-from models import Resource
 from buffer.token import WechatCode
 from framework.restful import BihuResponse
 
@@ -41,7 +39,6 @@ class UserView(APIView):
             }
             with transaction.atomic():
                 user = User.create(**user_fields)   # create 返回 Model 实例
-                Resource.create(user_id=user.id)
         user_info = user.to_dict()
         authorization = JWTAuthentication.jwt_encode_handler(user_dict=user_info)
         data = {
@@ -57,6 +54,6 @@ class UserSyncView(APIView):
 
     # /user/sync    同步用户列表
     def get(self, request):
-        users = User.objects.all().select_related('resource')
-        data = UserSyncSerializer(users, many=True).data
+        users = User.objects.all()
+        data = [user.to_dict() for user in users]
         return BihuResponse(data=data)

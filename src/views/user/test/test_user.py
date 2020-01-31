@@ -7,7 +7,6 @@ import pytest
 from framework.unittest import UnitTestAPIClient
 from models.factories.user import get_user_and_authorization
 from service.wechat.we_client import WeClient
-from models.factories.resource import ResourceFactory
 
 WeClient.create_mp_menu = MagicMock()
 
@@ -57,7 +56,6 @@ class TestUser:
     def test_user_resource_success(self):
         settings.DEBUG = True
         user, authorization = get_user_and_authorization()
-        ResourceFactory(user_id=user.id)
         client = UnitTestAPIClient(authorization=authorization)
         response = client.get('/resource')
         assert response.status_code == status.HTTP_200_OK
