@@ -122,6 +122,7 @@ DATABASES = {
     'default': {
         # {'NAME': 'trade', 'USER': 'root', 'PASSWORD': 'root', 'HOST': 'mysql', 'PORT': '', 'CONN_MAX_AGE': 0, 'ENGINE': 'django.db.backends.mysql'}
         **dj_database_url.parse(settings.get('DATABASE_URI')),
+        **{'TIME_ZONE': 'Asia/Shanghai'},
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_AUTO_CREATE_USER,ERROR_FOR_DIVISION_BY_ZERO'",   # workaround:   https://django-mysql.readthedocs.io/en/latest/checks.html
             'charset': 'utf8mb4',   # 手动建库语句: CREATE DATABASE db1 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
