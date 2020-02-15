@@ -2,6 +2,7 @@
 
 # crond job
 cp /app/bin/crontab/root  /var/spool/cron/crontabs/root
+chmod 600 /var/spool/cron/crontabs/root
 service cron start
 
 python manage.py migrate
