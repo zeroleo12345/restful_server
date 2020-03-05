@@ -10,7 +10,7 @@ redis_client = get_redis_connection(alias='default')
 class WeClient(object):
     _redirect_uri = settings.MP_REDIRECT_URI
     _client_api = WeChatClient(
-        appid=settings.MP_APP_ID, secret=settings.MP_APP_SECRET, session=RedisStorage(redis_client, prefix="wechat")
+        appid=settings.MP_APP_ID, secret=settings.MP_APP_SECRET, session=RedisStorage(redis_client, prefix='wechat')
     )
 
     @classmethod
@@ -21,17 +21,17 @@ class WeClient(object):
         # TODO: 防止多次创建菜单
         # 创建公众号-自定义菜单: https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141013
         menu_data = {
-            "button": [
+            'button': [
                 {
-                    "name": '账号中心',
-                    "type": 'view',
-                    "url": f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}'
+                    'type': 'view',
+                    'name': '账号中心',
+                    'url': f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}'
                            f'&redirect_uri={cls._redirect_uri}&response_type=code&scope=snsapi_userinfo',
                 },
                 {
-                    "name": '使用教程',
-                    "type": 'view',
-                    "url": f'{settings.TUTORIAL_URL}',
+                    'type': 'view',
+                    'name': '使用教程',
+                    'url': f'{settings.TUTORIAL_URL}',
                 },
             ]
         }
