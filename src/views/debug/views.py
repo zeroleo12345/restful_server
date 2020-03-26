@@ -9,6 +9,7 @@ class DebugView(APIView):
     permission_classes = ()
 
     def detail(self, request):
+        log.i(f'request.META: {request.META}')
         log.i(f'request.content_type: {request.content_type}')
         log.i(f'request.encoding: {request.encoding}')
         log.i(f'request.body: {request.body}')
