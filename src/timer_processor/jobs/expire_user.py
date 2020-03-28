@@ -31,7 +31,7 @@ class ExpireUserJob(metaclass=MetaClass):
         cls.doing(start_time=start_time, end_time=end_time)
 
     @classmethod
-    @promise_do_once(class_name='ExpireUserJob')
+    @promise_do_once(class_name='ExpireUserJob', func_name='doing')
     def doing(cls, start_time, end_time):
         # 明天到期的用户
         log.d(f'select expire user where start_time > {start_time} and end_time <= {end_time}')
