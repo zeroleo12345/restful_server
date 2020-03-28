@@ -8,6 +8,7 @@ from framework.exception import GlobalException
 from framework.authorization import JWTAuthentication
 from buffer.token import WechatCode
 from framework.restful import BihuResponse
+from trade.settings import log
 
 
 class UserView(APIView):
@@ -20,8 +21,10 @@ class UserView(APIView):
         if not code:
             raise GlobalException(data={'code': 'invalid_code', 'message': f'code字段不能为空'}, status=400)
         openid, nickname, avatar = WechatCode.get(code)    # https://blog.csdn.net/limenghua9112/article/details/81911658
+        log.d(f'redis缓存. openid: {openid}, nickname: {nickname}, avatar: {avatar}')
         if not openid:
             openid, nickname, avatar = WeOAuth.get_user_info(code=code)
+            log.d(f'微信接口 get_user_info. openid: {openid}, nickname: {nickname}, avatar: {avatar}')
             if not openid:
                 raise GlobalException(data={'code': 'invalid_code', 'message': f'code无效, 请退出重试'}, status=400)
             WechatCode.set(code, openid=openid, nickname=nickname, avatar=avatar)
