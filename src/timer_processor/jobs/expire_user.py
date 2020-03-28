@@ -25,15 +25,15 @@ class ExpireUserJob(metaclass=MetaClass):
         # 隔天晚上9点
         tomorrow = (now + datetime.timedelta(days=1)).replace(hour=21, minute=0, second=0, microsecond=0)
         cls.next_time = tomorrow
-        cls.doing()
+        #
+        start_time = (now + datetime.timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+        end_time = (now + datetime.timedelta(days=2)).replace(hour=0, minute=0, second=0, microsecond=0)
+        cls.doing(start_time=start_time, end_time=end_time)
 
     @classmethod
     @promise_do_once(class_name='ExpireUserJob')
-    def doing(cls):
+    def doing(cls, start_time, end_time):
         # 明天到期的用户
-        now = timezone.localtime()
-        start_time = (now + datetime.timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
-        end_time = (now + datetime.timedelta(days=2)).replace(hour=0, minute=0, second=0, microsecond=0)
         log.d(f'select expire user where start_time > {start_time} and end_time <= {end_time}')
         #
         users = User.objects.filter(
