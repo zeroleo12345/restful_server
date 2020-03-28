@@ -7,7 +7,7 @@ from service.wechat.we_message import we_message
 def usage():
     print("""
 测试方法:
-    from service.wechat.tests.test_wechat import Test; a = Test()
+    from service.wechat.tests.test_wechat import *; a = Test()
     
     openid = 'o0FSR0Zh3rotbOog_b2lytxzKrYo'
     template_id = 'nJd-Uw5WlA9DBDqYPTSmpwhysbE269qMP5Adx-dbyyU'
