@@ -70,7 +70,7 @@ services:
     #user: mysql
     #privileged: true   # 拥有主机的root权限
     volumes:
-      - ./etc/mysql/my.cnf:/etc/mysql/my.cnf
+      - ./data/etc/mysql/my.cnf:/etc/mysql/my.cnf
     restart: unless-stopped
     command:
       - --character-set-server=utf8mb4
