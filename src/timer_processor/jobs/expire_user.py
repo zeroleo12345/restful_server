@@ -49,5 +49,4 @@ class ExpireUserJob(metaclass=MetaClass):
                 'remark': {'value': '如需继续使用, 请点击充值'}
             }
             log.i(f'send wechat template message, openid: {user_id}, expired_at: {user.expired_at}')
-            if False:
-                we_message.send_template(user_id, MP_RECHARGE_TEMPLATE_ID, data, url=WeClient.recharge_uri, mini_program=None)
+            we_message.send_template(settings.MP_ADMIN_OPENID, MP_RECHARGE_TEMPLATE_ID, data, url=WeClient.recharge_uri, mini_program=None)
