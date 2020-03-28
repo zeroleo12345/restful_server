@@ -1,53 +1,45 @@
 import os
 import json
-import datetime
 import time
-import pytz
-# 第三方类
-from django.core.management.base import BaseCommand
-# 自己的类
-from trade.management.commands import Service
+import datetime
+# 第三方库
+from django.utils import timezone
+# 项目库
+from . import MetaClass
 from models import BroadBandOrder
 from service.wechat.we_pay import WePay
 from trade.settings import log
 from controls.resource import increase_user_resource
+from utils.time import Datetime
 
-log.set_header('order')
-TZ = pytz.timezone('Asia/Shanghai')
+
 TEN_MINUTE_DELTA = datetime.timedelta(minutes=10)  # 超时10分钟
 TAG_FILE_PATH = 'time.tag'
 
 
-# 使用方法:  python manage.py expire_order
-class Command(BaseCommand):
-    def handle(self, *args, **options):
-        process = ServiceLoop()
-        process.start()
-
-
-class ServiceLoop(Service):
+class ExpiredOrderJob(metaclass=MetaClass):
     start_time_dict = {"file": os.path.basename(__file__), "start_time": "2018-01-01 00:00:00"}
+    next_time = timezone.localtime()
+    start_time, end_time = init_start_time_end_time()
 
-    def __init__(self):
-        super(self.__class__, self).__init__()
-        self.start_time, self.end_time = self.init_start_time_end_time()
-
-    def run(self):
-        self.end_time = self.calculate_end_time()
-        log.d(f'select unpaid order where start_time > {self.start_time} and end_time <= {self.end_time}')
+    @classmethod
+    def start(cls):
+        cls.end_time = cls.calculate_end_time()
+        log.d(f'select unpaid order where start_time > {cls.start_time} and end_time <= {cls.end_time}')
         #
         orders = BroadBandOrder.objects.filter(
-            created_at__gt=self.start_time,
-            created_at__lte=self.end_time,
+            created_at__gt=cls.start_time,
+            created_at__lte=cls.end_time,
             status=BroadBandOrder.Status.UNPAID.value
         )
         for order in orders:
-            self.handle_order_unpaid(order)
+            cls.handle_order_unpaid(order)
         # 保存标签
-        self.start_time = self.end_time
-        self.save_start_time()
+        cls.start_time = cls.end_time
+        cls.save_start_time()
 
-    def handle_order_unpaid(self, order):
+    @classmethod
+    def handle_order_unpaid(cls, order):
         # 查询订单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2
         # 关闭订单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_3
         # 下载对账单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6
@@ -102,22 +94,23 @@ class ServiceLoop(Service):
             BroadBandOrder.objects.filter(out_trade_no=out_trade_no).update(status='expired')
             log.i(f"UPDATE broadband_order SET status = 'expired' WHERE out_trade_no = '{out_trade_no}'")
 
-    def save_start_time(self):
+    def save_start_time(cls):
         with open(TAG_FILE_PATH, 'w', encoding='utf8') as f:
-            json.dump(self.start_time_dict, f)
+            json.dump(cls.start_time_dict, f)
 
-    def init_start_time_end_time(self):
+    @classmethod
+    def init_start_time_end_time(cls):
         if os.path.exists(TAG_FILE_PATH):
             with open(TAG_FILE_PATH, 'r') as f:
-                self.start_time_dict = json.load(f)
+                cls.start_time_dict = json.load(f)
 
-        if self.start_time_dict['file'] != os.path.basename(__file__):
-            raise Exception('tag file mismatch, file: {}', self.start_time_dict['file'])
+        if cls.start_time_dict['file'] != os.path.basename(__file__):
+            raise Exception('tag file mismatch, file: {}', cls.start_time_dict['file'])
 
         # 1. 标签存在, 以标签记录时间为开始时间; 2. 标签不存在, 以2018年1月1日为开始时间
-        start_time = TZ.localize(datetime.datetime.strptime(self.start_time_dict['start_time'], "%Y-%m-%d %H:%M:%S"))
+        start_time = Datetime.from_str(cls.start_time_dict['start_time'], fmt="%Y-%m-%d %H:%M:%S")
 
-        now_datetime = datetime.datetime.now(TZ)
+        now_datetime = timezone.localtime()
         if now_datetime - start_time < TEN_MINUTE_DELTA:
             time.sleep(TEN_MINUTE_DELTA.total_seconds())   # 睡眠X秒, 再处理
 
@@ -128,8 +121,5 @@ class ServiceLoop(Service):
         return start_time, end_time
 
     @staticmethod
-    def calculate_end_time():
-        now_datetime = datetime.datetime.now(TZ)
-        # 距离当前时间 TEN_MINUTE_DELTA 的时间点作为结束时间
-        end_time = now_datetime - TEN_MINUTE_DELTA
-        return end_time
+    def calculate_end_time(delta=TEN_MINUTE_DELTA):
+        return timezone.localtime() - delta

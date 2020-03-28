@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     # 模型
     'trade',
     # 独立程序
+    'timer_processor',
 ]
 # AUTH_USER_MODEL = 'trade.Seller'
 
