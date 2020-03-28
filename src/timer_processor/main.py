@@ -29,6 +29,7 @@ class Task(object):
 
     def start(self):
         # 需支持高可用, 多进程互斥, 只有1个进程在处理
+        log.set_header('timer_processor')
         lock = RedisLock(max_worker_id=1, expire_time=30, process_name='timer_processor')
         try:
             lock.start()
