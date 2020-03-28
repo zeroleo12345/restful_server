@@ -9,7 +9,7 @@ redis_client = get_redis_connection(alias='default')
 
 class WeClient(object):
     _redirect_uri = settings.MP_REDIRECT_URI
-    _client_api = WeChatClient(
+    client_api = WeChatClient(
         appid=settings.MP_APP_ID, secret=settings.MP_APP_SECRET, session=RedisStorage(redis_client, prefix='wechat')
     )
 
@@ -35,4 +35,4 @@ class WeClient(object):
                 },
             ]
         }
-        cls._client_api.menu.create(menu_data)
+        cls.client_api.menu.create(menu_data)
