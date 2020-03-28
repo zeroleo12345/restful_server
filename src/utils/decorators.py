@@ -101,7 +101,7 @@ def check_sms_rate(expire_seconds: int, max_count: int, raise_exception: bool = 
     return decorator
 
 
-def promise_do_once(class_name, func_name):
+def promise_do_once(file_name, func_name):
     """
     防止重复调用: 通过参数值作为去重条件
     """
@@ -123,7 +123,7 @@ def promise_do_once(class_name, func_name):
     def decorator(func):
         def wrapper(*args, **kwargs):
             assert kwargs
-            done_key = f'{class_name}:{func_name}'
+            done_key = f'{file_name}:{func_name}'
             for k, v in kwargs.items():
                 done_key += f':{k}:{v}'
             mark = MarkDone(key=done_key)

@@ -26,7 +26,7 @@ class StatisticsJob(metaclass=MetaClass):
         cls.doing(start_time=start_time, end_time=end_time)
 
     @classmethod
-    @promise_do_once(class_name='StatisticsJob', func_name='doing')
+    @promise_do_once(file_name='statistics', func_name='doing')
     def doing(cls, start_time, end_time):
         # 累计昨天成交
         today_sum = BroadBandOrder.objects.filter(
