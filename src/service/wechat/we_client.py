@@ -25,7 +25,7 @@ class WeClient(object):
             'button': [
                 {
                     'type': 'view',
-                    'name': '充值',
+                    'name': '账号充值',
                     'url': cls.recharge_uri,
                 },
                 {
