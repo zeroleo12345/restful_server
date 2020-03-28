@@ -293,7 +293,7 @@ if DEBUG and PRINT_SQL:
 #
 POD_UID = settings.get('POD_UID', default=uuid.uuid4().hex)
 # 日志
-LOG_DIR = settings.get('LOG_DIR')   # /app/run/log/
+LOG_DIR = settings.get('LOG_DIR')   # /app/data/log/
 LOG_LEVEL = settings.get('LOG_LEVEL', default='debug')
 LOG_TOGGLE_FILE_HANDLER = settings.get('LOG_TOGGLE_FILE_HANDLER', default=0, cast='@bool')
 #
