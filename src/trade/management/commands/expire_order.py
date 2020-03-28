@@ -49,12 +49,12 @@ class ServiceLoop(Service):
             status=BroadBandOrder.Status.UNPAID.value
         )
         for order in orders:
-            self.handle_charge_status0(order)
+            self.handle_order_unpaid(order)
         # 保存标签
         self.start_time = self.end_time
         self.save_start_time()
 
-    def handle_charge_status0(self, order):
+    def handle_order_unpaid(self, order):
         # 查询订单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2
         # 关闭订单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_3
         # 下载对账单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6
