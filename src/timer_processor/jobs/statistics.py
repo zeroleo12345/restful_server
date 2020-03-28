@@ -9,8 +9,20 @@ from utils.slack import send_slack_message
 
 
 class StatisticsJob(metaclass=MetaClass):
+    next_time = timezone.localtime()
+
     @classmethod
     def start(cls):
+        now = timezone.localtime()
+        if now < cls.next_time:
+            return
+        # 隔天早上7点
+        tomorrow = (now + datetime.timedelta(days=1)).replace(hour=7, minute=0, second=0, microsecond=0)
+        cls.next_time = tomorrow
+        cls.doing()
+
+    @classmethod
+    def doing(cls):
         # 累计昨天成交
         today = timezone.localtime().replace(hour=0, minute=0, second=0, microsecond=0)
         yesterday = today - datetime.timedelta(days=1)

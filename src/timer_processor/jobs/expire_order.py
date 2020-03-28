@@ -14,10 +14,21 @@ TEN_MINUTE_DELTA = datetime.timedelta(minutes=10)  # 超时10分钟
 
 
 class ExpiredOrderJob(metaclass=MetaClass):
+    next_time = timezone.localtime()
     start_time = None
 
     @classmethod
     def start(cls):
+        now = timezone.localtime()
+        if now < cls.next_time:
+            return
+        # 每分钟跑一次
+        tomorrow = now + datetime.timedelta(minutes=1)
+        cls.next_time = tomorrow
+        cls.doing()
+
+    @classmethod
+    def doing(cls):
         if not cls.start_time:
             cls.start_time = cls.load_start_time()
         cls.end_time = cls.calculate_end_time()
