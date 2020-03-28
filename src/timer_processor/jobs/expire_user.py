@@ -3,9 +3,15 @@ import datetime
 from django.utils import timezone
 # 项目库
 from . import MetaClass
-from models import User
-from trade.settings import log
 from utils.decorators import promise_do_once
+from trade.settings import log
+from models import User
+from service.wechat.we_client import WeClient
+from service.wechat.we_message import we_message
+from utils.time import Datetime
+from trade import settings
+
+MP_RECHARGE_TEMPLATE_ID = settings.MP_RECHARGE_TEMPLATE_ID
 
 
 class ExpireUserJob(metaclass=MetaClass):
@@ -28,15 +34,20 @@ class ExpireUserJob(metaclass=MetaClass):
         now = timezone.localtime()
         start_time = (now + datetime.timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
         end_time = (now + datetime.timedelta(days=2)).replace(hour=0, minute=0, second=0, microsecond=0)
-        log.d(f'select expire user where start_time > {cls.start_time} and end_time <= {cls.end_time}')
+        log.d(f'select expire user where start_time > {start_time} and end_time <= {end_time}')
         #
-        orders = User.objects.filter(
-            expired_at__gt=cls.start_time,
-            expired_at__lte=cls.end_time,
-            status=User.Status.UNPAID.value
+        users = User.objects.filter(
+            expired_at__gt=start_time,
+            expired_at__lte=end_time,
         )
-        for order in orders:
-            cls.handle_order_unpaid(order)
-        # 保存标签
-        cls.start_time = cls.end_time
-        cls.save_start_time(start_time=cls.start_time)
+        for user in users:
+            user_id = user.openid
+            data = {
+                'first': {'value': '您的宽带即将到期'},
+                'keyword1': {'value': user.username},
+                'keyword2': {'value': f'到期时间 {Datetime.to_str(user.expired_at, fmt="%Y-%m-%d %H:%M")}'},
+                'remark': {'value': '如需继续使用, 请点击充值'}
+            }
+            log.i(f'send wechat template message, openid: {user_id}, expired_at: {user.expired_at}')
+            if False:
+                we_message.send_template(user_id, MP_RECHARGE_TEMPLATE_ID, data, url=WeClient.recharge_uri, mini_program=None)

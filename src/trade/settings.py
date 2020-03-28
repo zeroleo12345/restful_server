@@ -324,6 +324,7 @@ MP_SUB_MERCHANT_ID = settings.get('MP_SUB_MERCHANT_ID', default=None)     # 可�
 
 # 公众号下测试管理员的openid. (付款只需0.01)
 MP_ADMIN_OPENID = settings.get('MP_ADMIN_OPENID')
+MP_RECHARGE_TEMPLATE_ID = settings.get('MP_RECHARGE_TEMPLATE_ID')
 
 # # 公众号客服
 # MP_KF_ACCOUNT = settings.get('MP_KF_ACCOUNT')
