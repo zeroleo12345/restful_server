@@ -121,7 +121,8 @@ def promise_do_once(class_name, func_name):
             return self.redis.sismember(self.key, value)
 
     def decorator(func):
-        def wrapper(**kwargs):
+        def wrapper(*args, **kwargs):
+            assert kwargs
             done_key = f'{class_name}:{func_name}'
             value = ''
             for k, v in kwargs.items():
@@ -131,7 +132,7 @@ def promise_do_once(class_name, func_name):
                 return
             mark.add(value=value)
             # 调用原函数
-            return func(**kwargs)
+            return func(*args, **kwargs)
 
         return wrapper
 
