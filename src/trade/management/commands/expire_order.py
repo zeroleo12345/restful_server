@@ -32,13 +32,6 @@ class ServiceLoop(Service):
         super(self.__class__, self).__init__()
         self.start_time, self.end_time = self.init_start_time_end_time()
 
-    @staticmethod
-    def calculate_end_time():
-        now_datetime = datetime.datetime.now(TZ)
-        # 距离当前时间 TEN_MINUTE_DELTA 的时间点作为结束时间
-        end_time = now_datetime - TEN_MINUTE_DELTA
-        return end_time
-
     def run(self):
         self.end_time = self.calculate_end_time()
         log.d(f'select unpaid order where start_time > {self.start_time} and end_time <= {self.end_time}')
@@ -133,3 +126,11 @@ class ServiceLoop(Service):
 
         log.i(f'init. start_time: {start_time}, end_time: {end_time}')
         return start_time, end_time
+
+    @staticmethod
+    def calculate_end_time():
+        now_datetime = datetime.datetime.now(TZ)
+        # 距离当前时间 TEN_MINUTE_DELTA 的时间点作为结束时间
+        end_time = now_datetime - TEN_MINUTE_DELTA
+        return end_time
+
