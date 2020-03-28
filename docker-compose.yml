@@ -44,7 +44,7 @@ services:
     volumes:
       - .:/app
       - ./data:/data
-    entrypoint: /app/bin/manage_order.sh
+    entrypoint: /app/bin/expire_order.sh
     tty: true
     restart: unless-stopped
     networks:
