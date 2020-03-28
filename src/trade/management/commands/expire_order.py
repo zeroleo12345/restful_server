@@ -16,7 +16,7 @@ log.set_header('order')
 TZ = pytz.timezone('Asia/Shanghai')
 TEN_MINUTE_DELTA = datetime.timedelta(minutes=10)  # 超时10分钟
 TAG_FILE_PATH = 'time.tag'
-expire_order
+
 
 # 使用方法:  python manage.py expire_order
 class Command(BaseCommand):
