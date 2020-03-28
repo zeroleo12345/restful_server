@@ -105,7 +105,7 @@ class ExpiredOrderJob(metaclass=MetaClass):
 
     @classmethod
     def start_time_key(cls):
-        return 'timer:expire_order:start_time'
+        return 'expire_order:start_time'
 
     @classmethod
     def save_start_time(cls, start_time):
