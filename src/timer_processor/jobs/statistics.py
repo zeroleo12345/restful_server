@@ -6,6 +6,7 @@ from django.db.models import Sum
 from . import MetaClass
 from models import BroadBandOrder
 from utils.slack import send_slack_message
+from utils.decorators import promise_do_once
 
 
 class StatisticsJob(metaclass=MetaClass):
@@ -19,15 +20,17 @@ class StatisticsJob(metaclass=MetaClass):
         # 隔天早上7点
         tomorrow = (now + datetime.timedelta(days=1)).replace(hour=7, minute=0, second=0, microsecond=0)
         cls.next_time = tomorrow
-        cls.doing()
+        #
+        start_time = timezone.localtime().replace(hour=0, minute=0, second=0, microsecond=0)
+        end_time = start_time - datetime.timedelta(days=1)
+        cls.doing(start_time=start_time, end_time=end_time)
 
     @classmethod
-    def doing(cls):
+    @promise_do_once(class_name='StatisticsJob', func_name='doing')
+    def doing(cls, start_time, end_time):
         # 累计昨天成交
-        today = timezone.localtime().replace(hour=0, minute=0, second=0, microsecond=0)
-        yesterday = today - datetime.timedelta(days=1)
         today_sum = BroadBandOrder.objects.filter(
-            status='paid', updated_at__gt=yesterday, updated_at__lt=today
+            status='paid', updated_at__gt=end_time, updated_at__lt=start_time
         ).aggregate(sum=Sum('total_fee'))['sum']
         if not today_sum:
             today_sum = 0

@@ -123,7 +123,7 @@ def promise_do_once(class_name, func_name):
     def decorator(func):
         def wrapper(*args, **kwargs):
             assert kwargs
-            done_key = f'{class_name}:{func_name}'
+            done_key = f'mark:{class_name}:{func_name}'
             value = ''
             for k, v in kwargs.items():
                 value += f':k:{k}:v:{v}'
