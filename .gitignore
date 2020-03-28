@@ -141,6 +141,6 @@ ENV/
 .qiniu_pythonsdk_hostscache.json
 data/backup/*
 !data/backup/.gitkeep
-data/mysql
+data/redisdata/appendonly.aof
 *.pem
 *.p12

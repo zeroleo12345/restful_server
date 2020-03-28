@@ -1,12 +1,9 @@
-import os
-import json
-import time
 import datetime
 # 第三方库
 from django.utils import timezone
 # 项目库
 from . import MetaClass
-from models import BroadBandOrder
+from models import BroadBandOrder, get_redis
 from service.wechat.we_pay import WePay
 from trade.settings import log
 from controls.resource import increase_user_resource
@@ -14,17 +11,19 @@ from utils.time import Datetime
 
 
 TEN_MINUTE_DELTA = datetime.timedelta(minutes=10)  # 超时10分钟
-TAG_FILE_PATH = 'time.tag'      # 因为redis没开持久化
 
 
 class ExpiredOrderJob(metaclass=MetaClass):
-    start_time_dict = {"file": os.path.basename(__file__), "start_time": "2018-01-01 00:00:00"}
-    next_time = timezone.localtime()
-    start_time, end_time = init_start_time_end_time()
+    start_time = None
 
     @classmethod
     def start(cls):
+        if not cls.start_time:
+            cls.start_time = cls.load_start_time()
         cls.end_time = cls.calculate_end_time()
+        if cls.end_time < cls.start_time:
+            log.d(f'end_time({cls.end_time}) < start_time({cls.start_time})')
+            return
         log.d(f'select unpaid order where start_time > {cls.start_time} and end_time <= {cls.end_time}')
         #
         orders = BroadBandOrder.objects.filter(
@@ -36,7 +35,7 @@ class ExpiredOrderJob(metaclass=MetaClass):
             cls.handle_order_unpaid(order)
         # 保存标签
         cls.start_time = cls.end_time
-        cls.save_start_time()
+        cls.save_start_time(start_time=cls.start_time)
 
     @classmethod
     def handle_order_unpaid(cls, order):
@@ -94,31 +93,28 @@ class ExpiredOrderJob(metaclass=MetaClass):
             BroadBandOrder.objects.filter(out_trade_no=out_trade_no).update(status='expired')
             log.i(f"UPDATE broadband_order SET status = 'expired' WHERE out_trade_no = '{out_trade_no}'")
 
-    def save_start_time(cls):
-        with open(TAG_FILE_PATH, 'w', encoding='utf8') as f:
-            json.dump(cls.start_time_dict, f)
+    @classmethod
+    def start_time_key(cls):
+        return 'timer:expire_order:start_time'
 
     @classmethod
-    def init_start_time_end_time(cls):
-        if os.path.exists(TAG_FILE_PATH):
-            with open(TAG_FILE_PATH, 'r') as f:
-                cls.start_time_dict = json.load(f)
+    def save_start_time(cls, start_time):
+        redis = get_redis()
+        key = cls.start_time_key()
+        value = Datetime.to_str(start_time, fmt='%Y-%m-%d %H:%M:%S')
+        redis.set(key, value)
 
-        if cls.start_time_dict['file'] != os.path.basename(__file__):
-            raise Exception('tag file mismatch, file: {}', cls.start_time_dict['file'])
-
+    @classmethod
+    def load_start_time(cls):
+        redis = get_redis()
+        key = cls.start_time_key()
+        start_time = redis.get(key)
         # 1. 标签存在, 以标签记录时间为开始时间; 2. 标签不存在, 以2018年1月1日为开始时间
-        start_time = Datetime.from_str(cls.start_time_dict['start_time'], fmt="%Y-%m-%d %H:%M:%S")
-
-        now_datetime = timezone.localtime()
-        if now_datetime - start_time < TEN_MINUTE_DELTA:
-            time.sleep(TEN_MINUTE_DELTA.total_seconds())   # 睡眠X秒, 再处理
-
-        # 距离当前时间 TEN_MINUTE_DELTA 的时间点作为结束时间
-        end_time = now_datetime - TEN_MINUTE_DELTA
-
-        log.i(f'init. start_time: {start_time}, end_time: {end_time}')
-        return start_time, end_time
+        if not start_time:
+            start_time = timezone.localtime().replace(year=2018, month=1, day=1)
+        else:
+            start_time = Datetime.from_str(start_time, fmt='%Y-%m-%d %H:%M:%S')
+        return start_time
 
     @staticmethod
     def calculate_end_time(delta=TEN_MINUTE_DELTA):
