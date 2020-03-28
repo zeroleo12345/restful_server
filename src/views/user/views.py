@@ -42,7 +42,7 @@ class UserView(APIView):
                 user = User.create(**user_fields)   # create 返回 Model 实例
         else:
             if user.avatar != avatar or user.nickname != nickname:
-                user.update(nickname=nickname, avatar=avatar)
+                user.update(nickname=nickname, headimgurl=avatar)
         user_info = user.to_dict()
         authorization = JWTAuthentication.jwt_encode_handler(user_dict=user_info)
         data = {
