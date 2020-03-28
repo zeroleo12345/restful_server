@@ -22,7 +22,7 @@ class ExpiredOrderJob(metaclass=MetaClass):
             cls.start_time = cls.load_start_time()
         cls.end_time = cls.calculate_end_time()
         if cls.end_time < cls.start_time:
-            log.d(f'end_time({cls.end_time}) < start_time({cls.start_time})')
+            log.w(f'end_time({cls.end_time}) < start_time({cls.start_time})')
             return
         log.d(f'select unpaid order where start_time > {cls.start_time} and end_time <= {cls.end_time}')
         #
@@ -109,9 +109,9 @@ class ExpiredOrderJob(metaclass=MetaClass):
         redis = get_redis()
         key = cls.start_time_key()
         start_time = redis.get(key)
-        # 1. 标签存在, 以标签记录时间为开始时间; 2. 标签不存在, 以2018年1月1日为开始时间
+        # 1. 标签存在, 以标签记录时间为开始时间; 2. 标签不存在, 以2020年1月1日为开始时间
         if not start_time:
-            start_time = timezone.localtime().replace(year=2018, month=1, day=1)
+            start_time = timezone.localtime().replace(year=2020, month=1, day=1)
         else:
             start_time = Datetime.from_str(start_time, fmt='%Y-%m-%d %H:%M:%S')
         return start_time
