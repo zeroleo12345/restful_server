@@ -8,7 +8,7 @@ def usage():
 测试方法:
     from service.wechat.tests.test_wechat import Test; a = Test()
     
-    openid = 'oXpjB5yV35pBlCIqNC7XscY3cIWE'
+    openid = 'o0FSR0Zh3rotbOog_b2lytxzKrYo'
     template_id = 'nJd-Uw5WlA9DBDqYPTSmpwhysbE269qMP5Adx-dbyyU'
     
     data = {'first': {'value': '您的宽带即将到期, 到期时间: 2020-01-01 08:00', 'color': '#173177'}, 'keyword1': {'value': '账号'}, 'keyword2': {'value': '即将到期'}, 'remark': {'value': '如需继续使用, 请尽快充值'}}
