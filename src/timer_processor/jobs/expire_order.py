@@ -14,7 +14,7 @@ from utils.time import Datetime
 
 
 TEN_MINUTE_DELTA = datetime.timedelta(minutes=10)  # 超时10分钟
-TAG_FILE_PATH = 'time.tag'
+TAG_FILE_PATH = 'time.tag'      # 因为redis没开持久化
 
 
 class ExpiredOrderJob(metaclass=MetaClass):
