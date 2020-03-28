@@ -16,8 +16,8 @@ services:
       ENVIRONMENT: "${ENVIRONMENT}"
     env_file:
       - .env
-    volumes:       # 挂载盘(多用于输出程序文件, 日志等)
-      - .:/app     # 主机路径:docker内部路径.(把主机下的src目录挂在到docker下, 实现边开发, 边调试)
+    volumes:    # 挂载盘: - 主机路径:docker内部路径
+      - .:/app     # 把主机下的src目录挂在到docker下, 实现边开发, 边调试
       - ./data:/data
     # entrypoint: sh      # 用于调试
     entrypoint: /app/bin/web.sh      # docker启动期执行程序
@@ -28,8 +28,8 @@ services:
       - pppoe_system
 
 
-  api_order:
-    container_name: api_order
+  timer_processor:
+    container_name: timer_processor
     build:
        context: .
        dockerfile: ./docker/api/Dockerfile
@@ -44,7 +44,7 @@ services:
     volumes:
       - .:/app
       - ./data:/data
-    entrypoint: /app/bin/manage_order.sh
+    entrypoint: python manage.py timer_processor
     tty: true
     restart: unless-stopped
     networks:
@@ -54,7 +54,10 @@ services:
   redis:
     container_name: restful_server_redis
     image: redis:alpine
+    volumes:    # 挂载盘: - 主机路径:docker内部路径
+      - ./data/redisdata:/data
     restart: unless-stopped
+    entrypoint: redis-server --appendonly yes
     networks:
       - pppoe_system
 
@@ -70,7 +73,7 @@ services:
     #user: mysql
     #privileged: true   # 拥有主机的root权限
     volumes:
-      - ./etc/mysql/my.cnf:/etc/mysql/my.cnf
+      - ./data/etc/mysql/my.cnf:/etc/mysql/my.cnf
     restart: unless-stopped
     command:
       - --character-set-server=utf8mb4

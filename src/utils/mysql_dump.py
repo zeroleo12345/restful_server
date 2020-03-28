@@ -102,7 +102,7 @@ main()
 def usage():
     print("""
     容器内运行:
-        python mysql_dump.py -host mysql -P 3306 -u root -p 'root' -db guanjia -dir '/app/run/backup/'
+        python mysql_dump.py -host mysql -P 3306 -u root -p 'root' -db guanjia -dir '/app/data/backup/'
 
     主机上运行:
         python mysql_dump.py -host 127.0.0.1 -P 33333 -u root -p 'root' -db guanjia -dir './'

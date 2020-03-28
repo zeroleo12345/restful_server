@@ -8,6 +8,7 @@ from framework.exception import GlobalException
 from framework.authorization import JWTAuthentication
 from buffer.token import WechatCode
 from framework.restful import BihuResponse
+# from trade.settings import log
 
 
 class UserView(APIView):
@@ -39,6 +40,9 @@ class UserView(APIView):
             }
             with transaction.atomic():
                 user = User.create(**user_fields)   # create 返回 Model 实例
+        else:
+            if user.headimgurl != avatar or user.nickname != nickname:
+                user.update(nickname=nickname, headimgurl=avatar)
         user_info = user.to_dict()
         authorization = JWTAuthentication.jwt_encode_handler(user_dict=user_info)
         data = {

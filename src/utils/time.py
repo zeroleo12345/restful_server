@@ -103,7 +103,7 @@ class Datetime(object):
         """
         datetime 转换为 string
         :param dt:
-        :param fmt:
+        :param fmt: 常用 %Y-%m-%d %H:%M:%S
         :return:
         """
         return dt.strftime(fmt)

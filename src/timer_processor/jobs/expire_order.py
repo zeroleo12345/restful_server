@@ -1,59 +1,54 @@
-import os
-import json
 import datetime
-import time
-import pytz
-# 第三方类
-from django.core.management.base import BaseCommand
-# 自己的类
-from trade.management.commands import Service
-from models import BroadBandOrder
+# 第三方库
+from django.utils import timezone
+# 项目库
+from . import MetaClass
+from models import BroadBandOrder, get_redis
 from service.wechat.we_pay import WePay
 from trade.settings import log
 from controls.resource import increase_user_resource
+from utils.time import Datetime
 
-log.set_header('order')
-TZ = pytz.timezone('Asia/Shanghai')
+
 TEN_MINUTE_DELTA = datetime.timedelta(minutes=10)  # 超时10分钟
-TAG_FILE_PATH = 'time.tag'
 
 
-# 使用方法:  python manage.py manage_order
-class Command(BaseCommand):
-    def handle(self, *args, **options):
-        process = ServiceLoop()
-        process.start()
+class ExpiredOrderJob(metaclass=MetaClass):
+    next_time = timezone.localtime()
+    start_time = None
 
+    @classmethod
+    def start(cls):
+        now = timezone.localtime()
+        if now < cls.next_time:
+            return
+        # 每分钟跑一次
+        cls.next_time = now + datetime.timedelta(minutes=1)
+        cls.doing()
 
-class ServiceLoop(Service):
-    start_time_dict = {"file": os.path.basename(__file__), "start_time": "2018-01-01 00:00:00"}
-
-    def __init__(self):
-        super(self.__class__, self).__init__()
-        self.start_time, self.end_time = self.init_start_time_end_time()
-
-    def cal_end_time(self):
-        now_datetime = datetime.datetime.now(TZ)
-        # 距离当前时间 TEN_MINUTE_DELTA 的时间点作为结束时间
-        end_time = now_datetime - TEN_MINUTE_DELTA
-        return end_time
-
-    def run(self):
-        self.end_time = self.cal_end_time()
-        log.d(f'select unpaid order where start_time > {self.start_time} and end_time <= {self.end_time}')
+    @classmethod
+    def doing(cls):
+        if not cls.start_time:
+            cls.start_time = cls.load_start_time()
+        cls.end_time = cls.calculate_end_time()
+        if cls.end_time < cls.start_time:
+            log.w(f'end_time({cls.end_time}) < start_time({cls.start_time})')
+            return
+        log.d(f'select unpaid order where start_time > {cls.start_time} and end_time <= {cls.end_time}')
         #
         orders = BroadBandOrder.objects.filter(
-            created_at__gt=self.start_time,
-            created_at__lte=self.end_time,
+            created_at__gt=cls.start_time,
+            created_at__lte=cls.end_time,
             status=BroadBandOrder.Status.UNPAID.value
         )
         for order in orders:
-            self.handle_charge_status0(order)
+            cls.handle_order_unpaid(order)
         # 保存标签
-        self.start_time = self.end_time
-        self.save_start_time()
+        cls.start_time = cls.end_time
+        cls.save_start_time(start_time=cls.start_time)
 
-    def handle_charge_status0(self, order):
+    @classmethod
+    def handle_order_unpaid(cls, order):
         # 查询订单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2
         # 关闭订单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_3
         # 下载对账单API文档: https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6
@@ -108,27 +103,29 @@ class ServiceLoop(Service):
             BroadBandOrder.objects.filter(out_trade_no=out_trade_no).update(status='expired')
             log.i(f"UPDATE broadband_order SET status = 'expired' WHERE out_trade_no = '{out_trade_no}'")
 
-    def save_start_time(self):
-        with open(TAG_FILE_PATH, 'w', encoding='utf8') as f:
-            json.dump(self.start_time_dict, f)
+    @classmethod
+    def start_time_key(cls):
+        return 'expire_order:start_time'
 
-    def init_start_time_end_time(self):
-        if os.path.exists(TAG_FILE_PATH):
-            with open(TAG_FILE_PATH, 'r') as f:
-                self.start_time_dict = json.load(f)
+    @classmethod
+    def save_start_time(cls, start_time):
+        redis = get_redis()
+        key = cls.start_time_key()
+        value = Datetime.to_str(start_time, fmt='%Y-%m-%d %H:%M:%S')
+        redis.set(key, value)
 
-        if self.start_time_dict['file'] != os.path.basename(__file__):
-            raise Exception('tag file mismatch, file: {}', self.start_time_dict['file'])
+    @classmethod
+    def load_start_time(cls):
+        redis = get_redis()
+        key = cls.start_time_key()
+        start_time = redis.get(key)
+        # 1. 标签存在, 以标签记录时间为开始时间; 2. 标签不存在, 以2020年1月1日为开始时间
+        if not start_time:
+            start_time = timezone.localtime().replace(year=2020, month=1, day=1)
+        else:
+            start_time = Datetime.from_str(start_time, fmt='%Y-%m-%d %H:%M:%S')
+        return start_time
 
-        # 1. 标签存在, 以标签记录时间为开始时间; 2. 标签不存在, 以2018年1月1日为开始时间
-        start_time = TZ.localize(datetime.datetime.strptime(self.start_time_dict['start_time'], "%Y-%m-%d %H:%M:%S"))
-
-        now_datetime = datetime.datetime.now(TZ)
-        if now_datetime - start_time < TEN_MINUTE_DELTA:
-            time.sleep(TEN_MINUTE_DELTA.total_seconds())   # 睡眠X秒, 再处理
-
-        # 距离当前时间 TEN_MINUTE_DELTA 的时间点作为结束时间
-        end_time = now_datetime - TEN_MINUTE_DELTA
-
-        log.i(f'init. start_time: {start_time}, end_time: {end_time}')
-        return start_time, end_time
+    @staticmethod
+    def calculate_end_time(delta=TEN_MINUTE_DELTA):
+        return timezone.localtime() - delta

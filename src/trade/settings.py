@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     # 模型
     'trade',
     # 独立程序
+    'timer_processor',
 ]
 # AUTH_USER_MODEL = 'trade.Seller'
 
@@ -292,7 +293,7 @@ if DEBUG and PRINT_SQL:
 #
 POD_UID = settings.get('POD_UID', default=uuid.uuid4().hex)
 # 日志
-LOG_DIR = settings.get('LOG_DIR')   # /app/run/log/
+LOG_DIR = settings.get('LOG_DIR')   # /app/data/log/
 LOG_LEVEL = settings.get('LOG_LEVEL', default='debug')
 LOG_TOGGLE_FILE_HANDLER = settings.get('LOG_TOGGLE_FILE_HANDLER', default=0, cast='@bool')
 #
@@ -322,7 +323,8 @@ MP_MERCHANT_KEY = settings.get('MP_MERCHANT_KEY', default=None)           # 可�
 MP_SUB_MERCHANT_ID = settings.get('MP_SUB_MERCHANT_ID', default=None)     # 可选(一般不需填). 子商户号, 受理模式下需填
 
 # 公众号下测试管理员的openid. (付款只需0.01)
-MP_ADMIN_OPENID = settings.get('MP_ADMIN_OPENID', default='o0FSR0Zh3rotbOog_b2lytxzKrYo')
+MP_ADMIN_OPENID = settings.get('MP_ADMIN_OPENID')
+MP_RECHARGE_TEMPLATE_ID = settings.get('MP_RECHARGE_TEMPLATE_ID')
 
 # # 公众号客服
 # MP_KF_ACCOUNT = settings.get('MP_KF_ACCOUNT')

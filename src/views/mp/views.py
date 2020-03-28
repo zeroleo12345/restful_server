@@ -38,16 +38,26 @@ class EchoStrView(APIView):
             xml = request.body
             msg = parse_message(xml)
             # log.d(f'platform event notify: {msg}')
-            _appid = msg.target     # 例如: gh_9225266caeb1
-            from_user = msg.source
-            if isinstance(msg, SubscribeEvent) or isinstance(msg, TextMessage):   # 关注公众号事件 或者 文字消息
+            appid = msg.target     # 例如: gh_9225266caeb1
+            from_user_openid = msg.source
+            if isinstance(msg, SubscribeEvent):   # 关注公众号事件
                 reply = TextReply()
-                reply.source = _appid
-                reply.target = from_user
+                reply.source = appid
+                reply.target = from_user_openid
                 reply.content = settings.MP_DEFAULT_REPLY
                 xml = reply.render()
-                # log.d(f'response: {xml}')
                 return HttpResponse(xml, content_type='text/xml')
+            elif isinstance(msg, TextMessage):    # 文本消息
+                if msg.content == 'openid':
+                    message = f'你的openid: {from_user_openid}'
+                else:
+                    message = settings.MP_DEFAULT_REPLY
+                reply = TextReply()
+                reply.source = appid
+                reply.target = from_user_openid
+                reply.content = message
+                xml = reply.render()
+                return HttpResponse(content=xml, content_type='text/xml')
             return Response('success')
         except Exception as exc:
             sentry_sdk.capture_exception(exc)

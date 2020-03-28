@@ -8,10 +8,11 @@ redis_client = get_redis_connection(alias='default')
 
 
 class WeClient(object):
-    _redirect_uri = settings.MP_REDIRECT_URI
-    _client_api = WeChatClient(
+    client_api = WeChatClient(
         appid=settings.MP_APP_ID, secret=settings.MP_APP_SECRET, session=RedisStorage(redis_client, prefix='wechat')
     )
+    recharge_uri = f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}' \
+                   f'&redirect_uri={settings.MP_REDIRECT_URI}&response_type=code&scope=snsapi_userinfo'
 
     @classmethod
     def create_mp_menu(cls):
@@ -24,9 +25,8 @@ class WeClient(object):
             'button': [
                 {
                     'type': 'view',
-                    'name': '账号中心',
-                    'url': f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}'
-                           f'&redirect_uri={cls._redirect_uri}&response_type=code&scope=snsapi_userinfo',
+                    'name': '账号充值',
+                    'url': cls.recharge_uri,
                 },
                 {
                     'type': 'view',
@@ -35,4 +35,4 @@ class WeClient(object):
                 },
             ]
         }
-        cls._client_api.menu.create(menu_data)
+        cls.client_api.menu.create(menu_data)
