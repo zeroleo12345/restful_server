@@ -37,11 +37,8 @@ ENVIRONMENT:
 
 - 其他程序
 ```
-# 更新微信支付订单状态
-python manage.py expire_order
-
-# 统计订单金额
-python manage.py statistics
+# 定时任务: 更新微信支付订单状态; 统计订单金额
+python manage.py timer_processor
 ```
 
 

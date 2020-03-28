@@ -28,8 +28,8 @@ services:
       - pppoe_system
 
 
-  api_order:
-    container_name: api_order
+  timer_processor:
+    container_name: timer_processor
     build:
        context: .
        dockerfile: ./docker/api/Dockerfile
@@ -44,7 +44,7 @@ services:
     volumes:
       - .:/app
       - ./data:/data
-    entrypoint: /app/bin/expire_order.sh
+    entrypoint: python manage.py timer_processor
     tty: true
     restart: unless-stopped
     networks:
