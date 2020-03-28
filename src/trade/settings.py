@@ -322,7 +322,7 @@ MP_MERCHANT_KEY = settings.get('MP_MERCHANT_KEY', default=None)           # 可�
 MP_SUB_MERCHANT_ID = settings.get('MP_SUB_MERCHANT_ID', default=None)     # 可选(一般不需填). 子商户号, 受理模式下需填
 
 # 公众号下测试管理员的openid. (付款只需0.01)
-MP_ADMIN_OPENID = settings.get('MP_ADMIN_OPENID', default='o0FSR0Zh3rotbOog_b2lytxzKrYo')
+MP_ADMIN_OPENID = settings.get('MP_ADMIN_OPENID')
 
 # # 公众号客服
 # MP_KF_ACCOUNT = settings.get('MP_KF_ACCOUNT')
