@@ -99,3 +99,40 @@ def check_sms_rate(expire_seconds: int, max_count: int, raise_exception: bool = 
         return wrapper
 
     return decorator
+
+
+def promise_do_once(class_name, func_name):
+    """
+    防止重复调用: 通过参数值作为去重条件
+    """
+    class MarkDoneSet(object):
+        """ 用于任务完成, 用于去重 """
+        def __init__(self, key):
+            self.key = f'marks:{key}'
+            self.redis = get_redis()
+
+        def add(self, value: str):
+            """ 标记任务完成 """
+            self.redis = get_redis()
+            self.redis.sadd(self.key, value)
+
+        def exist(self, value) -> int:
+            """ 查询任务是否已完成 """
+            return self.redis.sismember(self.key, value)
+
+    def decorator(func):
+        def wrapper(**kwargs):
+            done_key = f'{class_name}:{func_name}'
+            value = ''
+            for k, v in kwargs.items():
+                value += f':k:{k}:v:{v}'
+            mark = MarkDoneSet(key=done_key)
+            if mark.exist(value=value):
+                return
+            mark.add(value=value)
+            # 调用原函数
+            return func(**kwargs)
+
+        return wrapper
+
+    return decorator
