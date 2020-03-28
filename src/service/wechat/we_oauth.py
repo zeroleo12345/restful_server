@@ -37,7 +37,7 @@ class WeOAuth(object):
                 'country': '中国',
                 'sex': 1,
                 'privilege': [],
-                'nickname': '测试账号'
+                'nickname': '开发环境测试号'
             }
             pass
             user_info['openid'] = code
