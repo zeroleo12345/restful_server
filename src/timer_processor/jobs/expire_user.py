@@ -23,8 +23,7 @@ class ExpireUserJob(metaclass=MetaClass):
         if now < cls.next_time:
             return
         # 隔天晚上9点
-        tomorrow = (now + datetime.timedelta(days=1)).replace(hour=21, minute=0, second=0, microsecond=0)
-        cls.next_time = tomorrow
+        cls.next_time = (now + datetime.timedelta(days=1)).replace(hour=21, minute=0, second=0, microsecond=0)
         #
         start_time = (now + datetime.timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
         end_time = (now + datetime.timedelta(days=2)).replace(hour=0, minute=0, second=0, microsecond=0)

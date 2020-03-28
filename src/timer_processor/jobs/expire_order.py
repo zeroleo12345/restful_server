@@ -23,8 +23,7 @@ class ExpiredOrderJob(metaclass=MetaClass):
         if now < cls.next_time:
             return
         # 每分钟跑一次
-        tomorrow = now + datetime.timedelta(minutes=1)
-        cls.next_time = tomorrow
+        cls.next_time = now + datetime.timedelta(minutes=1)
         cls.doing()
 
     @classmethod
