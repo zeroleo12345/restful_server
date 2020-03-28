@@ -105,32 +105,31 @@ def promise_do_once(class_name, func_name):
     """
     防止重复调用: 通过参数值作为去重条件
     """
-    class MarkDoneSet(object):
+    class MarkDone(object):
         """ 用于任务完成, 用于去重 """
         def __init__(self, key):
-            self.key = f'marks:{key}'
+            self.key = f'mark:{key}'
             self.redis = get_redis()
 
-        def add(self, value: str):
+        def set(self):
             """ 标记任务完成 """
             self.redis = get_redis()
-            self.redis.sadd(self.key, value)
+            self.redis.set(self.key, 'done', ex=86400*7)
 
-        def exist(self, value) -> int:
+        def exist(self) -> int:
             """ 查询任务是否已完成 """
-            return self.redis.sismember(self.key, value)
+            return self.redis.exists(self.key)
 
     def decorator(func):
         def wrapper(*args, **kwargs):
             assert kwargs
-            done_key = f'mark:{class_name}:{func_name}'
-            value = ''
+            done_key = f'{class_name}:{func_name}'
             for k, v in kwargs.items():
-                value += f':k:{k}:v:{v}'
-            mark = MarkDoneSet(key=done_key)
-            if mark.exist(value=value):
+                done_key += f':k:{k}:v:{v}'
+            mark = MarkDone(key=done_key)
+            if mark.exist():
                 return
-            mark.add(value=value)
+            mark.set()
             # 调用原函数
             return func(*args, **kwargs)
 
