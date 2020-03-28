@@ -125,7 +125,7 @@ def promise_do_once(class_name, func_name):
             assert kwargs
             done_key = f'{class_name}:{func_name}'
             for k, v in kwargs.items():
-                done_key += f':k:{k}:v:{v}'
+                done_key += f':{k}:{v}'
             mark = MarkDone(key=done_key)
             if mark.exist():
                 return
