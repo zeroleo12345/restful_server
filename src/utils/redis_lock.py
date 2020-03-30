@@ -6,7 +6,7 @@ import sentry_sdk
 from trade.settings import log
 from trade import settings
 from framework.database import get_redis
-from utils.signal import SigTerm
+from utils.signal_handler import SigTerm
 
 
 class RedisLock(object):

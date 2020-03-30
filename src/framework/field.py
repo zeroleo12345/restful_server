@@ -4,8 +4,8 @@ from enum import Enum
 from django.db import models
 #
 from utils.snowflake import generator
-# from trade.utils.redis_lock import RedisLock
-# from trade.utils.signal import SigTerm
+# from utils.redis_lock import RedisLock
+# from utils.signal_handler import SigTerm
 
 
 # lock = RedisLock(max_worker_id=250)
