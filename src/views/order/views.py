@@ -6,7 +6,7 @@ from wechatpy.exceptions import InvalidSignatureException
 import sentry_sdk
 # 项目库
 from trade.settings import log
-from utils.django import get_client_ip
+from utils.mydjango import get_client_ip
 from service.wechat.we_pay import WePay
 from models import BroadBandOrder, Tariff
 from framework.restful import BihuResponse

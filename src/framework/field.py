@@ -5,7 +5,7 @@ from django.db import models
 #
 from utils.snowflake import generator
 # from utils.redis_lock import RedisLock
-# from utils.signal_handler import SigTerm
+# from utils.mysignal import SigTerm
 
 
 # lock = RedisLock(max_worker_id=250)

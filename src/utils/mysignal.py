@@ -1,6 +1,6 @@
 import signal
 #
-from utils.logger import log
+from utils.mylog import log
 
 
 # 只有在 gunicorn 下, 信号注册才生效.

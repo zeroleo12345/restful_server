@@ -1,6 +1,6 @@
 import time
 import sentry_sdk
-from utils.logger import log
+from utils.mylog import log
 
 # Nov 04 2010 01:42:54 UTC in milliseconds
 twepoch = 1288834974657

@@ -21,8 +21,8 @@ import sentry_sdk
 from sentry_sdk.integrations.logging import ignore_logger
 from sentry_sdk.integrations.django import DjangoIntegration
 # 项目库
-from utils.logger import log
-from utils.signal_handler import SigTerm
+from utils.mylog import log
+from utils.mysignal import SigTerm
 SigTerm.register()
 
 
