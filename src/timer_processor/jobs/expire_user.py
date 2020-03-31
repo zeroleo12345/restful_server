@@ -22,6 +22,8 @@ class ExpireUserJob(metaclass=MetaClass):
         now = timezone.localtime()
         if now < cls.next_time:
             return
+        if now.hour < 9:
+            return
         # 隔天晚上9点
         cls.next_time = (now + datetime.timedelta(days=1)).replace(hour=21, minute=0, second=0, microsecond=0)
         cls.next_time = now + datetime.timedelta(minutes=1)
