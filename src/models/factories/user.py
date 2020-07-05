@@ -20,6 +20,8 @@ class UserFactory(object):
         assert 'nickname' in res_dict['data']['user']
         assert 'headimgurl' in res_dict['data']['user']
         assert 'created_at' in res_dict['data']['user']
+        assert 'updated_at' in res_dict['data']['user']
+        assert 'expired_at' in res_dict['data']['user']
         assert 'username' in res_dict['data']['user']
         assert 'is_enable' in res_dict['data']['user']
         assert 'role' in res_dict['data']['user']

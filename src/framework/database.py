@@ -32,7 +32,7 @@ class BaseModel(object):
         for k, v in kwargs.items():
             assert hasattr(self, k)
             setattr(self, k, v)
-        self.save()
+        self.save(update_fields=kwargs.keys())
 
     @classmethod
     def create(cls, **kwargs):

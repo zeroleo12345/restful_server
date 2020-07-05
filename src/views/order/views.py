@@ -50,7 +50,7 @@ class OrderView(APIView):
             total_fee=total_fee,
             appid=settings.MP_APP_ID,
             mch_id=settings.MP_MERCHANT_ID,
-            status='unpaid',
+            status=BroadBandOrder.Status.UNPAID.value,
         )
         data = {
             'order': order.to_dict(),
