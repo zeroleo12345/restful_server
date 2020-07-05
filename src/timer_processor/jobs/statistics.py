@@ -29,14 +29,15 @@ class StatisticsJob(metaclass=MetaClass):
     @promise_do_once(file_name='statistics', func_name='doing')
     def doing(cls, start_time, end_time):
         # 累计昨天成交
+        status = BroadBandOrder.Status.PAID.value
         today_sum = BroadBandOrder.objects.filter(
-            status='paid', updated_at__gt=end_time, updated_at__lt=start_time
+            status=status, updated_at__gt=end_time, updated_at__lt=start_time
         ).aggregate(sum=Sum('total_fee'))['sum']
         if not today_sum:
             today_sum = 0
 
         # 累计所有成交
-        total_sum = BroadBandOrder.objects.filter(status='paid').aggregate(sum=Sum('total_fee'))['sum']
+        total_sum = BroadBandOrder.objects.filter(status=status).aggregate(sum=Sum('total_fee'))['sum']
         if not total_sum:
             total_sum = 0
 

@@ -4,6 +4,7 @@ from django.utils import timezone
 from framework.database import models, BaseModel
 
 
+# 用户
 class User(models.Model, BaseModel):
     class Meta:
         app_label = 'trade'

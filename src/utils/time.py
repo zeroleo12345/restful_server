@@ -21,6 +21,14 @@ class Datetime(object):
     UTC = pytz.utc
 
     @staticmethod
+    def localtime() -> datetime:
+        return timezone.localtime()
+
+    @staticmethod
+    def timestamp() -> int:
+        return int(timezone.localtime().timestamp())
+
+    @staticmethod
     def replace_timezone(dt: datetime, tzinfo=LOCAL_TZ) -> datetime:
         """
         替换时区, 年月日时分秒都保持不变.
