@@ -1,6 +1,6 @@
-from django.conf.urls import url
+from django.urls import path
 from views.mp import views
 
 mp_urls = [
-    url(r'^/echostr$', views.EchoStrView.as_view()),
+    path(r'/echostr', views.EchoStrView.as_view()),
 ]
