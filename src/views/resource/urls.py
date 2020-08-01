@@ -1,6 +1,6 @@
-from django.conf.urls import url
+from django.urls import path
 from views.resource import views
 
 resource_urls = [
-    url(r'^$', views.UserResourceView.as_view()),
+    path(r'', views.UserResourceView.as_view()),
 ]
