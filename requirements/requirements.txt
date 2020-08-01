@@ -1,7 +1,7 @@
 # wechatpy 依赖 cryptography 库!
 cryptography==2.7
 wechatpy==1.8.3
-django==2.1.13
+django==2.2.13
 djangorestframework==3.9.4
 PyJWT==1.7.1
 PyMySQL==0.9.3
