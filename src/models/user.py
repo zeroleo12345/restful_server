@@ -26,10 +26,10 @@ class User(models.Model, BaseModel):
     is_enable = models.BooleanField(default=True)
     role = models.CharField(max_length=32, choices=ROLE, default='user')
     #
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)        # ﻿auto_now is generated on 每次修改
+    created_at = models.DateTimeField(auto_now_add=True)    # auto_now_add only generated on 新创建
+    updated_at = models.DateTimeField(auto_now=True)        # auto_now is generated on 每次修改
     #
-    expired_at = models.DateTimeField(auto_now_add=True)    # ﻿auto_now_add only generated on 新创建
+    expired_at = models.DateTimeField()
 
     @classmethod
     def get(cls, id=None, openid=None):
