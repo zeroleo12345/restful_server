@@ -58,7 +58,7 @@ class EchoStrView(APIView):
                     word = msg.content.split('搜索')[1].strip()
                     description, image = '', ''
                     for user in User.search(nickname__contains=word):
-                        description += f'名称: "{user.nickname}"\n过期时间: {user.expired_at}'
+                        description += f'昵称: "{user.nickname}"\n过期时间: {user.expired_at}'
                         image = user.headimgurl
                     reply = ArticlesReply()
                     reply.source = appid
