@@ -1,6 +1,5 @@
 import traceback
 # 第三方库
-from django.conf import settings
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.renderers import StaticHTMLRenderer
@@ -12,8 +11,9 @@ from wechatpy.replies import TextReply, ArticlesReply
 from wechatpy import parse_message
 import sentry_sdk
 # 项目库
-from utils.time import Datetime
+from trade import settings
 from trade.settings import log
+from models import User
 
 
 class EchoStrView(APIView):
@@ -55,14 +55,18 @@ class EchoStrView(APIView):
                 elif msg.content == 'openid':
                     message = f'你的openid: {from_user_openid}'
                 elif msg.content.startswith('搜索'):
-                    word = msg.content.split('搜索')[1]
+                    word = msg.content.split('搜索')[1].strip()
+                    description, image = '', ''
+                    for user in User.search(nickname__contains=word):
+                        description += f'搜索关键词: "{word}", 名称: {user.nickname} 过期时间: {user.expired_at}\n'
+                        image = user.headimgurl
                     reply = ArticlesReply()
                     reply.source = appid
                     reply.target = from_user_openid
                     reply.add_article({
                         'title': '用户信息',
-                        'description': f'用户详情: {word}',
-                        'image': 'http://thirdwx.qlogo.cn/mmopen/vi_32/qfAic3BUiaj7Ynsdm8TgQayw0nibpC0Xll7LPehtJmadbdCLk8GPBKTG0szw2qfU0CAUf5x9mXTE0Eib0h3aXpzZxw/132',
+                        'description': description,
+                        'image': image,
                         'url': 'https://www.baidu.com'
                     })
                     xml = reply.render()
