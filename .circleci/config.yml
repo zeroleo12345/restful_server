@@ -38,9 +38,11 @@ jobs:
       - run:
           name: run tests
           command: |
+            echo $PWD
+            ls .
             . venv/bin/activate
-            flake8 src --config=.test/flake8.ini
-            pytest src/ -c .test/pytest.ini
+            cd src/
+            sh ../.test/runtest
           environment:
             DOTENV_PATH_FOR_DYNACONF: "data/etc/example.env"
             ENVVAR_PREFIX_FOR_DYNACONF: "false"

@@ -2,13 +2,13 @@
 set -o verbose
 
 project_root=$(cd "$(dirname "$0")/.."; pwd)
-cd $project_root
+#cd $project_root
 
 # 用法: flake8  目标目录
-flake8 src/rethink --config=.test/flake8.ini
+flake8 $project_root/src/trade --config=$project_root/.test/flake8.ini
 
 # 用法:
-pytest src/ -c .test/pytest.ini
+pytest $project_root/src/ -c $project_root/.test/pytest.ini
 
 # 上述两个命令, 可以通过tox一并执行
 #pip3 install tox && tox -c tox.ini
