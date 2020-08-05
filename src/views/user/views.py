@@ -65,4 +65,4 @@ class UserSyncView(APIView):
     def get(self, request):
         users = User.objects.all()
         data = [user.to_dict() for user in users]
-        return BihuResponse(data=data, charset='application/json; charset=UTF-8')
+        return BihuResponse(data=data, charset='utf-8')
