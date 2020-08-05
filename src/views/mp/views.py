@@ -67,7 +67,7 @@ class EchoStrView(APIView):
                         'title': '用户信息',
                         'description': description,
                         'image': image,
-                        'url': 'https://www.baidu.com'
+                        'url': f'{settings.API_SERVER_URL}/user/sync'
                     })
                     xml = reply.render()
                     return HttpResponse(content=xml, content_type='text/xml')
