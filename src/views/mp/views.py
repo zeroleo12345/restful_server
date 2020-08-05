@@ -56,7 +56,7 @@ class EchoStrView(APIView):
                     message = f'你的openid: {from_user_openid}'
                 elif msg.content.startswith('搜索'):
                     word = msg.content.split('搜索')[1].strip()
-                    description, image = '', ''
+                    description, image = '搜不到用户', ''
                     for user in User.search(nickname__contains=word):
                         description += f'搜索词: "{word}"\n名称: "{user.nickname}"\n过期时间: {user.expired_at}\n'
                         image = user.headimgurl
