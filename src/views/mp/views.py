@@ -51,16 +51,17 @@ class EchoStrView(APIView):
             elif isinstance(msg, TextMessage):    # 文本消息
                 if msg.content in ['help', '帮助']:
                     command = ['openid', '搜索']
-                    message = '命令: ' + ','.join(command)
+                    message = '命令: ' + ', '.join(command)
                 elif msg.content == 'openid':
                     message = f'你的openid: {from_user_openid}'
                 elif msg.content.startswith('搜索'):
+                    word = msg.content.split('搜索')[1]
                     reply = ArticlesReply()
                     reply.source = appid
                     reply.target = from_user_openid
                     reply.add_article({
                         'title': '用户信息',
-                        'description': '用户详情',
+                        'description': f'用户详情: {word}',
                         'image': 'http://thirdwx.qlogo.cn/mmopen/vi_32/qfAic3BUiaj7Ynsdm8TgQayw0nibpC0Xll7LPehtJmadbdCLk8GPBKTG0szw2qfU0CAUf5x9mXTE0Eib0h3aXpzZxw/132',
                         'url': 'https://www.baidu.com'
                     })
