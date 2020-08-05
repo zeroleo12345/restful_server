@@ -36,7 +36,8 @@ class EchoStrView(APIView):
         try:
             xml = request.body
             msg = parse_message(xml)
-            # log.d(f'platform event notify: {msg}')
+            from trade.settings import log
+            log.d(f'platform event notify: {msg}')
             appid = msg.target     # 例如: gh_9225266caeb1
             from_user_openid = msg.source
             if isinstance(msg, SubscribeEvent):   # 关注公众号事件
@@ -61,8 +62,6 @@ class EchoStrView(APIView):
                 xml = reply.render()
                 return HttpResponse(content=xml, content_type='text/xml')
             else:
-                from trade.settings import log
-                log.d(f'platform event notify: {msg}')
                 return Response('success')
         except Exception as exc:
             sentry_sdk.capture_exception(exc)
