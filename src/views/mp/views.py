@@ -49,7 +49,7 @@ class EchoStrView(APIView):
                 xml = reply.render()
                 return HttpResponse(xml, content_type='text/xml')
             elif isinstance(msg, TextMessage):    # 文本消息
-                if msg.content in ['help', '帮助']:
+                if msg.content in ['help', '帮助', '命令']:
                     command = ['openid', '搜索']
                     message = '命令: ' + ', '.join(command)
                 elif msg.content == 'openid':
