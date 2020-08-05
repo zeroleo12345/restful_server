@@ -1,10 +1,10 @@
-# django 库
+import traceback
+# 第三方库
 from django.conf import settings
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.renderers import StaticHTMLRenderer
 from rest_framework.response import Response
-# 第三方库
 from wechatpy.utils import check_signature
 from wechatpy.events import SubscribeEvent
 from wechatpy.messages import TextMessage
@@ -13,6 +13,7 @@ from wechatpy import parse_message
 import sentry_sdk
 # 项目库
 from utils.time import Datetime
+from trade.settings import log
 
 search_expired = 0
 
@@ -39,7 +40,6 @@ class EchoStrView(APIView):
         try:
             xml = request.body
             msg = parse_message(xml)
-            # from trade.settings import log
             # log.d(f'platform event notify: {msg}')
             appid = msg.target     # 例如: gh_9225266caeb1
             from_user_openid = msg.source
@@ -85,5 +85,6 @@ class EchoStrView(APIView):
             else:
                 return Response('success')
         except Exception as exc:
+            log.e(traceback.format_exc())
             sentry_sdk.capture_exception(exc)
             return Response('success')
