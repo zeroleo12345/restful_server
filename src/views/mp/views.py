@@ -12,7 +12,6 @@ from wechatpy.replies import TextReply
 from wechatpy import parse_message
 import sentry_sdk
 # 项目库
-# from trade.settings import log
 
 
 class EchoStrView(APIView):
@@ -48,7 +47,10 @@ class EchoStrView(APIView):
                 xml = reply.render()
                 return HttpResponse(xml, content_type='text/xml')
             elif isinstance(msg, TextMessage):    # 文本消息
-                if msg.content == 'openid':
+                if msg.content in ['help', '帮助']:
+                    command = ['openid']
+                    message = '命令: ' + ','.join(command)
+                elif msg.content == 'openid':
                     message = f'你的openid: {from_user_openid}'
                 else:
                     message = settings.MP_DEFAULT_REPLY
@@ -58,7 +60,10 @@ class EchoStrView(APIView):
                 reply.content = message
                 xml = reply.render()
                 return HttpResponse(content=xml, content_type='text/xml')
-            return Response('success')
+            else:
+                from trade.settings import log
+                log.d(f'platform event notify: {msg}')
+                return Response('success')
         except Exception as exc:
             sentry_sdk.capture_exception(exc)
             return Response('success')
