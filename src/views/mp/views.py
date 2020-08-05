@@ -15,8 +15,6 @@ import sentry_sdk
 from utils.time import Datetime
 from trade.settings import log
 
-search_expired = 0
-
 
 class EchoStrView(APIView):
     authentication_classes = ()
@@ -52,30 +50,24 @@ class EchoStrView(APIView):
                 return HttpResponse(xml, content_type='text/xml')
             elif isinstance(msg, TextMessage):    # 文本消息
                 if msg.content in ['help', '帮助']:
-                    command = ['openid', 'search']
+                    command = ['openid', '搜索']
                     message = '命令: ' + ','.join(command)
                 elif msg.content == 'openid':
                     message = f'你的openid: {from_user_openid}'
-                elif msg.content == 'search':
-                    message = '已进入搜索模式'
-                    global search_expired
-                    search_expired = Datetime.timestamp() + 300
+                elif msg.content.startswith('搜索'):
+                    reply = ArticlesReply()
+                    reply.source = appid
+                    reply.target = from_user_openid
+                    reply.add_article({
+                        'title': '用户信息',
+                        'description': '用户详情',
+                        'image': 'http://thirdwx.qlogo.cn/mmopen/vi_32/qfAic3BUiaj7Ynsdm8TgQayw0nibpC0Xll7LPehtJmadbdCLk8GPBKTG0szw2qfU0CAUf5x9mXTE0Eib0h3aXpzZxw/132',
+                        'url': 'https://www.baidu.com'
+                    })
+                    xml = reply.render()
+                    return HttpResponse(content=xml, content_type='text/xml')
                 else:
-                    global search_expired
-                    if Datetime.timestamp() < search_expired:
-                        reply = ArticlesReply()
-                        reply.source = appid
-                        reply.target = from_user_openid
-                        reply.add_article({
-                            'title': '用户信息',
-                            'description': '用户详情',
-                            'image': 'http://thirdwx.qlogo.cn/mmopen/vi_32/qfAic3BUiaj7Ynsdm8TgQayw0nibpC0Xll7LPehtJmadbdCLk8GPBKTG0szw2qfU0CAUf5x9mXTE0Eib0h3aXpzZxw/132',
-                            'url': 'https://www.baidu.com'
-                        })
-                        xml = reply.render()
-                        return HttpResponse(content=xml, content_type='text/xml')
-                    else:
-                        message = settings.MP_DEFAULT_REPLY
+                    message = settings.MP_DEFAULT_REPLY
                 reply = TextReply()
                 reply.source = appid
                 reply.target = from_user_openid
