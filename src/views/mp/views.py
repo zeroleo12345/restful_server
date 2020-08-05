@@ -8,10 +8,13 @@ from rest_framework.response import Response
 from wechatpy.utils import check_signature
 from wechatpy.events import SubscribeEvent
 from wechatpy.messages import TextMessage
-from wechatpy.replies import TextReply
+from wechatpy.replies import TextReply, ArticlesReply
 from wechatpy import parse_message
 import sentry_sdk
 # 项目库
+from utils.time import Datetime
+
+search_expired = 0
 
 
 class EchoStrView(APIView):
@@ -36,8 +39,8 @@ class EchoStrView(APIView):
         try:
             xml = request.body
             msg = parse_message(xml)
-            from trade.settings import log
-            log.d(f'platform event notify: {msg}')
+            # from trade.settings import log
+            # log.d(f'platform event notify: {msg}')
             appid = msg.target     # 例如: gh_9225266caeb1
             from_user_openid = msg.source
             if isinstance(msg, SubscribeEvent):   # 关注公众号事件
@@ -49,12 +52,30 @@ class EchoStrView(APIView):
                 return HttpResponse(xml, content_type='text/xml')
             elif isinstance(msg, TextMessage):    # 文本消息
                 if msg.content in ['help', '帮助']:
-                    command = ['openid']
+                    command = ['openid', 'search']
                     message = '命令: ' + ','.join(command)
                 elif msg.content == 'openid':
                     message = f'你的openid: {from_user_openid}'
+                elif msg.content == 'search':
+                    message = '已进入搜索模式'
+                    global search_expired
+                    search_expired = Datetime.timestamp() + 300
                 else:
-                    message = settings.MP_DEFAULT_REPLY
+                    global search_expired
+                    if Datetime.timestamp() < search_expired:
+                        reply = ArticlesReply()
+                        reply.source = appid
+                        reply.target = from_user_openid
+                        reply.add_article({
+                            'title': '用户信息',
+                            'description': '用户详情',
+                            'image': 'http://thirdwx.qlogo.cn/mmopen/vi_32/qfAic3BUiaj7Ynsdm8TgQayw0nibpC0Xll7LPehtJmadbdCLk8GPBKTG0szw2qfU0CAUf5x9mXTE0Eib0h3aXpzZxw/132',
+                            'url': 'https://www.baidu.com'
+                        })
+                        xml = reply.render()
+                        return HttpResponse(content=xml, content_type='text/xml')
+                    else:
+                        message = settings.MP_DEFAULT_REPLY
                 reply = TextReply()
                 reply.source = appid
                 reply.target = from_user_openid
