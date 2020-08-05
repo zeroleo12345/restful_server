@@ -43,6 +43,13 @@ class User(models.Model, BaseModel):
             return None
         return user
 
+    @classmethod
+    def search(cls, nickname__contains):
+        users = cls.objects.filter(nickname__contains=nickname__contains)
+        if not users:
+            return []
+        return users
+
     def get_resource_status(self):
         # expired: 已过期; working: 使用中; inactive: 已停用
         if not self.is_enable:

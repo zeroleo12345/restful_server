@@ -305,6 +305,8 @@ log.toggle_file_handler(toggle=LOG_TOGGLE_FILE_HANDLER)
 #
 ignore_logger(log._logger.name)     # 不忽略的话, log.e会上报消息到sentry
 
+# API 服务器域名
+API_SERVER_URL = settings.get('API_SERVER_URL')   # https://api.xxx.cn
 # 微信公众平台配置
 MP_APP_ID = settings.get('MP_APP_ID')             # 开发者ID
 MP_APP_SECRET = settings.get('MP_APP_SECRET')     # 开发者密码

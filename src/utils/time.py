@@ -78,6 +78,15 @@ class Datetime(object):
         return int(dt.timestamp() * 1000)
 
     @staticmethod
+    def to_second(dt: datetime) -> int:
+        """
+        datetime 转秒
+        :param dt:
+        :return:
+        """
+        return int(dt.timestamp())
+
+    @staticmethod
     def to_int_day(dt: date) -> int:
         """
         date 转日期整型. 如: date(2020, 01, 01) -> 20200101
@@ -107,11 +116,19 @@ class Datetime(object):
         return Datetime.replace_timezone(dt, tzinfo=tzinfo)
 
     @staticmethod
-    def to_str(dt: datetime, fmt='%Y%m%d'):
+    def get_day_begin(dt: datetime) -> datetime:
+        return datetime.combine(dt, datetime.min.time())
+
+    @staticmethod
+    def get_day_end(dt: datetime) -> datetime:
+        return datetime.combine(dt, datetime.max.time())
+
+    @staticmethod
+    def to_str(dt: datetime, fmt='%Y-%m-%d'):
         """
         datetime 转换为 string
         :param dt:
-        :param fmt: 常用 %Y-%m-%d %H:%M:%S
+        :param fmt: 常用 %Y-%m-%d %H:%M:%S.%f
         :return:
         """
         return dt.strftime(fmt)
@@ -121,7 +138,7 @@ class Datetime(object):
         """
         string 转成 datetime
         :param string:
-        :param fmt: 常用 %Y-%m-%d %H:%M:%S
+        :param fmt: 常用 %Y-%m-%d %H:%M:%S.%f
             %a 星期几的简写
             %A 星期几的全称
             %b 月分的简写
@@ -145,6 +162,7 @@ class Datetime(object):
             %r 12小时的时间
             %R 显示小时和分钟：hh:mm
             %S 十进制的秒数
+            %f Microsecond as a decimal number, zero-padded on the left. 6位数字
             %t 水平制表符
             %T 显示时分秒：hh:mm:ss
             %u 每周的第几天，星期一为第一天 （值从0到6，星期一为0）
@@ -155,7 +173,7 @@ class Datetime(object):
             %x 标准的日期串
             %X 标准的时间串
             %y 不带世纪的十进制年份（值从0到99）
-            %Y 带世纪部分的十制年份
+            %Y 带世纪部分的十进制年份 (2020)
             %z，%Z 时区名称，如果不能得到时区名称则返回空字符。
             %% 百分号
         :return:
@@ -169,8 +187,14 @@ class Datetime(object):
         return Datetime.convert_timezone(dt, tzinfo=tzinfo)
 
     @staticmethod
-    def iter(start_date: date, end_date: date):
-        assert isinstance(start_date, date) and isinstance(end_date, date)
+    def iter(start_date, end_date, seconds=86400):
+        """
+        :param start_date: 类型 date 或者 datetime
+        :param end_date: 类型 date 或者 datetime
+        :param seconds:
+        :return:
+        """
+        assert type(start_date) == type(end_date) and type(start_date) in [date, datetime]
         while start_date <= end_date:
             yield start_date
-            start_date += timedelta(days=1)
+            start_date += timedelta(seconds=seconds)

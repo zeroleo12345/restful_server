@@ -1,8 +1,9 @@
 import sys
 import traceback
+import json
 from collections import OrderedDict
 # 第三方库
-from django.http import JsonResponse
+from django.http import HttpResponse
 from django.http.response import Http404
 from rest_framework.renderers import JSONRenderer
 from rest_framework.pagination import PageNumberPagination
@@ -13,8 +14,8 @@ from framework.exception import GlobalException
 from trade.settings import log
 
 
-class BihuResponse(JsonResponse):
-    def __init__(self, data=None, safe=True, **kwargs):
+class BihuResponse(HttpResponse):
+    def __init__(self, data=None, **kwargs):
         if data is None:
             data = {'code': 'ok'}
         elif 'code' not in data:
@@ -22,7 +23,8 @@ class BihuResponse(JsonResponse):
                 'code': 'ok',
                 'data': data,
             }
-        super(self.__class__, self).__init__(data, safe=safe, **kwargs)
+        data = json.dumps(data, ensure_ascii=False)
+        super(self.__class__, self).__init__(content=data, content_type='application/json;charset=UTF-8', **kwargs)
 
 
 class MyJSONRenderer(JSONRenderer):
