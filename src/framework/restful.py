@@ -22,7 +22,7 @@ class BihuResponse(JsonResponse):
                 'code': 'ok',
                 'data': data,
             }
-        super(self.__class__, self).__init__(data, safe=safe, **kwargs)
+        super(self.__class__, self).__init__(data, safe=safe, json_dumps_params={'ensure_ascii': False}, **kwargs)
 
 
 class MyJSONRenderer(JSONRenderer):
