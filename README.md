@@ -45,7 +45,7 @@ python manage.py timer_processor
 
 ## 测试案例
 ``` bash
-sh dev/runtest_in_docker.sh
+sh tools/runtest_in_docker.sh
 ```
 
 
