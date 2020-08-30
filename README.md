@@ -76,3 +76,4 @@ docker-compose exec api  python manage.py migrate --database=default
 ``` bash
 mysqldump --default-character-set=utf8mb4 -h 127.0.0.1 -P 33333 -u root --password=root -c --databases trade > ./dump.sql
 ```
+
