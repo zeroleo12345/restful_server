@@ -28,18 +28,11 @@ class Tariff(object):
 
     @staticmethod
     def get_object_or_404(tariff_name):
-        # 单位分
         objects = {
-           'month1': Tariff.Instance(tariff_name='month1', price=50*100, duration=1, unit='month'),
-           'month3': Tariff.Instance(tariff_name='month3', price=144*100, duration=3, unit='month'),  # 单位分, 9.6折
-           'month6': Tariff.Instance(tariff_name='month6', price=276*100, duration=6, unit='month'),  # 单位分, 9.2折
+           'month1': Tariff.Instance(tariff_name='month1', price=50*100, duration=1, unit='month'),     # 单位分
+           'month3': Tariff.Instance(tariff_name='month3', price=150*100, duration=3, unit='month'),    # 单位分
+           'month6': Tariff.Instance(tariff_name='month6', price=300*100, duration=6, unit='month'),    # 单位分
         }
-        # objects = {
-        #     'month1': Tariff.Instance(tariff_name='month1', price=1, duration=1, unit='month'),
-        #     'month3': Tariff.Instance(tariff_name='month3', price=3, duration=3, unit='month'),
-        #     'month6': Tariff.Instance(tariff_name='month6', price=6, duration=6, unit='month'),
-        # }
-
         if tariff_name not in objects:
             raise Http404('No Tariff matches the given query.')
         return objects[tariff_name]
