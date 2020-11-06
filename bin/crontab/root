@@ -1,5 +1,5 @@
 # 注意测试时, cd / 再测试
 # -rw------- 1 root crontab 1391 Feb 15 13:04 /var/spool/cron/crontabs/root
 # min   hour    day     month   weekday command
-*       *       *       *       *       echo "Hello $(date)" >> /var/log/cron.log
+*/1       *       *       *       *       echo "Hello $(date)" >> /var/log/cron.log
 0       6       *       *       *       /app/bin/crontab/export.sh
