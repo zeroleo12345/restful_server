@@ -20,6 +20,7 @@ RUN pip3 install --upgrade pip --trusted-host mirrors.aliyun.com --index-url htt
 WORKDIR /app/src/
 ADD src /app/src/
 ADD bin /app/bin/
+ENV PYTHONPATH="/app/src:${PYTHONPATH}"
 ENV PATH="${PATH}:/app/bin"
 
 # docker-compose.yml 会覆盖 entrypoint
