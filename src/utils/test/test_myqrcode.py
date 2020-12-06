@@ -1,4 +1,4 @@
-from ..myqrcode import add_logo_on_qrcode_from_text
+from utils.myqrcode import add_logo_on_qrcode_from_text
 from PIL import Image
 import matplotlib.pyplot as plt
 
