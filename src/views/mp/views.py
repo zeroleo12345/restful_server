@@ -44,7 +44,7 @@ class EchoStrView(APIView):
         # 已关注用户扫描带参数二维码事件
         if isinstance(msg, SubscribeScanEvent) or isinstance(msg, ScanEvent):
             response_text = '关注成功，后续会通过公众号给你推送自动接单和通知任务的结果。'
-            platform_id = msg.scene_id
+            platform_id = int(msg.scene_id)
             platform = Platform.get(id=platform_id)
             assert platform
             weixin = Weixin.get(openid=from_user_openid)
