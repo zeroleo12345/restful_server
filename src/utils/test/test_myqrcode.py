@@ -4,6 +4,6 @@ from utils.myqrcode import Qrcode
 if __name__ == '__main__':
     text = 'http://www.baidu.com'
     save_path = 'out.png'
-    logo_path = 'logo.jpeg'
-    logo_img = Qrcode.get_logo_img(logo_path=logo_path)
-    Qrcode.add_logo_on_qrcode(qrcode_text=text, logo_img=logo_img, save_path=save_path)
+    icon_path = 'icon.jpeg'
+    icon_img = Qrcode.get_icon_img(icon_path=icon_path)
+    Qrcode.add_icon_on_qrcode(qrcode_text=text, icon_img=icon_img, save_path=save_path)
