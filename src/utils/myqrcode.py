@@ -25,10 +25,10 @@ def add_logo_on_qrcode_from_text(qrcode_text, logo_path, save_path):
     qr = qrcode.QRCode(version=2, error_correction=qrcode.constants.ERROR_CORRECT_H, box_size=8, border=1)
     qr.add_data(qrcode_text)
     qr.make(fit=True)
-    img = qr.make_image()
+    img_background = qr.make_image()
     # 互动二Image实例并把颜色模式转换成RGBA
-    img = img.convert('RGBA')
-    img_w, img_h = img.size
+    img_background = img_background.convert('RGBA')
+    img_w, img_h = img_background.size
     factor = 4
     # 计算logo尺寸
     size_w = int(img_w / factor)
@@ -44,6 +44,6 @@ def add_logo_on_qrcode_from_text(qrcode_text, logo_path, save_path):
     w = int((img_w - icon_w) / 2)
     h = int((img_h - icon_h) / 2)
     img_icon = img_icon.convert('RGBA')
-    img.paste(img_icon, (w, h), img_icon)
+    img_background.paste(img_icon, (w, h), img_icon)
     # 保存二维码
-    img.save(save_path)
+    img_background.save(save_path)
