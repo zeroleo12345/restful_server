@@ -7,15 +7,14 @@ from PIL import Image
 
 class Qrcode(object):
     @staticmethod
-    def get_icon_img(icon_path: str) -> Image:
+    def convert_local_icon_to_img(icon_path: str) -> Image:
         assert os.path.exists(icon_path)
         return Image.open(icon_path)
 
     @staticmethod
-    def get_icon_img_from_url(qrcode_text, icon_url, save_path):
+    def convert_web_icon_to_img(icon_url: str) -> Image:
         response = requests.get(icon_url)
-        # response.content
-        pass
+        response.content
 
     @staticmethod
     def add_icon_on_qrcode(qrcode_text: str, icon_img: Image, save_path: str):
