@@ -5,15 +5,14 @@ from rest_framework.views import APIView
 from rest_framework.renderers import StaticHTMLRenderer
 from rest_framework.response import Response
 from wechatpy.utils import check_signature
-from wechatpy.events import SubscribeEvent
+from wechatpy.events import SubscribeScanEvent, ScanEvent, SubscribeEvent
 from wechatpy.messages import TextMessage
 from wechatpy.replies import TextReply, ArticlesReply
 from wechatpy import parse_message
-import sentry_sdk
 # 项目库
 from trade import settings
 from trade.settings import log
-from models import User
+from models import User, Platform
 
 
 class EchoStrView(APIView):
@@ -35,53 +34,72 @@ class EchoStrView(APIView):
 
     def post(self, request):
         # 公众号平台事件通知. (note: 使用平台自带的自定义菜单时, 平台不会下发消息)
-        try:
-            xml = request.body
-            msg = parse_message(xml)
-            # log.d(f'platform event notify: {msg}')
-            appid = msg.target     # 例如: gh_9225266caeb1
-            from_user_openid = msg.source
-            if isinstance(msg, SubscribeEvent):   # 关注公众号事件
-                reply = TextReply()
+        xml = request.body
+        msg = parse_message(xml)
+        log.i(f'wechat event: {msg}')
+        appid = msg.target     # 例如: gh_9225266caeb1
+        from_user_openid = msg.source
+
+        if isinstance(msg, SubscribeScanEvent):     # 未关注用户扫描带参数二维码事件 - 订阅关注
+            response_text = '关注成功，后续会通过公众号给你推送自动接单和通知任务的结果。'
+            platform_id = msg.scene_id
+            trader = Platform.get(id=platform_id)
+            reply = TextReply()
+            reply.source = appid
+            reply.target = from_user_openid
+            reply.content = response_text
+            xml = reply.render()
+            return HttpResponse(content=xml, content_type='text/xml')
+
+        elif isinstance(msg, ScanEvent):    # 已关注用户扫描带参数二维码事件
+            response_text = '关注成功，后续会通过公众号给你推送自动接单和通知任务的结果。'
+            platform_id = msg.scene_id
+            trader = Platform.get(id=platform_id)
+            reply = TextReply()
+            reply.source = appid
+            reply.target = from_user_openid
+            reply.content = response_text
+            xml = reply.render()
+            return HttpResponse(content=xml, content_type='text/xml')
+
+        elif isinstance(msg, SubscribeEvent):   # 关注公众号事件
+            reply = TextReply()
+            reply.source = appid
+            reply.target = from_user_openid
+            reply.content = settings.MP_DEFAULT_REPLY
+            xml = reply.render()
+            return HttpResponse(xml, content_type='text/xml')
+
+        elif isinstance(msg, TextMessage):    # 文本消息
+            if msg.content in ['help', '帮助', '命令']:
+                command = ['openid', '搜索']
+                message = '命令: ' + ', '.join(command)
+            elif msg.content == 'openid':
+                message = f'你的openid: {from_user_openid}'
+            elif msg.content.startswith('搜索'):
+                word = msg.content.split('搜索')[1].strip()
+                description, image = '', ''
+                for user in User.search(nickname__contains=word):
+                    description += f'昵称: "{user.nickname}"\n过期时间: {user.expired_at}'
+                    image = user.headimgurl
+                reply = ArticlesReply()
                 reply.source = appid
                 reply.target = from_user_openid
-                reply.content = settings.MP_DEFAULT_REPLY
-                xml = reply.render()
-                return HttpResponse(xml, content_type='text/xml')
-            elif isinstance(msg, TextMessage):    # 文本消息
-                if msg.content in ['help', '帮助', '命令']:
-                    command = ['openid', '搜索']
-                    message = '命令: ' + ', '.join(command)
-                elif msg.content == 'openid':
-                    message = f'你的openid: {from_user_openid}'
-                elif msg.content.startswith('搜索'):
-                    word = msg.content.split('搜索')[1].strip()
-                    description, image = '', ''
-                    for user in User.search(nickname__contains=word):
-                        description += f'昵称: "{user.nickname}"\n过期时间: {user.expired_at}'
-                        image = user.headimgurl
-                    reply = ArticlesReply()
-                    reply.source = appid
-                    reply.target = from_user_openid
-                    reply.add_article({
-                        'title': f'搜索词: "{word}"',
-                        'description': description or '搜不到用户',
-                        'image': image,
-                        'url': f'{settings.API_SERVER_URL}/user/sync'
-                    })
-                    xml = reply.render()
-                    return HttpResponse(content=xml, content_type='text/xml')
-                else:
-                    message = settings.MP_DEFAULT_REPLY
-                reply = TextReply()
-                reply.source = appid
-                reply.target = from_user_openid
-                reply.content = message
+                reply.add_article({
+                    'title': f'搜索词: "{word}"',
+                    'description': description or '搜不到用户',
+                    'image': image,
+                    'url': f'{settings.API_SERVER_URL}/user/sync'
+                })
                 xml = reply.render()
                 return HttpResponse(content=xml, content_type='text/xml')
             else:
-                return Response('success')
-        except Exception as exc:
-            log.e(traceback.format_exc())
-            sentry_sdk.capture_exception(exc)
-            return Response('success')
+                message = settings.MP_DEFAULT_REPLY
+            reply = TextReply()
+            reply.source = appid
+            reply.target = from_user_openid
+            reply.content = message
+            xml = reply.render()
+            return HttpResponse(content=xml, content_type='text/xml')
+
+        return Response('success')
