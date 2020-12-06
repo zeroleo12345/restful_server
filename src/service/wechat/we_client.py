@@ -38,7 +38,7 @@ class WeClient(object):
         cls.we_client.menu.create(menu_data)
 
     @classmethod
-    def create_qr_code(cls, scene_str: str, expire_seconds: int = 30, is_permanent=False):
+    def create_qrcode(cls, scene_str: str, expire_seconds: int = 30, is_permanent=False):
         data = {
             'expire_seconds': expire_seconds,
             'action_name': 'QR_LIMIT_STR_SCENE' if is_permanent else 'QR_STR_SCENE',
