@@ -36,9 +36,17 @@ class WeClient(object):
             ]
         }
         cls.we_client.menu.create(menu_data)
+        return
 
     @classmethod
     def create_qrcode(cls, scene_str: str, expire_seconds: int = 30, is_permanent=False):
+        """
+        https://developers.weixin.qq.com/doc/offiaccount/Account_Management/Generating_a_Parametric_QR_Code.html
+        :param scene_str:
+        :param expire_seconds:
+        :return: {"ticket":"gQH47joAAAAAAAAAASxod2G3sUw==","expire_seconds":60,"url":"http://weixin.qq.com/q/kZgfwMTm72WWPkovabbI"}
+        """
+        assert isinstance(scene_str, str)
         data = {
             'expire_seconds': expire_seconds,
             'action_name': 'QR_LIMIT_STR_SCENE' if is_permanent else 'QR_STR_SCENE',
