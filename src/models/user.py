@@ -11,7 +11,7 @@ class User(models.Model, BaseModel):
         db_table = 'broadband_user'
 
     ROLE = (
-        ('vip', 'VIP用户'),
+        ('provider', '供给者'),
         ('user', '用户'),
         ('guest', '访客'),
     )
@@ -34,14 +34,14 @@ class User(models.Model, BaseModel):
     @classmethod
     def get(cls, id=None, openid=None):
         if id:
-            user = cls.objects.filter(id=id).first()
+            obj = cls.objects.filter(id=id).first()
         elif openid:
-            user = cls.objects.filter(openid=openid).first()
+            obj = cls.objects.filter(openid=openid).first()
         else:
             raise Exception('param error')
-        if not user:
+        if not obj:
             return None
-        return user
+        return obj
 
     @classmethod
     def search(cls, nickname__contains):
