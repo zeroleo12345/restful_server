@@ -4,17 +4,17 @@ import qrcode
 from PIL import Image
 
 
-def create_qrcode_from_web_with_logo(url, path, logo=''):
+def add_logo_on_qrcode_from_web(url, path, logo=''):
     pass
 
 
-def create_qrcode_from_text_with_logo(text, save_path, logo_path=''):
+def add_logo_on_qrcode_from_text(text, save_path, logo_path=''):
     """
     生成中间带logo的二维码
-    @参数 text: 二维码字符串
-    @参数 save_path: 生成的二维码保存路径
-    @参数 logo_path: logo文件路径
-    @return: None
+    :param text: 二维码字符串
+    :param save_path: 生成的二维码保存路径
+    :param logo_path: logo文件路径
+    :return:
     """
     # 初步生成二维码图像
     qr = qrcode.QRCode(version=2, error_correction=qrcode.constants.ERROR_CORRECT_H, box_size=8, border=1)
