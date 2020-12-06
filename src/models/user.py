@@ -11,7 +11,7 @@ class User(models.Model, BaseModel):
         db_table = 'broadband_user'
 
     ROLE = (
-        ('provider', '供给者'),
+        ('platform_owner', '平台属主'),
         ('user', '用户'),
         ('guest', '访客'),
     )
