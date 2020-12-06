@@ -28,11 +28,11 @@ def add_logo_on_qrcode_from_text(qrcode_text, logo_path, save_path):
     img_background = qr.make_image()
     # 互动二Image实例并把颜色模式转换成RGBA
     img_background = img_background.convert('RGBA')
-    img_w, img_h = img_background.size
+    bg_w, bg_h = img_background.size
     factor = 4
     # 计算logo尺寸
-    size_w = int(img_w / factor)
-    size_h = int(img_h / factor)
+    size_w = int(bg_w / factor)
+    size_h = int(bg_h / factor)
     # 比较并重新设置logo文件（图片pdsu.png）的尺寸
     icon_w, icon_h = img_icon.size
     if icon_w > size_w:
@@ -41,8 +41,8 @@ def add_logo_on_qrcode_from_text(qrcode_text, logo_path, save_path):
         icon_h = size_h
     img_icon = img_icon.resize((icon_w, icon_h), Image.ANTIALIAS)
     # 计算logo的位置，并且复制到二维码中
-    w = int((img_w - icon_w) / 2)
-    h = int((img_h - icon_h) / 2)
+    w = int((bg_w - icon_w) / 2)
+    h = int((bg_h - icon_h) / 2)
     img_icon = img_icon.convert('RGBA')
     img_background.paste(img_icon, (w, h), img_icon)
     # 保存二维码
