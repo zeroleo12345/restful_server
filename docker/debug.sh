@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-export ENVIRONMENT=unittest; export DEBUG=True; docker-compose up api
+export ENVIRONMENT=unittest; export DEBUG=True; ENTRYPOINT=sh docker-compose up -d api
