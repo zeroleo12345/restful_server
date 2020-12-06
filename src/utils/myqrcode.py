@@ -19,8 +19,7 @@ def add_logo_on_qrcode_from_text(qrcode_text, logo_path, save_path):
     :param logo_path: logo文件路径
     :return:
     """
-    if not os.path.exists(logo_path):
-        return
+    assert os.path.exists(logo_path)
     img_icon = Image.open(logo_path)
     # 初步生成二维码图像
     qr = qrcode.QRCode(version=2, error_correction=qrcode.constants.ERROR_CORRECT_H, box_size=8, border=1)
