@@ -1,4 +1,5 @@
 import os
+from io import BytesIO
 # 第三方库
 import requests
 import qrcode
@@ -14,7 +15,8 @@ class Qrcode(object):
     @staticmethod
     def convert_web_icon_to_img(icon_url: str) -> Image:
         response = requests.get(icon_url)
-        response.content
+        assert response.ok
+        return Image.open(BytesIO(response.content))
 
     @staticmethod
     def add_icon_on_qrcode(qrcode_text: str, icon_img: Image, save_path: str):
