@@ -17,18 +17,13 @@ def create_qrcode_from_text_with_logo(text, save_path, logo_path=""):
     @return: None
     """
     # 初步生成二维码图像
-    qr = qrcode.QRCode(
-        version=2,
-        error_correction=qrcode.constants.ERROR_CORRECT_H,
-        box_size=8,
-        border=1
-    )
+    qr = qrcode.QRCode(version=2, error_correction=qrcode.constants.ERROR_CORRECT_H, box_size=8, border=1)
     qr.add_data(text)
     qr.make(fit=True)
     # 互动二Image实例并把颜色模式转换成RGBA
     img = qr.make_image()
     img = img.convert("RGBA")
-    if logo_path and os.save_path.exists(logo_path):
+    if logo_path and os.path.exists(logo_path):
         try:
             icon = Image.open(logo_path)    # 打开logo文件
             img_w, img_h = img.size
