@@ -50,7 +50,9 @@ class EchoStrView(APIView):
             weixin = Weixin.get(openid=from_user_openid)
             if weixin:
                 # weixin 表记录, 存在
-                weixin.update(platform_id=platform_id)
+                if weixin.platform_id != platform_id:
+                    log.i(f'platform_id change: {weixin.platform_id} -> {platform_id}, openid: {weixin.openid}')
+                    weixin.update(platform_id=platform_id)
             else:
                 # weixin 表记录, 不存在
                 weixin.create(openid=from_user_openid, platform_id=platform_id)
