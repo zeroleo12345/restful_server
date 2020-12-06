@@ -8,7 +8,7 @@ redis_client = get_redis_connection(alias='default')
 
 
 class WeClient(object):
-    client_api = WeChatClient(
+    we_client = WeChatClient(
         appid=settings.MP_APP_ID, secret=settings.MP_APP_SECRET, session=RedisStorage(redis_client, prefix='wechat')
     )
     recharge_uri = f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}' \
@@ -35,4 +35,15 @@ class WeClient(object):
                 },
             ]
         }
-        cls.client_api.menu.create(menu_data)
+        cls.we_client.menu.create(menu_data)
+
+    @classmethod
+    def create_qr_code(cls, scene_str: str, expire_seconds: int = 30, is_permanent=False):
+        data = {
+            'expire_seconds': expire_seconds,
+            'action_name': 'QR_LIMIT_STR_SCENE' if is_permanent else 'QR_STR_SCENE',
+            'action_info': {
+                'scene': {'scene_str': scene_str},
+            }
+        }
+        return cls.we_client.qrcode.create(data)
