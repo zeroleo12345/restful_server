@@ -12,7 +12,7 @@ from wechatpy import parse_message
 # 项目库
 from trade import settings
 from trade.settings import log
-from models import User, Platform
+from models import User, Platform, Weixin
 
 
 class EchoStrView(APIView):
@@ -40,21 +40,20 @@ class EchoStrView(APIView):
         appid = msg.target     # 例如: gh_9225266caeb1
         from_user_openid = msg.source
 
-        if isinstance(msg, SubscribeScanEvent):     # 未关注用户扫描带参数二维码事件 - 订阅关注
+        # 未关注用户扫描带参数二维码事件 - 订阅关注
+        # 已关注用户扫描带参数二维码事件
+        if isinstance(msg, SubscribeScanEvent) or isinstance(msg, ScanEvent):
             response_text = '关注成功，后续会通过公众号给你推送自动接单和通知任务的结果。'
             platform_id = msg.scene_id
-            trader = Platform.get(id=platform_id)
-            reply = TextReply()
-            reply.source = appid
-            reply.target = from_user_openid
-            reply.content = response_text
-            xml = reply.render()
-            return HttpResponse(content=xml, content_type='text/xml')
-
-        elif isinstance(msg, ScanEvent):    # 已关注用户扫描带参数二维码事件
-            response_text = '关注成功，后续会通过公众号给你推送自动接单和通知任务的结果。'
-            platform_id = msg.scene_id
-            trader = Platform.get(id=platform_id)
+            platform = Platform.get(id=platform_id)
+            assert platform
+            weixin = Weixin.get(openid=from_user_openid)
+            if weixin:
+                # weixin 表记录, 存在
+                weixin.update(platform_id=platform_id)
+            else:
+                # weixin 表记录, 不存在
+                weixin.create(openid=from_user_openid, platform_id=platform_id)
             reply = TextReply()
             reply.source = appid
             reply.target = from_user_openid

@@ -10,7 +10,7 @@ class Platform(models.Model, BaseModel):
 
     id = models.AutoField(primary_key=True)
     user_id = models.IntegerField(null=False)
-    ssid = models.CharField(max_length=255, null=True)
+    ssid = models.CharField(max_length=255)
     #
     created_at = models.DateTimeField(auto_now_add=True)    # auto_now_add only generated on 新创建
     updated_at = models.DateTimeField(auto_now=True)        # auto_now is generated on 每次修改
