@@ -9,6 +9,9 @@ class User(models.Model, BaseModel):
     class Meta:
         app_label = 'trade'
         db_table = 'broadband_user'
+        unique_together = [
+            ('openid', 'platform_id'),
+        ]
 
     ROLE = (
         ('platform_owner', '平台属主'),
@@ -17,9 +20,11 @@ class User(models.Model, BaseModel):
     )
 
     id = models.AutoField(primary_key=True)
-    openid = models.CharField(max_length=255, unique=True, null=False)
-    nickname = models.CharField(max_length=255)
-    headimgurl = models.URLField(max_length=512)    # JPEG 格式: http://thirdwx.qlogo.cn/mmopen/vi_32/lRUxxd0YsmibtZKWiaw7g/132
+    openid = models.CharField(max_length=255, null=False)
+    platform_id = models.IntegerField(null=True)    # TODO 改数据后改为 null=False
+    # 头像: JPEG 格式 http://thirdwx.qlogo.cn/mmopen/vi_32/lRUxxd0YsmibtZKWiaw7g/132
+    nickname = models.CharField(max_length=255)     # TODO 删除
+    headimgurl = models.URLField(max_length=512)    # TODO 删除
     #
     username = models.CharField(max_length=255, unique=True, null=False)
     password = models.CharField(max_length=255, null=False)
@@ -32,11 +37,11 @@ class User(models.Model, BaseModel):
     expired_at = models.DateTimeField()
 
     @classmethod
-    def get(cls, id=None, openid=None):
+    def get(cls, id=None, openid=None, platform_id=None):
         if id:
             obj = cls.objects.filter(id=id).first()
-        elif openid:
-            obj = cls.objects.filter(openid=openid).first()
+        elif openid and platform_id:
+            obj = cls.objects.filter(openid=openid, platform_id=platform_id).first()
         else:
             raise Exception('param error')
         if not obj:

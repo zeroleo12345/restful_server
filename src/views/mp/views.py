@@ -50,12 +50,12 @@ class EchoStrView(APIView):
             weixin = Weixin.get(openid=from_user_openid)
             if weixin:
                 # weixin 表记录, 存在
-                if weixin.platform_id != platform_id:
-                    log.i(f'platform_id change: {weixin.platform_id} -> {platform_id}, openid: {weixin.openid}')
-                    weixin.update(platform_id=platform_id)
+                if weixin.bind_platform_id != platform.id:
+                    log.i(f'platform_id change: {weixin.bind_platform_id} -> {platform.id}, openid: {weixin.openid}')
+                    weixin.update(platform_id=platform.id)
             else:
                 # weixin 表记录, 不存在
-                weixin.create(openid=from_user_openid, platform_id=platform_id)
+                weixin.create(openid=from_user_openid, platform_id=platform.id)
             reply = TextReply()
             reply.source = appid
             reply.target = from_user_openid
