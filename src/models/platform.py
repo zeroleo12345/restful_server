@@ -9,7 +9,7 @@ class Platform(models.Model, BaseModel):
         db_table = 'broadband_user'
 
     id = models.AutoField(primary_key=True)
-    host_user_id = models.IntegerField(null=False)
+    owner_user_id = models.IntegerField(null=False)
     ssid = models.CharField(max_length=255)
     #
     created_at = models.DateTimeField(auto_now_add=True)    # auto_now_add only generated on 新创建
