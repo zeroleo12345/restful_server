@@ -9,7 +9,7 @@ class Platform(models.Model, BaseModel):
         db_table = 'platform'
 
     id = models.AutoField(primary_key=True)
-    owner_user_id = models.IntegerField(null=False)
+    openid = models.IntegerField(null=False)
     ssid = models.CharField(max_length=255, default=None)
     qrcode_url = models.URLField(max_length=512)
     #
