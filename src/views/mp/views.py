@@ -80,16 +80,16 @@ class EchoStrView(APIView):
                 ]
                 reply = TextReply(source=appid, target=from_user_openid, content='\n'.join(messages))
 
-            # elif msg.content.startswith('搜索') and from_user_openid == settings.MP_ADMIN_OPENID:
-            #     name = msg.content.split('搜索')[1].strip()
-            #     reply = TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/search?name={name}')
-            #     # reply = ArticlesReply(source=appid, target=from_user_openid)
-            #     # reply.add_article({
-            #     #     'title': f'搜索词: "{name}"',
-            #     #     'description': '搜不到用户',
-            #     #     'image': image_url,
-            #     #     'url': f'{settings.API_SERVER_URL}/search?name=name'
-            #     # })
+            elif msg.content.startswith('搜索') and from_user_openid == settings.MP_ADMIN_OPENID:
+                name = msg.content.split('搜索')[1].strip()
+                reply = TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/search?name={name}')
+                # reply = ArticlesReply(source=appid, target=from_user_openid)
+                # reply.add_article({
+                #     'title': f'搜索词: "{name}"',
+                #     'description': '搜不到用户',
+                #     'image': image_url,
+                #     'url': f'{settings.API_SERVER_URL}/search?name=name'
+                # })
 
             elif msg.content.startswith('二维码') and from_user_openid == settings.MP_ADMIN_OPENID:
                 user_id = msg.content.split('二维码')[1].strip()
