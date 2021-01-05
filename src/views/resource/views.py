@@ -13,7 +13,7 @@ class UserResourceView(APIView):
     # /resource     获取免费资源
     def get(self, request):
         auth = Authentication(request)
-        user = Account.get(id=auth.user_id)
-        data = user.to_dict()
-        data['status'] = user.get_resource_status()
+        account = Account.get(id=auth.user_id)
+        data = account.to_dict()
+        data['status'] = account.get_resource_status()
         return BihuResponse(data=data)
