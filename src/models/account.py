@@ -10,7 +10,7 @@ class Account(models.Model, BaseModel):
         app_label = 'trade'
         db_table = 'broadband_user'
         unique_together = [
-            ('openid', 'platform_id'),
+            ('user_id', 'platform_id'),
         ]
 
     ROLE = (
@@ -37,11 +37,11 @@ class Account(models.Model, BaseModel):
     updated_at = models.DateTimeField(auto_now=True)        # auto_now is generated on 每次修改
 
     @classmethod
-    def get(cls, id=None, openid=None, platform_id=None):
+    def get(cls, id=None, user_id=None, platform_id=None):
         if id:
             obj = cls.objects.filter(id=id).first()
-        elif openid and platform_id:
-            obj = cls.objects.filter(openid=openid, platform_id=platform_id).first()
+        elif user_id and platform_id:
+            obj = cls.objects.filter(user_id=user_id, platform_id=platform_id).first()
         else:
             raise Exception('param error')
         if not obj:

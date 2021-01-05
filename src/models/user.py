@@ -19,8 +19,13 @@ class User(models.Model, BaseModel):
     updated_at = models.DateTimeField(auto_now=True)        # auto_now is generated on 每次修改
 
     @classmethod
-    def get(cls, openid) -> 'User':
-        obj = cls.objects.filter(openid=openid).first()
+    def get(cls, id=None, openid=None) -> 'User':
+        if id:
+            obj = cls.objects.filter(id=id).first()
+        elif openid:
+            obj = cls.objects.filter(openid=openid).first()
+        else:
+            raise Exception('param error')
         if not obj:
             return None
         return obj

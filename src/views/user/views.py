@@ -32,7 +32,7 @@ class UserView(APIView):
         # 获取用户信息, 不存在则创建
         user = User.get(openid=openid)
         assert user   # TODO 待补充返回码给前端, 提示给用户
-        account = Account.get(openid=user.openid, platform_id=user.bind_platform_id)
+        account = Account.get(user_id=user.id, platform_id=user.bind_platform_id)
         if not account:
             username = MyRandom.random_digit(length=8)
             expired_at = Datetime.localtime() + datetime.timedelta(minutes=30)
