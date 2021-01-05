@@ -5,8 +5,8 @@ from framework.database import models, BaseModel
 
 class Platform(models.Model, BaseModel):
     class Meta:
-        app_label = 'platform'
-        db_table = 'broadband_user'
+        app_label = 'trade'
+        db_table = 'platform'
 
     id = models.AutoField(primary_key=True)
     owner_user_id = models.IntegerField(null=False)

@@ -5,8 +5,8 @@ from framework.database import models, BaseModel
 
 class User(models.Model, BaseModel):
     class Meta:
-        app_label = 'weixin'
-        db_table = 'broadband_user'
+        app_label = 'trade'
+        db_table = 'user'
 
     id = models.AutoField(primary_key=True)
     openid = models.CharField(max_length=255, unique=True, null=False)
