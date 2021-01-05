@@ -12,7 +12,7 @@ from wechatpy import parse_message
 # 项目库
 from trade import settings
 from trade.settings import log
-from models import Account, Platform, Weixin
+from models import Account, Platform, User
 
 
 class EchoStrView(APIView):
@@ -47,15 +47,15 @@ class EchoStrView(APIView):
             platform_id = int(msg.scene_id)
             platform = Platform.get(id=platform_id)
             assert platform
-            weixin = Weixin.get(openid=from_user_openid)
-            if weixin:
-                # weixin 表记录, 存在
-                if weixin.bind_platform_id != platform.id:
-                    log.i(f'platform_id change: {weixin.bind_platform_id} -> {platform.id}, openid: {weixin.openid}')
-                    weixin.update(platform_id=platform.id)
+            user = User.get(openid=from_user_openid)
+            if user:
+                # user 表记录, 存在
+                if user.bind_platform_id != platform.id:
+                    log.i(f'platform_id change: {user.bind_platform_id} -> {platform.id}, openid: {user.openid}')
+                    user.update(platform_id=platform.id)
             else:
-                # weixin 表记录, 不存在
-                weixin.create(openid=from_user_openid, platform_id=platform.id)
+                # user 表记录, 不存在
+                user.create(openid=from_user_openid, platform_id=platform.id)
             reply = TextReply(source=appid, target=from_user_openid, content=response_text)
 
         elif isinstance(msg, SubscribeEvent):   # 关注公众号事件

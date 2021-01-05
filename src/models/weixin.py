@@ -3,7 +3,7 @@ from __future__ import annotations
 from framework.database import models, BaseModel
 
 
-class Weixin(models.Model, BaseModel):
+class User(models.Model, BaseModel):
     class Meta:
         app_label = 'weixin'
         db_table = 'broadband_user'
@@ -19,14 +19,14 @@ class Weixin(models.Model, BaseModel):
     updated_at = models.DateTimeField(auto_now=True)        # auto_now is generated on 每次修改
 
     @classmethod
-    def get(cls, openid) -> 'Weixin':
+    def get(cls, openid) -> 'User':
         obj = cls.objects.filter(openid=openid).first()
         if not obj:
             return None
         return obj
 
     @classmethod
-    def search(cls, nickname__contains) -> 'Weixin':
+    def search(cls, nickname__contains) -> 'User':
         users = cls.objects.filter(nickname__contains=nickname__contains)
         if not users:
             return []
