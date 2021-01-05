@@ -78,9 +78,9 @@ class EchoStrView(APIView):
             elif msg.content.startswith('搜索') and from_user_openid == settings.MP_ADMIN_OPENID:
                 name = msg.content.split(' ')[1].strip()
                 description, image = '', ''
-                for user in Account.search(nickname__contains=name):
-                    description += f'昵称: "{user.nickname}"\n过期时间: {user.expired_at}'
-                    image = user.headimgurl
+                for account in Account.search(nickname__contains=name):
+                    description += f'昵称: "{account.nickname}"\n过期时间: {account.expired_at}'
+                    image = account.headimgurl
                 reply = ArticlesReply(source=appid, target=from_user_openid)
                 reply.add_article({
                     'title': f'搜索词: "{name}"',
