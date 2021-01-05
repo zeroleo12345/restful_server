@@ -36,19 +36,19 @@ class ExpireUserJob(metaclass=MetaClass):
     @promise_do_once(file_name='expire_user', func_name='doing')
     def doing(cls, start_time, end_time):
         # 明天到期的用户
-        log.d(f'select expire user where start_time > {start_time} and end_time <= {end_time}')
+        log.d(f'select expire account where start_time > {start_time} and end_time <= {end_time}')
         #
-        users = Account.objects.filter(
+        accounts = Account.objects.filter(
             expired_at__gt=start_time,
             expired_at__lte=end_time,
         )
-        for user in users:
-            user_id = user.openid
+        for account in accounts:
+            user_id = account.openid
             data = {
                 'first': {'value': '您的宽带即将到期'},
-                'keyword1': {'value': user.username},
-                'keyword2': {'value': f'到期时间 {Datetime.to_str(user.expired_at, fmt="%Y-%m-%d %H:%M")}'},
+                'keyword1': {'value': account.username},
+                'keyword2': {'value': f'到期时间 {Datetime.to_str(account.expired_at, fmt="%Y-%m-%d %H:%M")}'},
                 'remark': {'value': '如需继续使用, 请点击充值'}
             }
-            log.i(f'send wechat template message, openid: {user_id}, expired_at: {user.expired_at}')
+            log.i(f'send wechat template message, openid: {user_id}, expired_at: {account.expired_at}')
             we_message.send_template(user_id, MP_RECHARGE_TEMPLATE_ID, data, url=WeClient.recharge_uri, mini_program=None)
