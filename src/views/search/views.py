@@ -1,19 +1,25 @@
 from rest_framework.views import APIView
 # 项目库
 from framework.authorization import JWTAuthentication
-from controls.auth import Authentication
 from framework.restful import BihuResponse
+from controls.auth import Authentication
 from models import Account
+from . import validators
 
 
 class SearchView(APIView):
     authentication_classes = (JWTAuthentication, )      # 默认配置
     permission_classes = ()
 
-    # /resource     获取免费资源
+    # /search?name=abc
     def get(self, request):
         auth = Authentication(request)
-        account = Account.get(id=auth.user_id)
-        data = account.to_dict()
-        data['status'] = account.get_resource_status()
-        return BihuResponse(data=data)
+        #
+        serializer = validators.SearchValidator(data=request.GET)
+        serializer.is_valid(raise_exception=True)
+        name = serializer.validated_data.get('name')
+        #
+        accounts = []
+        for account in Account.search(nickname__contains=name):
+            accounts.append(account.to_dict())
+        return BihuResponse(data=accounts)

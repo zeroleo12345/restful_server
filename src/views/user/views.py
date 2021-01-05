@@ -46,8 +46,8 @@ class UserView(APIView):
             }
             with transaction.atomic():
                 account = Account.create(**user_fields)   # create 返回 Model 实例
-        if user.nickname != nickname or user.headimgurl != avatar:
-            user.update(nickname=nickname, headimgurl=avatar)
+        if user.nickname != nickname or user.picture_url != avatar:
+            user.update(nickname=nickname, picture_url=avatar)
         account_info = account.to_dict()
         user_info = user.to_dict()
         authorization = JWTAuthentication.jwt_encode_handler(user_dict=user_info)

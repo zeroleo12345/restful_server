@@ -24,7 +24,7 @@ class Account(models.Model, BaseModel):
     platform_id = models.IntegerField(null=True)    # TODO 改数据后改为 null=False
     # 头像: JPEG 格式 http://thirdwx.qlogo.cn/mmopen/vi_32/lRUxxd0YsmibtZKWiaw7g/132
     nickname = models.CharField(max_length=255)     # TODO 删除
-    headimgurl = models.URLField(max_length=512)    # TODO 删除
+    picture_url = models.URLField(max_length=512)    # TODO 删除
     #
     username = models.CharField(max_length=255, unique=True, null=False)
     password = models.CharField(max_length=255, null=False)

@@ -13,7 +13,7 @@ class User(models.Model, BaseModel):
     bind_platform_id = models.IntegerField(null=False)
     # 头像: JPEG 格式 http://thirdwx.qlogo.cn/mmopen/vi_32/lRUxxd0YsmibtZKWiaw7g/132
     nickname = models.CharField(max_length=255)
-    headimgurl = models.URLField(max_length=512)
+    picture_url = models.URLField(max_length=512)
     #
     created_at = models.DateTimeField(auto_now_add=True)    # auto_now_add only generated on 新创建
     updated_at = models.DateTimeField(auto_now=True)        # auto_now is generated on 每次修改
