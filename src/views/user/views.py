@@ -3,7 +3,7 @@ import datetime
 from rest_framework.views import APIView
 from django.db import transaction
 # 项目库
-from models import User, Weixin
+from models import Account, Weixin
 from service.wechat.we_oauth import WeOAuth
 from utils.myrandom import MyRandom
 from utils.time import Datetime
@@ -32,8 +32,8 @@ class UserView(APIView):
         # 获取用户信息, 不存在则创建
         weixin = Weixin.get(openid=openid)
         assert weixin   # TODO 待补充返回码给前端, 提示给用户
-        user = User.get(openid=weixin.openid, platform_id=weixin.bind_platform_id)
-        if not user:
+        account = Account.get(openid=weixin.openid, platform_id=weixin.bind_platform_id)
+        if not account:
             username = MyRandom.random_digit(length=8)
             expired_at = Datetime.localtime() + datetime.timedelta(minutes=30)
             user_fields = {
@@ -45,10 +45,10 @@ class UserView(APIView):
                 'expired_at': expired_at,
             }
             with transaction.atomic():
-                user = User.create(**user_fields)   # create 返回 Model 实例
+                account = Account.create(**user_fields)   # create 返回 Model 实例
         if weixin.nickname != nickname or weixin.headimgurl != avatar:
             weixin.update(nickname=nickname, headimgurl=avatar)
-        user_info = user.to_dict()
+        user_info = account.to_dict()
         weixin_info = weixin.to_dict()
         authorization = JWTAuthentication.jwt_encode_handler(user_dict=user_info)
         data = {
@@ -65,6 +65,6 @@ class UserSyncView(APIView):
 
     # /user/sync    同步用户列表
     def get(self, request):
-        users = User.objects.all()
-        data = [user.to_dict() for user in users]
+        accounts = Account.objects.all()
+        data = [account.to_dict() for account in accounts]
         return BihuResponse(data=data)

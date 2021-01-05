@@ -5,7 +5,7 @@ from django.utils import timezone
 from . import MetaClass
 from utils.decorators import promise_do_once
 from trade.settings import log
-from models import User
+from models import Account
 from service.wechat.we_client import WeClient
 from service.wechat.we_message import we_message
 from utils.time import Datetime
@@ -38,7 +38,7 @@ class ExpireUserJob(metaclass=MetaClass):
         # 明天到期的用户
         log.d(f'select expire user where start_time > {start_time} and end_time <= {end_time}')
         #
-        users = User.objects.filter(
+        users = Account.objects.filter(
             expired_at__gt=start_time,
             expired_at__lte=end_time,
         )

@@ -12,7 +12,7 @@ from wechatpy import parse_message
 # 项目库
 from trade import settings
 from trade.settings import log
-from models import User, Platform, Weixin
+from models import Account, Platform, Weixin
 
 
 class EchoStrView(APIView):
@@ -56,50 +56,44 @@ class EchoStrView(APIView):
             else:
                 # weixin 表记录, 不存在
                 weixin.create(openid=from_user_openid, platform_id=platform.id)
-            reply = TextReply()
-            reply.source = appid
-            reply.target = from_user_openid
-            reply.content = response_text
-            xml = reply.render()
-            return HttpResponse(content=xml, content_type='text/xml')
+            reply = TextReply(source=appid, target=from_user_openid, content=response_text)
 
         elif isinstance(msg, SubscribeEvent):   # 关注公众号事件
-            reply = TextReply()
-            reply.source = appid
-            reply.target = from_user_openid
-            reply.content = settings.MP_DEFAULT_REPLY
-            xml = reply.render()
-            return HttpResponse(xml, content_type='text/xml')
+            reply = TextReply(source=appid, target=from_user_openid, content=settings.MP_DEFAULT_REPLY)
 
         elif isinstance(msg, TextMessage):    # 文本消息
             if msg.content in ['help', '帮助', '命令']:
-                command = ['openid', '搜索']
-                message = '命令: ' + ', '.join(command)
+                command = [
+                    'openid',
+                    '搜索 $name',
+                    '二维码 $user_id'
+                ]
+                message = '命令:\n  ' + '\n  '.join(command)
+                reply = TextReply(source=appid, target=from_user_openid, content=message)
+
             elif msg.content == 'openid':
                 message = f'你的openid: {from_user_openid}'
-            elif msg.content.startswith('搜索'):
-                word = msg.content.split('搜索')[1].strip()
+                reply = TextReply(source=appid, target=from_user_openid, content=message)
+
+            elif msg.content.startswith('搜索') and from_user_openid == settings.MP_ADMIN_OPENID:
+                name = msg.content.split(' ')[1].strip()
                 description, image = '', ''
-                for user in User.search(nickname__contains=word):
+                for user in Account.search(nickname__contains=name):
                     description += f'昵称: "{user.nickname}"\n过期时间: {user.expired_at}'
                     image = user.headimgurl
-                reply = ArticlesReply()
-                reply.source = appid
-                reply.target = from_user_openid
+                reply = ArticlesReply(source=appid, target=from_user_openid)
                 reply.add_article({
-                    'title': f'搜索词: "{word}"',
+                    'title': f'搜索词: "{name}"',
                     'description': description or '搜不到用户',
                     'image': image,
                     'url': f'{settings.API_SERVER_URL}/user/sync'
                 })
-                xml = reply.render()
-                return HttpResponse(content=xml, content_type='text/xml')
+
+            elif msg.content.startswith('二维码') and from_user_openid == settings.MP_ADMIN_OPENID:
+                platform_id = msg.content.split(' ')[1].strip()
+
             else:
-                message = settings.MP_DEFAULT_REPLY
-            reply = TextReply()
-            reply.source = appid
-            reply.target = from_user_openid
-            reply.content = message
+                reply = TextReply(source=appid, target=from_user_openid, content=settings.MP_DEFAULT_REPLY)
             xml = reply.render()
             return HttpResponse(content=xml, content_type='text/xml')
 

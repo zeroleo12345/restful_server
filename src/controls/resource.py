@@ -1,6 +1,6 @@
 from django.db import transaction
 # 项目库
-from models import BroadBandOrder, User, Tariff, ResourceChange
+from models import BroadBandOrder, Account, Tariff, ResourceChange
 
 
 def increase_user_resource(total_fee, out_trade_no, transaction_id, attach):
@@ -8,7 +8,7 @@ def increase_user_resource(total_fee, out_trade_no, transaction_id, attach):
     order = BroadBandOrder.get(out_trade_no=out_trade_no)
     assert order
     assert not order.is_paid()
-    user = User.get(id=order.user_id)
+    user = Account.get(id=order.user_id)
     assert user
     # 计算时长叠加
     tariff = Tariff.attach_to_tariff(attach)

@@ -1,6 +1,6 @@
 from rest_framework import status
 #
-from models import User
+from models import Account
 
 
 class UserFactory(object):
@@ -28,6 +28,6 @@ class UserFactory(object):
         assert 'id' in res_dict['data']['user']
         authorization = res_dict['data']['authorization']
         #
-        user = User.get(id=res_dict['data']['user']['id'])
-        assert user
-        return user, authorization
+        account = Account.get(id=res_dict['data']['user']['id'])
+        assert account
+        return account, authorization

@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
             bases=(models.Model, framework.database.BaseModel),
         ),
         migrations.CreateModel(
-            name='User',
+            name='Account',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('openid', models.CharField(max_length=255, unique=True)),
