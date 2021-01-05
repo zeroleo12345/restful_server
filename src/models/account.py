@@ -20,7 +20,7 @@ class Account(models.Model, BaseModel):
     )
 
     id = models.AutoField(primary_key=True)
-    openid = models.CharField(max_length=255, null=False)
+    user_id = models.CharField(max_length=255, null=False)
     platform_id = models.IntegerField(null=True)    # TODO 改数据后改为 null=False
     # 头像: JPEG 格式 http://thirdwx.qlogo.cn/mmopen/vi_32/lRUxxd0YsmibtZKWiaw7g/132
     nickname = models.CharField(max_length=255)     # TODO 删除

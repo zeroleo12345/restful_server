@@ -37,7 +37,7 @@ class UserView(APIView):
             username = MyRandom.random_digit(length=8)
             expired_at = Datetime.localtime() + datetime.timedelta(minutes=30)
             user_fields = {
-                'openid': openid,
+                'user_id': user.id,
                 'platform_id': user.bind_platform_id,
                 'username': username,
                 'password': username,
