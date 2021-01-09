@@ -40,7 +40,8 @@ class EchoStrView(APIView):
         log.i(f'wechat event: {msg}')
         appid = msg.target     # 例如: gh_9225266caeb1
         from_user_openid = msg.source
-
+        #
+        reply = None
         # 未关注用户扫描带参数二维码事件 - 订阅关注
         # 已关注用户扫描带参数二维码事件
         if isinstance(msg, SubscribeScanEvent) or isinstance(msg, ScanEvent):
@@ -107,7 +108,8 @@ class EchoStrView(APIView):
 
             else:
                 reply = TextReply(source=appid, target=from_user_openid, content=settings.MP_DEFAULT_REPLY)
+        if reply:
             xml = reply.render()
             return HttpResponse(content=xml, content_type='text/xml')
-
-        return Response('success')
+        else:
+            return Response('success')
