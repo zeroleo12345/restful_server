@@ -3,7 +3,7 @@ import datetime
 from rest_framework.views import APIView
 from django.db import transaction
 # 项目库
-from models import Account, User, Platform
+from models import Account, Client, Platform
 from service.wechat.we_oauth import WeOAuth
 from utils.myrandom import MyRandom
 from utils.time import Datetime
@@ -30,7 +30,7 @@ class UserView(APIView):
                 raise GlobalException(data={'code': 'invalid_code', 'message': f'code无效, 请退出重试'}, status=400)
             WechatCode.set(code, openid=openid, nickname=nickname, avatar=avatar)
         # 获取用户信息, 不存在则创建
-        user = User.get(openid=openid)
+        user = Client.get(openid=openid)
         assert user   # TODO 待补充返回码给前端, 提示给用户
         account = Account.get(user_id=user.id, platform_id=user.bind_platform_id)
         if not account:

@@ -3,10 +3,10 @@ from __future__ import annotations
 from framework.database import models, BaseModel
 
 
-class User(models.Model, BaseModel):
+class Client(models.Model, BaseModel):
     class Meta:
         app_label = 'trade'
-        db_table = 'user'
+        db_table = 'client'
         unique_together = [
             ('openid',),
         ]
@@ -22,7 +22,7 @@ class User(models.Model, BaseModel):
     updated_at = models.DateTimeField(auto_now=True)        # auto_now is generated on 每次修改
 
     @classmethod
-    def get(cls, id=None, openid=None) -> 'User':
+    def get(cls, id=None, openid=None) -> 'Client':
         if id:
             obj = cls.objects.filter(id=id).first()
         elif openid:
@@ -34,7 +34,7 @@ class User(models.Model, BaseModel):
         return obj
 
     @classmethod
-    def search(cls, nickname__contains) -> 'User':
+    def search(cls, nickname__contains) -> 'Client':
         users = cls.objects.filter(nickname__contains=nickname__contains)
         if not users:
             return []
