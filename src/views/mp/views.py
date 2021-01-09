@@ -7,12 +7,12 @@ from rest_framework.response import Response
 from wechatpy.utils import check_signature
 from wechatpy.events import SubscribeScanEvent, ScanEvent, SubscribeEvent
 from wechatpy.messages import TextMessage
-from wechatpy.replies import TextReply, ArticlesReply
+from wechatpy.replies import TextReply
 from wechatpy import parse_message
 # 项目库
 from trade import settings
 from trade.settings import log
-from models import Account, Platform, User
+from models import Platform, User
 from service.wechat.we_client import WeClient
 
 
