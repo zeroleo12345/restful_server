@@ -3,7 +3,7 @@ import datetime
 from rest_framework.views import APIView
 from django.db import transaction
 # 项目库
-from models import Account, User
+from models import Account, User, Platform
 from service.wechat.we_oauth import WeOAuth
 from utils.myrandom import MyRandom
 from utils.time import Datetime
@@ -48,12 +48,15 @@ class UserView(APIView):
                 account = Account.create(**user_fields)   # create 返回 Model 实例
         if user.nickname != nickname or user.picture_url != avatar:
             user.update(nickname=nickname, picture_url=avatar)
+        platform = Platform.get(owner_user_id=user.id)
         account_info = account.to_dict()
         user_info = user.to_dict()
+        platform_info = platform.to_dict() if platform else None
         authorization = JWTAuthentication.jwt_encode_handler(user_dict=user_info)
         data = {
             'account': account_info,
             'user': user_info,
+            'platform': platform_info,
             'authorization': authorization,
         }
         return BihuResponse(data=data)
