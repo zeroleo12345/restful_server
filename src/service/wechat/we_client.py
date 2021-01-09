@@ -11,8 +11,9 @@ class WeClient(object):
     we_client = WeChatClient(
         appid=settings.MP_APP_ID, secret=settings.MP_APP_SECRET, session=RedisStorage(redis_client, prefix='wechat')
     )
-    recharge_uri = f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}' \
-                   f'&redirect_uri={settings.MP_REDIRECT_URI}&response_type=code&scope=snsapi_userinfo'
+    ACCOUNT_VIEW_BTN_EVENT = 'ACCOUNT_VIEW_BTN_EVENT'
+    account_view_uri = f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}' \
+                       f'&redirect_uri={settings.MP_REDIRECT_URI}&response_type=code&scope=snsapi_userinfo'
 
     @classmethod
     def create_mp_menu(cls):
@@ -23,9 +24,9 @@ class WeClient(object):
         menu_data = {
             'button': [
                 {
-                    'type': 'view',
+                    'type': 'click',
                     'name': '账号充值',
-                    'url': cls.recharge_uri,
+                    'key': cls.ACCOUNT_VIEW_BTN_EVENT,
                 },
                 {
                     'type': 'view',

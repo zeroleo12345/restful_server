@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.renderers import StaticHTMLRenderer
 from rest_framework.response import Response
 from wechatpy.utils import check_signature
-from wechatpy.events import SubscribeScanEvent, ScanEvent, SubscribeEvent
+from wechatpy.events import SubscribeScanEvent, ScanEvent, SubscribeEvent, ClickEvent
 from wechatpy.messages import TextMessage
 from wechatpy.replies import TextReply
 from wechatpy import parse_message
@@ -40,74 +40,85 @@ class EchoStrView(APIView):
         log.i(f'wechat event: {msg}')
         appid = msg.target     # 例如: gh_9225266caeb1
         from_user_openid = msg.source
-        #
-        reply = None
-        # 未关注用户扫描带参数二维码事件 - 订阅关注
-        # 已关注用户扫描带参数二维码事件
-        if isinstance(msg, SubscribeScanEvent) or isinstance(msg, ScanEvent):
-            response_text = '关注成功，后续会通过公众号给你推送自动接单和通知任务的结果。'
-            platform_id = int(msg.scene_id)
-            platform = Platform.get(id=platform_id)
-            assert platform
-            user = User.get(openid=from_user_openid)
-            if user:
-                # user 表记录, 存在
-                if user.bind_platform_id != platform.id:
-                    log.i(f'platform_id change: {user.bind_platform_id} -> {platform.id}, openid: {user.openid}')
-                    user.update(platform_id=platform.id)
-            else:
-                # user 表记录, 不存在
-                user.create(openid=from_user_openid, platform_id=platform.id)
-            reply = TextReply(source=appid, target=from_user_openid, content=response_text)
-
-        elif isinstance(msg, SubscribeEvent):   # 关注公众号事件
-            reply = TextReply(source=appid, target=from_user_openid, content=settings.MP_DEFAULT_REPLY)
-
-        elif isinstance(msg, TextMessage):    # 文本消息
-            if msg.content in ['help', '帮助', '命令']:
-                command = [
-                    'openid',
-                    '搜索 $name',
-                    '二维码 $user_id'
-                ]
-                message = '命令:\n  ' + '\n  '.join(command)
-                reply = TextReply(source=appid, target=from_user_openid, content=message)
-
-            elif msg.content == 'openid':
+        def handle_msg():
+            # 未关注用户扫描带参数二维码事件 - 订阅关注
+            # 已关注用户扫描带参数二维码事件
+            if isinstance(msg, SubscribeScanEvent) or isinstance(msg, ScanEvent):
+                response_text = '关注成功，后续会通过公众号给你推送自动接单和通知任务的结果。'
+                platform_id = int(msg.scene_id)
+                platform = Platform.get(id=platform_id)
+                assert platform
                 user = User.get(openid=from_user_openid)
-                messages = [
-                    f'你的信息:',
-                    f'openid: {user.openid}'
-                    f'user_id: {user.id}'
-                ]
-                reply = TextReply(source=appid, target=from_user_openid, content='\n'.join(messages))
-
-            elif msg.content.startswith('搜索') and from_user_openid == settings.MP_ADMIN_OPENID:
-                name = msg.content.split('搜索')[1].strip()
-                reply = TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/search?name={name}')
-                # reply = ArticlesReply(source=appid, target=from_user_openid)
-                # reply.add_article({
-                #     'title': f'搜索词: "{name}"',
-                #     'description': '搜不到用户',
-                #     'image': image_url,
-                #     'url': f'{settings.API_SERVER_URL}/search?name=name'
-                # })
-
-            elif msg.content.startswith('二维码') and from_user_openid == settings.MP_ADMIN_OPENID:
-                user_id = msg.content.split('二维码')[1].strip()
-                user = User.get(id=user_id)
                 if not user:
-                    reply = TextReply(source=appid, target=from_user_openid, content=f'用户不存在')
+                    # user 表记录, 不存在
+                    User.create(openid=from_user_openid, platform_id=platform.id)
                 else:
-                    platform = Platform.create(owner_user_id=user.id)
-                    log.i(f'create qrcode, platform_id: {platform.id}')
-                    qrcode_info = WeClient.create_qrcode(scene_str=platform.id, is_permanent=True)
-                    qrcode_url = qrcode_info['url']
-                    platform.update(qrcode_url=qrcode_url)
-                    reply = TextReply(source=appid, target=from_user_openid, content=f'user_id: {user.id}, qrcode_url: {platform.qrcode_url}')
+                    # user 表记录, 存在
+                    if user.bind_platform_id != platform.id:
+                        log.i(f'platform_id change: {user.bind_platform_id} -> {platform.id}, openid: {user.openid}')
+                        user.update(platform_id=platform.id)
+                return TextReply(source=appid, target=from_user_openid, content=response_text)
 
-            else:
-                reply = TextReply(source=appid, target=from_user_openid, content=settings.MP_DEFAULT_REPLY)
+            if isinstance(msg, ClickEvent):
+                if msg.event == WeClient.ACCOUNT_VIEW_BTN_EVENT:
+                    user = User.get(openid=from_user_openid)
+                    if not user:
+                        return TextReply(source=appid, target=from_user_openid, content=f'请先扫描房东的WIFI二维码')
+                    else:
+                        # TODO
+                        pass
+
+            elif isinstance(msg, SubscribeEvent):   # 关注公众号事件
+                return TextReply(source=appid, target=from_user_openid, content=settings.MP_DEFAULT_REPLY)
+
+            elif isinstance(msg, TextMessage):    # 文本消息
+                if msg.content in ['help', '帮助', '命令']:
+                    command = [
+                        'openid',
+                        '搜索 $name',
+                        '二维码 $user_id'
+                    ]
+                    message = '命令:\n  ' + '\n  '.join(command)
+                    return TextReply(source=appid, target=from_user_openid, content=message)
+
+                elif msg.content == 'openid':
+                    user = User.get(openid=from_user_openid)
+                    messages = [
+                        f'你的信息:',
+                        f'openid: {user.openid}'
+                        f'user_id: {user.id}'
+                    ]
+                    return TextReply(source=appid, target=from_user_openid, content='\n'.join(messages))
+
+                elif msg.content.startswith('搜索') and from_user_openid == settings.MP_ADMIN_OPENID:
+                    name = msg.content.split('搜索')[1].strip()
+                    return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/search?name={name}')
+                    # reply = ArticlesReply(source=appid, target=from_user_openid)
+                    # reply.add_article({
+                    #     'title': f'搜索词: "{name}"',
+                    #     'description': '搜不到用户',
+                    #     'image': image_url,
+                    #     'url': f'{settings.API_SERVER_URL}/search?name=name'
+                    # })
+
+                elif msg.content.startswith('二维码') and from_user_openid == settings.MP_ADMIN_OPENID:
+                    user_id = msg.content.split('二维码')[1].strip()
+                    user = User.get(id=user_id)
+                    if not user:
+                        return TextReply(source=appid, target=from_user_openid, content=f'用户不存在')
+                    else:
+                        platform = Platform.create(owner_user_id=user.id)
+                        log.i(f'create qrcode, platform_id: {platform.id}')
+                        qrcode_info = WeClient.create_qrcode(scene_str=platform.id, is_permanent=True)
+                        qrcode_url = qrcode_info['url']
+                        platform.update(qrcode_url=qrcode_url)
+                        return TextReply(source=appid, target=from_user_openid, content=f'user_id: {user.id}, qrcode_url: {platform.qrcode_url}')
+
+                else:
+                    return TextReply(source=appid, target=from_user_openid, content=settings.MP_DEFAULT_REPLY)
+            return None
+        #
+        reply = handle_msg()
         if reply:
             xml = reply.render()
             return HttpResponse(content=xml, content_type='text/xml')
