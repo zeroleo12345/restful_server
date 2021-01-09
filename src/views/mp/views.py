@@ -70,12 +70,11 @@ class EchoStrView(APIView):
                     else:
                         r = ArticlesReply(source=appid, target=from_user_openid)
                         r.add_article({
-                            'title': f'搜索词: "{name}"',
-                            'description': '搜不到用户',
-                            'image': image_url,
-                            'url': f'{settings.API_SERVER_URL}/search?name=name'
+                            'title': f'WIFI密码',
+                            'description': '点击此处获取WIFI登录密码',
+                            'image': 'http://zlxpic.lynatgz.cn/zhuzaiyuan_mini.jpg',
+                            'url': WeClient.ACCOUNT_VIEW_URI,
                         })
-                        # TODO
                         return r
 
             elif isinstance(msg, SubscribeEvent):   # 关注公众号事件

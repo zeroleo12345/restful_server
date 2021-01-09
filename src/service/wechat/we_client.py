@@ -12,7 +12,7 @@ class WeClient(object):
         appid=settings.MP_APP_ID, secret=settings.MP_APP_SECRET, session=RedisStorage(redis_client, prefix='wechat')
     )
     ACCOUNT_VIEW_BTN_EVENT = 'ACCOUNT_VIEW_BTN_EVENT'
-    account_view_uri = f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}' \
+    ACCOUNT_VIEW_URI = f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}' \
                        f'&redirect_uri={settings.MP_REDIRECT_URI}&response_type=code&scope=snsapi_userinfo'
 
     @classmethod
