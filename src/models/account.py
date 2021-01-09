@@ -17,7 +17,6 @@ class Account(models.Model, BaseModel):
     ROLE = (
         ('platform_owner', '平台属主'),
         ('user', '用户'),
-        ('guest', '访客'),
     )
 
     id = models.AutoField(primary_key=True)
