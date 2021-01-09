@@ -39,7 +39,7 @@ ENVIRONMENT:
 - 其他程序
 ```
 # 定时任务: 更新微信支付订单状态; 统计订单金额
-python manage.py timer_processor
+python src/manage.py timer_processor
 ```
 
 
@@ -59,11 +59,11 @@ mycli -h 127.0.0.1 -P 33333 -u root --password=root -D trade
 ## Migration
 ``` bash
 # 首次执行需指定app
-docker-compose exec api  python manage.py makemigrations trade
+docker-compose exec api  python src/manage.py makemigrations trade
 
 # 非首次执行
-docker-compose exec api  python manage.py makemigrations
-docker-compose exec api  python manage.py migrate --database=default
+docker-compose exec api  python src/manage.py makemigrations
+docker-compose exec api  python src/manage.py migrate --database=default
 
 # 清理历史migrations文件, 并重新生成表结构
   - 清理目录文件:  rm -rf migrations/*

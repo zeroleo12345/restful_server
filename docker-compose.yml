@@ -44,7 +44,7 @@ services:
     volumes:
       - .:/app
       - ./data:/data
-    entrypoint: python manage.py timer_processor
+    entrypoint: python src/manage.py timer_processor
     tty: true
     restart: unless-stopped
     networks:
