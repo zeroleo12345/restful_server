@@ -7,9 +7,12 @@ class Platform(models.Model, BaseModel):
     class Meta:
         app_label = 'trade'
         db_table = 'platform'
+        unique_together = [
+            ('owner_user_id',),
+        ]
 
     id = models.AutoField(primary_key=True)
-    user_id = models.IntegerField(null=False)
+    owner_user_id = models.IntegerField(null=False)
     ssid = models.CharField(max_length=255, default=None)
     qrcode_url = models.URLField(max_length=512)
     #

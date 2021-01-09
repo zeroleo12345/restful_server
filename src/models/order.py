@@ -9,6 +9,9 @@ class BroadBandOrder(models.Model, BaseModel):
     class Meta:
         app_label = 'trade'
         db_table = 'broadband_order'
+        unique_together = [
+            ('out_trade_no',),
+        ]
 
     class Status(BaseEnum):
         UNPAID = 'unpaid'       # 未支付
@@ -18,7 +21,7 @@ class BroadBandOrder(models.Model, BaseModel):
     id = models.AutoField(primary_key=True)
     user_id = models.IntegerField(null=False)
     openid = models.CharField(max_length=255)
-    out_trade_no = models.CharField(max_length=255, unique=True)        # 商家订单号
+    out_trade_no = models.CharField(max_length=255)        # 商家订单号
     attach = models.CharField(max_length=255)                           # 附加信息
     transaction_id = models.CharField(default='', max_length=255)       # 微信订单号
     total_fee = models.IntegerField()                                   # 单位分

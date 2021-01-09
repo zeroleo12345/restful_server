@@ -11,6 +11,7 @@ class Account(models.Model, BaseModel):
         db_table = 'broadband_user'
         unique_together = [
             ('user_id', 'platform_id'),
+            ('username',),
         ]
 
     ROLE = (
@@ -26,7 +27,7 @@ class Account(models.Model, BaseModel):
     nickname = models.CharField(max_length=255)     # TODO 删除
     picture_url = models.URLField(max_length=512)    # TODO 删除
     #
-    username = models.CharField(max_length=255, unique=True, null=False)
+    username = models.CharField(max_length=255, null=False)
     password = models.CharField(max_length=255, null=False)
     is_enable = models.BooleanField(default=True)
     role = models.CharField(max_length=32, choices=ROLE, default='user')

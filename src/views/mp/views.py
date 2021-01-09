@@ -13,6 +13,7 @@ from wechatpy import parse_message
 from trade import settings
 from trade.settings import log
 from models import Account, Platform, User
+from service.wechat.we_client import WeClient
 
 
 class EchoStrView(APIView):
@@ -93,7 +94,16 @@ class EchoStrView(APIView):
 
             elif msg.content.startswith('二维码') and from_user_openid == settings.MP_ADMIN_OPENID:
                 user_id = msg.content.split('二维码')[1].strip()
-                # TODO
+                user = User.get(id=user_id)
+                if not user:
+                    reply = TextReply(source=appid, target=from_user_openid, content=f'用户不存在')
+                else:
+                    platform = Platform.create(owner_user_id=user.id)
+                    log.i(f'create qrcode, platform_id: {platform.id}')
+                    qrcode_info = WeClient.create_qrcode(scene_str=platform.id, is_permanent=True)
+                    qrcode_url = qrcode_info['url']
+                    platform.update(qrcode_url=qrcode_url)
+                    reply = TextReply(source=appid, target=from_user_openid, content=f'user_id: {user.id}, qrcode_url: {platform.qrcode_url}')
 
             else:
                 reply = TextReply(source=appid, target=from_user_openid, content=settings.MP_DEFAULT_REPLY)

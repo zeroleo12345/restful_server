@@ -44,6 +44,7 @@ class WeClient(object):
         https://developers.weixin.qq.com/doc/offiaccount/Account_Management/Generating_a_Parametric_QR_Code.html
         :param scene_str:
         :param expire_seconds:
+        :param is_permanent:
         :return: {"ticket":"gQH47joAAAAAAAAAASxod2G3sUw==","expire_seconds":60,"url":"http://weixin.qq.com/q/kZgfwMTm72WWPkovabbI"}
         """
         assert isinstance(scene_str, str)

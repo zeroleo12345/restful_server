@@ -7,9 +7,12 @@ class User(models.Model, BaseModel):
     class Meta:
         app_label = 'trade'
         db_table = 'user'
+        unique_together = [
+            ('openid',),
+        ]
 
     id = models.AutoField(primary_key=True)
-    openid = models.CharField(max_length=255, unique=True, null=False)
+    openid = models.CharField(max_length=255, null=False)
     bind_platform_id = models.IntegerField(null=False)
     # 头像: JPEG 格式 http://thirdwx.qlogo.cn/mmopen/vi_32/lRUxxd0YsmibtZKWiaw7g/132
     nickname = models.CharField(max_length=255)
