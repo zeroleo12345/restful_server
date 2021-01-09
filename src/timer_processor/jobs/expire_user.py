@@ -5,7 +5,7 @@ from django.utils import timezone
 from . import MetaClass
 from utils.decorators import promise_do_once
 from trade.settings import log
-from models import Account, Client
+from models import Account, User
 from service.wechat.we_client import WeClient
 from service.wechat.we_message import we_message
 from utils.time import Datetime
@@ -43,7 +43,7 @@ class ExpireUserJob(metaclass=MetaClass):
             expired_at__lte=end_time,
         )
         for account in accounts:
-            user = Client.get(id=account.user_id)
+            user = User.get(id=account.user_id)
             data = {
                 'first': {'value': '您的宽带即将到期'},
                 'keyword1': {'value': account.username},
