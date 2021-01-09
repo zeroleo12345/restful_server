@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from wechatpy.utils import check_signature
 from wechatpy.events import SubscribeScanEvent, ScanEvent, SubscribeEvent, ClickEvent
 from wechatpy.messages import TextMessage
-from wechatpy.replies import TextReply
+from wechatpy.replies import TextReply, ArticlesReply
 from wechatpy import parse_message
 # 项目库
 from trade import settings
@@ -40,7 +40,9 @@ class EchoStrView(APIView):
         log.i(f'wechat event: {msg}')
         appid = msg.target     # 例如: gh_9225266caeb1
         from_user_openid = msg.source
-        def handle_msg():
+
+        def get_reply_msg():
+            # 被动回复 https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Passive_user_reply_message.html
             # 未关注用户扫描带参数二维码事件 - 订阅关注
             # 已关注用户扫描带参数二维码事件
             if isinstance(msg, SubscribeScanEvent) or isinstance(msg, ScanEvent):
@@ -62,11 +64,19 @@ class EchoStrView(APIView):
             if isinstance(msg, ClickEvent):
                 if msg.event == WeClient.ACCOUNT_VIEW_BTN_EVENT:
                     user = User.get(openid=from_user_openid)
-                    if not user:
+                    if not user or user.bind_platform_id is None:
+                        # 用户未经扫码, 进入公众号
                         return TextReply(source=appid, target=from_user_openid, content=f'请先扫描房东的WIFI二维码')
                     else:
+                        r = ArticlesReply(source=appid, target=from_user_openid)
+                        r.add_article({
+                            'title': f'搜索词: "{name}"',
+                            'description': '搜不到用户',
+                            'image': image_url,
+                            'url': f'{settings.API_SERVER_URL}/search?name=name'
+                        })
                         # TODO
-                        pass
+                        return r
 
             elif isinstance(msg, SubscribeEvent):   # 关注公众号事件
                 return TextReply(source=appid, target=from_user_openid, content=settings.MP_DEFAULT_REPLY)
@@ -93,13 +103,6 @@ class EchoStrView(APIView):
                 elif msg.content.startswith('搜索') and from_user_openid == settings.MP_ADMIN_OPENID:
                     name = msg.content.split('搜索')[1].strip()
                     return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/search?name={name}')
-                    # reply = ArticlesReply(source=appid, target=from_user_openid)
-                    # reply.add_article({
-                    #     'title': f'搜索词: "{name}"',
-                    #     'description': '搜不到用户',
-                    #     'image': image_url,
-                    #     'url': f'{settings.API_SERVER_URL}/search?name=name'
-                    # })
 
                 elif msg.content.startswith('二维码') and from_user_openid == settings.MP_ADMIN_OPENID:
                     user_id = msg.content.split('二维码')[1].strip()
@@ -118,7 +121,7 @@ class EchoStrView(APIView):
                     return TextReply(source=appid, target=from_user_openid, content=settings.MP_DEFAULT_REPLY)
             return None
         #
-        reply = handle_msg()
+        reply = get_reply_msg()
         if reply:
             xml = reply.render()
             return HttpResponse(content=xml, content_type='text/xml')
