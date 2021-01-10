@@ -8,11 +8,11 @@ from views.heartbeat.views import HeartBeatView
 from views.debug.views import DebugView
 
 urlpatterns = [
-    path(r'heartbeat', HeartBeatView.as_view()),
-    path(r'debug', DebugView.as_view()),
-    path(r'mp', include(mp_urls)),
-    path(r'user', include(user_urls)),
-    path(r'resource', include(resource_urls)),
-    path(r'order', include(order_urls)),
-    path(r'search', include(search_urls)),
+    path(r'heartbeat/', HeartBeatView.as_view()),
+    path(r'debug/', DebugView.as_view()),
+    path(r'mp/', include(mp_urls)),
+    path(r'user/', include(user_urls)),
+    path(r'resource/', include(resource_urls)),
+    path(r'order/', include(order_urls)),
+    path(r'search/', include(search_urls)),
 ]
