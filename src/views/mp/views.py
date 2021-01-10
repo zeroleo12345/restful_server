@@ -62,7 +62,7 @@ class EchoStrView(APIView):
                 return TextReply(source=appid, target=from_user_openid, content=response_text)
 
             if isinstance(msg, ClickEvent):
-                if msg.event == WeClient.ACCOUNT_VIEW_BTN_EVENT:
+                if msg.key == WeClient.ACCOUNT_VIEW_BTN_EVENT:
                     user = User.get(openid=from_user_openid)
                     if not user or user.bind_platform_id is None:
                         # 用户未经扫码, 进入公众号
