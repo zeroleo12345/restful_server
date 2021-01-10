@@ -46,6 +46,9 @@ class WeClient(object):
         :param expire_seconds:
         :param is_permanent:
         :return: {"ticket":"gQH47joAAAAAAAAAASxod2G3sUw==","expire_seconds":60,"url":"http://weixin.qq.com/q/kZgfwMTm72WWPkovabbI"}
+                    ticket:  获取的二维码ticket，凭借此ticket可以在有效时间内换取二维码。
+                    expire_seconds:  该二维码有效时间，以秒为单位。 最大不超过2592000（即30天）。
+                    url:  二维码图片解析后的地址，开发者可根据该地址自行生成需要的二维码图片
         """
         assert isinstance(scene_str, str)
         data = {
