@@ -46,7 +46,6 @@ class EchoStrView(APIView):
             # 未关注用户扫描带参数二维码事件 - 订阅关注
             # 已关注用户扫描带参数二维码事件
             if isinstance(msg, SubscribeScanEvent) or isinstance(msg, ScanEvent):
-                response_text = '关注成功，后续会通过公众号给你推送自动接单和通知任务的结果。'
                 platform_id = int(msg.scene_id)
                 platform = Platform.get(id=platform_id)
                 assert platform
@@ -57,9 +56,16 @@ class EchoStrView(APIView):
                 else:
                     # user 表记录, 存在
                     if user.bind_platform_id != platform.id:
-                        log.i(f'platform_id change: {user.bind_platform_id} -> {platform.id}, openid: {user.openid}')
+                        log.w(f'platform_id change: {user.bind_platform_id} -> {platform.id}, openid: {user.openid}')
                         user.update(bind_platform_id=platform.id)
-                return TextReply(source=appid, target=from_user_openid, content=response_text)
+                r = ArticlesReply(source=appid, target=from_user_openid)
+                r.add_article({
+                    'title': f'点击进入',
+                    'description': '查询WIFI密码 / WIFI续费',
+                    'image': 'http://zlxpic.lynatgz.cn/zhuzaiyuan_mini.jpg',
+                    'url': WeClient.ACCOUNT_VIEW_URI,
+                })
+                return r
 
             if isinstance(msg, ClickEvent):
                 if msg.key == WeClient.ACCOUNT_VIEW_BTN_EVENT:
