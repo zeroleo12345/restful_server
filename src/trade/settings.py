@@ -82,7 +82,7 @@ INSTALLED_APPS = [
 ]
 # AUTH_USER_MODEL = 'trade.Seller'
 
-APPEND_SLASH = False    # 是否通过301重定向, 自动添加 tail slash
+APPEND_SLASH = True    # 是否通过301重定向, 自动添加 tail slash
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
