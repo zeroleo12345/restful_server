@@ -101,7 +101,7 @@ class EchoStrView(APIView):
 
                 elif msg.content.startswith('搜索') and from_user_openid == settings.MP_ADMIN_OPENID:
                     name = msg.content.split('搜索')[1].strip()
-                    return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/search?name={name}')
+                    return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/search/user?name={name}')
 
                 elif msg.content.startswith('二维码') and from_user_openid == settings.MP_ADMIN_OPENID:
                     user_id = msg.content.split('二维码')[1].strip()
