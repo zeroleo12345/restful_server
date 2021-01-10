@@ -25,7 +25,7 @@ class WeClient(object):
             'button': [
                 {
                     'type': 'click',
-                    'name': '账号充值',
+                    'name': 'WIFI账号中心',
                     'key': cls.ACCOUNT_VIEW_BTN_EVENT,
                 },
                 # {
