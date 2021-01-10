@@ -3,7 +3,7 @@ import datetime
 from rest_framework.views import APIView
 from django.db import transaction
 # 项目库
-from models import User
+from models import Account, User, Platform
 from service.wechat.we_oauth import WeOAuth
 from utils.myrandom import MyRandom
 from utils.time import Datetime
@@ -31,27 +31,32 @@ class UserView(APIView):
             WechatCode.set(code, openid=openid, nickname=nickname, avatar=avatar)
         # 获取用户信息, 不存在则创建
         user = User.get(openid=openid)
-        if not user:
+        assert user   # TODO 待补充返回码给前端, 提示给用户
+        account = Account.get(user_id=user.id, platform_id=user.bind_platform_id)
+        if not account:
             username = MyRandom.random_digit(length=8)
             expired_at = Datetime.localtime() + datetime.timedelta(minutes=30)
             user_fields = {
-                'openid': openid,
-                'nickname': nickname,
-                'headimgurl': avatar,
+                'user_id': user.id,
+                'platform_id': user.bind_platform_id,
                 'username': username,
                 'password': username,
                 'role': 'user',
                 'expired_at': expired_at,
             }
             with transaction.atomic():
-                user = User.create(**user_fields)   # create 返回 Model 实例
-        else:
-            if user.nickname != nickname or user.headimgurl != avatar:
-                user.update(nickname=nickname, headimgurl=avatar)
+                account = Account.create(**user_fields)   # create 返回 Model 实例
+        if user.nickname != nickname or user.picture_url != avatar:
+            user.update(nickname=nickname, picture_url=avatar)
+        platform = Platform.get(owner_user_id=user.id)
+        account_info = account.to_dict()
         user_info = user.to_dict()
+        platform_info = platform.to_dict() if platform else None
         authorization = JWTAuthentication.jwt_encode_handler(user_dict=user_info)
         data = {
+            'account': account_info,
             'user': user_info,
+            'platform': platform_info,
             'authorization': authorization,
         }
         return BihuResponse(data=data)
@@ -63,6 +68,7 @@ class UserSyncView(APIView):
 
     # /user/sync    同步用户列表
     def get(self, request):
-        users = User.objects.all()
-        data = [user.to_dict() for user in users]
+        # 查出所有 platform_id = 1 的用户
+        accounts = Account.objects.filter(platform_id=1)
+        data = [account.to_dict() for account in accounts]
         return BihuResponse(data=data)

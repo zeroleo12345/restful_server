@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from framework.authorization import JWTAuthentication
 from controls.auth import Authentication
 from framework.restful import BihuResponse
-from models import User
+from models import Account
 
 
 class UserResourceView(APIView):
@@ -13,7 +13,7 @@ class UserResourceView(APIView):
     # /resource     获取免费资源
     def get(self, request):
         auth = Authentication(request)
-        user = User.get(id=auth.user_id)
-        data = user.to_dict()
-        data['status'] = user.get_resource_status()
+        account = Account.get(id=auth.user_id)
+        data = account.to_dict()
+        data['status'] = account.get_resource_status()
         return BihuResponse(data=data)

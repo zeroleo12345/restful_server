@@ -8,14 +8,14 @@ from dateutil.relativedelta import relativedelta
 from framework.field import new_uuid
 from framework.unittest import UnitTestAPIClient
 from models.factories.user import UserFactory
-from models.factories.order import BroadbandOrderFactory
+from models.factories.order import OrderFactory
 
 
 def test_payjs_notify_success():
     client = UnitTestAPIClient()
     user, authorization = UserFactory.new_user_and_authorization(client)
     client = UnitTestAPIClient(authorization=authorization)
-    order = BroadbandOrderFactory.new_order(client)
+    order = OrderFactory.new_order(client)
     with patch('service.wechat.we_pay.WePay.parse_payment_result') as _mock:
         _mock.return_value = {
             'appid': order.appid,

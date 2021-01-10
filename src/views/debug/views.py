@@ -17,7 +17,7 @@ class DebugView(APIView):
         log.i(f'request.POST: {request.POST}')
         log.i(f'request.data: {request.data}')
 
-    # /debug 调试接口, 用于打印 HTTP body 和 HTTP 参数
+    # /debug?abc=123 调试接口, 用于打印 HTTP body 和 HTTP 参数
     def get(self, request):
         log.i(f'GET method')
         self.detail(request)

@@ -17,9 +17,11 @@ RUN pip3 install --upgrade pip --trusted-host mirrors.aliyun.com --index-url htt
     && pip3 install --no-cache-dir -r /app/requirements/requirements-test.txt --trusted-host mirrors.aliyun.com --index-url http://mirrors.aliyun.com/pypi/simple
 
 # WORKDIR: 如果目录不存在, 则自动创建
-WORKDIR /app/src/
+WORKDIR /app/
 ADD src /app/src/
 ADD bin /app/bin/
+ENV PYTHONPATH="/app/src:${PYTHONPATH}"
+ENV PATH="${PATH}:/app/bin"
 
 # docker-compose.yml 会覆盖 entrypoint
 #ENTRYPOINT ["/app/bin/web.sh"]

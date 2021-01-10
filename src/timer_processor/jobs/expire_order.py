@@ -3,7 +3,7 @@ import datetime
 from django.utils import timezone
 # 项目库
 from . import MetaClass
-from models import BroadBandOrder, get_redis
+from models import Order, get_redis
 from service.wechat.we_pay import WePay
 from trade.settings import log
 from controls.resource import increase_user_resource
@@ -36,10 +36,10 @@ class ExpiredOrderJob(metaclass=MetaClass):
             return
         log.d(f'select unpaid order where start_time > {cls.start_time} and end_time <= {cls.end_time}')
         #
-        orders = BroadBandOrder.objects.filter(
+        orders = Order.objects.filter(
             created_at__gt=cls.start_time,
             created_at__lte=cls.end_time,
-            status=BroadBandOrder.Status.UNPAID.value
+            status=Order.Status.UNPAID.value
         )
         for order in orders:
             cls.handle_order_unpaid(order)
@@ -94,8 +94,8 @@ class ExpiredOrderJob(metaclass=MetaClass):
 
             # 增加用户免费资源
             increase_user_resource(total_fee, out_trade_no, transaction_id, attach)
-            status = BroadBandOrder.Status.PAID.value
-            BroadBandOrder.objects.filter(out_trade_no=out_trade_no).update(
+            status = Order.Status.PAID.value
+            Order.objects.filter(out_trade_no=out_trade_no).update(
                 status=status, transaction_id=transaction_id
             )
             log.i(f"UPDATE broadband_order SET status = '{status}', transaction_id = '{transaction_id}' WHERE out_trade_no = '{out_trade_no}'")
@@ -103,8 +103,8 @@ class ExpiredOrderJob(metaclass=MetaClass):
         elif trade_state in ['NOTPAY', 'CLOSED', 'PAYERROR']:
 
             # 超时还未支付或订单已经关闭, 需把charge记录状态从0改为-1
-            status = BroadBandOrder.Status.EXPIRED.value
-            BroadBandOrder.objects.filter(out_trade_no=out_trade_no).update(status=status)
+            status = Order.Status.EXPIRED.value
+            Order.objects.filter(out_trade_no=out_trade_no).update(status=status)
             log.i(f"UPDATE broadband_order SET status = '{status}' WHERE out_trade_no = '{out_trade_no}'")
 
     @classmethod

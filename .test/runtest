@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 set -o verbose
 
-project_root=$(cd "$(dirname "$0")/.."; pwd)
+cd $(dirname "$0")/..
+project_root=$(pwd)
 #cd $project_root
 
 # 用法: flake8  目标目录

@@ -70,7 +70,6 @@ class Logger(object):
         self._log_directory = log_directory
 
     def set_buffer(self, log_buffer_size: int):
-        # TODO 未完成
         pass
 
     def _get_stream_handler(self):
