@@ -111,6 +111,7 @@ class EchoStrView(APIView):
                     else:
                         platform = Platform.create(owner_user_id=user.id)
                         qrcode_info = WeClient.create_qrcode(scene_str=str(platform.id), is_permanent=True)
+                        log.d(f'qrcode_info: {qrcode_info}')
                         qrcode_url = qrcode_info['url']
                         log.i(f'create qrcode, platform_id: {platform.id}, qrcode_url: {qrcode_url}')
                         platform.update(qrcode_url=qrcode_url)
