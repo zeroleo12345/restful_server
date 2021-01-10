@@ -72,7 +72,7 @@ docker-compose exec api  python src/manage.py migrate --database=default
 ```
 
 
-## 导出数据库
+## 导出数据库 / 备份数据库
 ``` bash
 mysqldump --default-character-set=utf8mb4 -h 127.0.0.1 -P 33333 -u root --password=root -c --databases trade > ./dump.sql
 ```
