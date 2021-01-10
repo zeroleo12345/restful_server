@@ -58,7 +58,7 @@ class EchoStrView(APIView):
                     # user 表记录, 存在
                     if user.bind_platform_id != platform.id:
                         log.i(f'platform_id change: {user.bind_platform_id} -> {platform.id}, openid: {user.openid}')
-                        user.update(platform_id=platform.id)
+                        user.update(bind_platform_id=platform.id)
                 return TextReply(source=appid, target=from_user_openid, content=response_text)
 
             if isinstance(msg, ClickEvent):
