@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
             bases=(models.Model, framework.database.BaseModel),
         ),
         migrations.CreateModel(
-            name='BroadBandOrder',
+            name='Order',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('user_id', models.IntegerField()),

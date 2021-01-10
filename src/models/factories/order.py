@@ -2,10 +2,10 @@ from unittest.mock import patch
 #
 from rest_framework import status
 #
-from models import BroadBandOrder
+from models import Order
 
 
-class BroadbandOrderFactory(object):
+class OrderFactory(object):
     @classmethod
     def new_order(cls, client):
         with patch('service.wechat.we_pay.WePay.create_jsapi_order') as _mock:
@@ -37,6 +37,6 @@ class BroadbandOrderFactory(object):
         assert 'signType' in param
         assert 'timeStamp' in param
         out_trade_no = order['out_trade_no']
-        order = BroadBandOrder.get(out_trade_no=out_trade_no)
+        order = Order.get(out_trade_no=out_trade_no)
         assert order
         return order

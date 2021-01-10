@@ -8,7 +8,7 @@ import sentry_sdk
 from trade.settings import log
 from utils.mydjango import get_client_ip
 from service.wechat.we_pay import WePay
-from models import BroadBandOrder, Tariff
+from models import Order, Tariff
 from framework.restful import BihuResponse
 from framework.authorization import JWTAuthentication
 from framework.field import new_uuid
@@ -42,7 +42,7 @@ class OrderView(APIView):
         )
         prepay_id = response['prepay_id']
         # 订单入库
-        order = BroadBandOrder.create(
+        order = Order.create(
             user_id=auth.user_id,
             openid=openid,
             out_trade_no=out_trade_no,
@@ -50,7 +50,7 @@ class OrderView(APIView):
             total_fee=total_fee,
             appid=settings.MP_APP_ID,
             mch_id=settings.MP_MERCHANT_ID,
-            status=BroadBandOrder.Status.UNPAID.value,
+            status=Order.Status.UNPAID.value,
         )
         data = {
             'order': order.to_dict(),

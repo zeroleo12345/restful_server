@@ -5,10 +5,10 @@ from framework.field import BaseEnum
 
 
 # 宽带订单
-class BroadBandOrder(models.Model, BaseModel):
+class Order(models.Model, BaseModel):
     class Meta:
         app_label = 'trade'
-        db_table = 'broadband_order'
+        db_table = 'orders'
         unique_together = [
             ('out_trade_no',),
         ]
@@ -32,11 +32,11 @@ class BroadBandOrder(models.Model, BaseModel):
     updated_at = models.DateTimeField(auto_now=True)
 
     @classmethod
-    def get(cls, out_trade_no) -> BroadBandOrder:
+    def get(cls, out_trade_no) -> Order:
         order = cls.objects.filter(out_trade_no=out_trade_no).first()
         if not order:
             return None
         return order
 
     def is_paid(self) -> bool:
-        return self.status == BroadBandOrder.Status.PAID.value
+        return self.status == Order.Status.PAID.value

@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.db.models import Sum
 # 自己的类
 from . import MetaClass
-from models import BroadBandOrder
+from models import Order
 from utils.slack import send_slack_message
 from utils.decorators import promise_do_once
 
@@ -29,15 +29,15 @@ class StatisticsJob(metaclass=MetaClass):
     @promise_do_once(file_name='statistics', func_name='doing')
     def doing(cls, start_time, end_time):
         # 累计昨天成交
-        status = BroadBandOrder.Status.PAID.value
-        today_sum = BroadBandOrder.objects.filter(
+        status = Order.Status.PAID.value
+        today_sum = Order.objects.filter(
             status=status, updated_at__gt=end_time, updated_at__lt=start_time
         ).aggregate(sum=Sum('total_fee'))['sum']
         if not today_sum:
             today_sum = 0
 
         # 累计所有成交
-        total_sum = BroadBandOrder.objects.filter(status=status).aggregate(sum=Sum('total_fee'))['sum']
+        total_sum = Order.objects.filter(status=status).aggregate(sum=Sum('total_fee'))['sum']
         if not total_sum:
             total_sum = 0
 
