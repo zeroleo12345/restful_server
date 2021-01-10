@@ -12,9 +12,9 @@ class Platform(models.Model, BaseModel):
         ]
 
     id = models.AutoField(primary_key=True)
-    owner_user_id = models.IntegerField(null=False)
-    ssid = models.CharField(max_length=255, default=None)
-    qrcode_url = models.URLField(max_length=512)
+    owner_user_id = models.IntegerField()
+    ssid = models.CharField(max_length=255, null=True)
+    qrcode_url = models.URLField(max_length=512, null=True)
     #
     created_at = models.DateTimeField(auto_now_add=True)    # auto_now_add only generated on 新创建
     updated_at = models.DateTimeField(auto_now=True)        # auto_now is generated on 每次修改

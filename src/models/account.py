@@ -20,14 +20,14 @@ class Account(models.Model, BaseModel):
     )
 
     id = models.AutoField(primary_key=True)
-    user_id = models.CharField(max_length=255, null=False)
+    user_id = models.CharField(max_length=255)
     platform_id = models.IntegerField(null=True)    # TODO 改数据后改为 null=False
     # 头像: JPEG 格式 http://thirdwx.qlogo.cn/mmopen/vi_32/lRUxxd0YsmibtZKWiaw7g/132
     nickname = models.CharField(max_length=255)     # TODO 删除
     picture_url = models.URLField(max_length=512)    # TODO 删除
     #
-    username = models.CharField(max_length=255, null=False)
-    password = models.CharField(max_length=255, null=False)
+    username = models.CharField(max_length=255)
+    password = models.CharField(max_length=255)
     is_enable = models.BooleanField(default=True)
     role = models.CharField(max_length=32, choices=ROLE, default='user')
     #
