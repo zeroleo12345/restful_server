@@ -52,7 +52,7 @@ class EchoStrView(APIView):
                 user = User.get(openid=from_user_openid)
                 if not user:
                     # user 表记录, 不存在
-                    User.create(openid=from_user_openid, platform_id=platform.id)
+                    User.create(openid=from_user_openid, bind_platform_id=platform.id)
                 else:
                     # user 表记录, 存在
                     if user.bind_platform_id != platform.id:
