@@ -8,7 +8,7 @@ from framework.database import models, BaseModel
 class Account(models.Model, BaseModel):
     class Meta:
         app_label = 'trade'
-        db_table = 'broadband_user'
+        db_table = 'account'
         unique_together = [
             ('user_id', 'platform_id'),
             ('username',),
