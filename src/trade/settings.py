@@ -82,6 +82,7 @@ INSTALLED_APPS = [
 ]
 # AUTH_USER_MODEL = 'trade.Seller'
 
+APPEND_SLASH = False    # 是否添加 tail slash
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
