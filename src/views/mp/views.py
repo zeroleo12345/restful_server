@@ -70,8 +70,8 @@ class EchoStrView(APIView):
                     else:
                         r = ArticlesReply(source=appid, target=from_user_openid)
                         r.add_article({
-                            'title': f'WIFI账号中心',
-                            'description': '点击进入 "查询WIFI密码/WIFI续费"',
+                            'title': f'点击进入',
+                            'description': '查询WIFI密码 / WIFI续费',
                             'image': 'http://zlxpic.lynatgz.cn/zhuzaiyuan_mini.jpg',
                             'url': WeClient.ACCOUNT_VIEW_URI,
                         })
