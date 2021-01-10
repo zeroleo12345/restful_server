@@ -28,11 +28,11 @@ class WeClient(object):
                     'name': '账号充值',
                     'key': cls.ACCOUNT_VIEW_BTN_EVENT,
                 },
-                {
-                    'type': 'view',
-                    'name': '使用教程',
-                    'url': f'{settings.TUTORIAL_URL}',
-                },
+                # {
+                #     'type': 'view',
+                #     'name': '使用教程',
+                #     'url': f'{settings.TUTORIAL_URL}',
+                # },
             ]
         }
         cls.we_client.menu.create(menu_data)
