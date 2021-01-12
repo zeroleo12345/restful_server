@@ -47,7 +47,7 @@ class ExpireUserJob(metaclass=MetaClass):
             data = {
                 'first': {'value': '您的宽带即将到期'},
                 'keyword1': {'value': account.username},
-                'keyword2': {'value': f'到期时间 {Datetime.to_str(account.expired_at, fmt="%Y-%m-%d %H:%M")}'},
+                'keyword2': {'value': f'{Datetime.to_str(account.expired_at, fmt="%Y-%m-%d %H:%M")}'},
                 'remark': {'value': '如需继续使用, 请点击充值'}
             }
             log.i(f'send wechat template message, openid: {user.openid}, expired_at: {account.expired_at}')
