@@ -34,7 +34,7 @@ class Account(models.Model, BaseModel):
     updated_at = models.DateTimeField(auto_now=True)        # auto_now is generated on 每次修改
 
     @classmethod
-    def get(cls, id=None, user_id=None, platform_id=None):
+    def get(cls, id=None, user_id=None, platform_id=None) -> 'Account':
         if id:
             obj = cls.objects.filter(id=id).first()
         elif user_id and platform_id:

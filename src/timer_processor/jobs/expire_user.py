@@ -6,12 +6,7 @@ from . import MetaClass
 from utils.decorators import promise_do_once
 from trade.settings import log
 from models import Account, User
-from service.wechat.we_client import WeClient
-from service.wechat.we_message import we_message
-from utils.time import Datetime
-from trade import settings
-
-MP_ACCOUNT_EXPIRE_TEMPLATE_ID = settings.MP_ACCOUNT_EXPIRE_TEMPLATE_ID
+from service.wechat.we_message import WePush
 
 
 class ExpireUserJob(metaclass=MetaClass):
@@ -44,11 +39,5 @@ class ExpireUserJob(metaclass=MetaClass):
         )
         for account in accounts:
             user = User.get(id=account.user_id)
-            data = {
-                'first': {'value': '您的宽带即将到期'},
-                'keyword1': {'value': account.username},
-                'keyword2': {'value': f'到期时间 {Datetime.to_str(account.expired_at, fmt="%Y-%m-%d %H:%M")}'},
-                'remark': {'value': '如需继续使用, 请点击充值'}
-            }
             log.i(f'send wechat template message, openid: {user.openid}, expired_at: {account.expired_at}')
-            we_message.send_template(user.openid, MP_ACCOUNT_EXPIRE_TEMPLATE_ID, data, url=WeClient.ACCOUNT_VIEW_URI, mini_program=None)
+            WePush.notify_account_expire(openid=user.openid, username=account.username, expired_at=account.expired_at)
