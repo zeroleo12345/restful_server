@@ -13,7 +13,7 @@ def usage():
     template_id = 'nJd-Uw5WlA9DBDqYPTSmpwhysbE269qMP5Adx-dbyyU'
     
     data = {'first': {'value': '您的宽带即将到期', 'color': '#173177'}, 'keyword1': {'value': '账号'}, 'keyword2': {'value': '到期时间 2020-01-01 08:00'}, 'remark': {'value': '如需继续使用, 请点击充值'}}
-    a.test_send_template(openid, template_id, data, url=WeClient.recharge_uri)
+    a.test_send_template(openid, template_id, data, url=WeClient.ACCOUNT_VIEW_URI)
     """)
 
 
