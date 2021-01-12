@@ -11,7 +11,7 @@ from service.wechat.we_message import we_message
 from utils.time import Datetime
 from trade import settings
 
-MP_RECHARGE_TEMPLATE_ID = settings.MP_RECHARGE_TEMPLATE_ID
+MP_ACCOUNT_EXPIRE_TEMPLATE_ID = settings.MP_ACCOUNT_EXPIRE_TEMPLATE_ID
 
 
 class ExpireUserJob(metaclass=MetaClass):
@@ -51,4 +51,4 @@ class ExpireUserJob(metaclass=MetaClass):
                 'remark': {'value': '如需继续使用, 请点击充值'}
             }
             log.i(f'send wechat template message, openid: {user.openid}, expired_at: {account.expired_at}')
-            we_message.send_template(user.openid, MP_RECHARGE_TEMPLATE_ID, data, url=WeClient.ACCOUNT_VIEW_URI, mini_program=None)
+            we_message.send_template(user.openid, MP_ACCOUNT_EXPIRE_TEMPLATE_ID, data, url=WeClient.ACCOUNT_VIEW_URI, mini_program=None)
