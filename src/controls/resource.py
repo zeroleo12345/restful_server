@@ -27,7 +27,8 @@ def increase_user_resource(total_fee, out_trade_no, transaction_id, attach):
         # 公众号消息通知owner
         platform = Platform.get(id=account.platform_id)
         user = User.get(id=account.user_id)
-        WePush.notify_owner_order_paid(openid=platform.owner_user_id, total_fee=order.total_fee, nickname=user.nickname, paid_at=order.updated_at)
+        owner = User.get(id=platform.owner_user_id)
+        WePush.notify_owner_order_paid(openid=owner.openid, total_fee=order.total_fee, nickname=user.nickname, paid_at=order.updated_at)
     except Exception as e:
         # TODO 稳定后删除try except
         sentry_sdk.capture_exception(e)
