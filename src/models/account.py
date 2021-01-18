@@ -20,7 +20,7 @@ class Account(models.Model, BaseModel):
     )
 
     id = models.AutoField(primary_key=True)
-    user_id = models.CharField(max_length=255)
+    user_id = models.BigIntegerField()
     platform_id = models.IntegerField()
     #
     username = models.CharField(max_length=255)

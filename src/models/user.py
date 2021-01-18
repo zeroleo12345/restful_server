@@ -1,7 +1,7 @@
 from __future__ import annotations
 #
 from framework.database import models, BaseModel
-from framework.field import SnowFlakeField
+from utils.snowflake import new_id
 
 
 class User(models.Model, BaseModel):
@@ -14,7 +14,7 @@ class User(models.Model, BaseModel):
         ]
 
     id = models.AutoField(primary_key=True)
-    user_id = SnowFlakeField(null=True)         # TODO 删除null=True
+    user_id = models.BigIntegerField(null=True, default=new_id())         # TODO 删除null=True
     openid = models.CharField(max_length=255)
     bind_platform_id = models.IntegerField()
     # 头像: JPEG 格式 http://thirdwx.qlogo.cn/mmopen/vi_32/lRUxxd0YsmibtZKWiaw7g/132

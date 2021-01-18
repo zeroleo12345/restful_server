@@ -1,7 +1,7 @@
 from __future__ import annotations
 #
 from framework.database import models, BaseModel
-from framework.field import SnowFlakeField
+from utils.snowflake import new_id
 
 
 class Platform(models.Model, BaseModel):
@@ -13,8 +13,8 @@ class Platform(models.Model, BaseModel):
         ]
 
     id = models.AutoField(primary_key=True)
-    platform_id = SnowFlakeField(null=True)         # TODO 删除null=True
-    owner_user_id = models.IntegerField()
+    platform_id = models.BigIntegerField(null=True, default=new_id())         # TODO 删除null=True
+    owner_user_id = models.BigIntegerField()
     ssid = models.CharField(max_length=255, null=True)
     qrcode_content = models.URLField(max_length=512, null=True)     # 二维码内容, 例如: http://weixin.qq.com/q/02SE2_xxx
     owner_profit_percent = models.DecimalField(null=True, max_digits=9, decimal_places=6)   # 利润比例.(单位%, 例如 30%)

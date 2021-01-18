@@ -19,7 +19,7 @@ class Order(models.Model, BaseModel):
         EXPIRED = 'expired'     # 已过期
 
     id = models.AutoField(primary_key=True)
-    user_id = models.IntegerField()
+    user_id = models.BigIntegerField()
     platform_id = models.IntegerField()
     #
     openid = models.CharField(max_length=255)
