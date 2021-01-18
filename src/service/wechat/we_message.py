@@ -29,7 +29,7 @@ class WePush(object):
         we_message.send_template(openid, cls.MP_ACCOUNT_EXPIRE_TEMPLATE_ID, data, url=WeClient.ACCOUNT_VIEW_URI, mini_program=mini_program)
 
     @classmethod
-    def notify_owner_order_paid(cls, openid: str, total_fee: int, nickname: str, paid_at: datetime, mini_program=None):
+    def notify_owner_order_paid(cls, openid: str, total_fee: int, nickname: str, paid_at: datetime, trade_no: str, mini_program=None):
         """
         您有一笔新订单，请及时处理。               {first.DATA}}
         商品：眼镜X1                             商品：{{keyword1.DATA}}
@@ -45,7 +45,7 @@ class WePush(object):
             'keyword2': {'value': f'{total_fee / 100}元'},
             'keyword3': {'value': nickname},
             'keyword4': {'value': f'{Datetime.to_str(paid_at, fmt="%Y-%m-%d %H:%M")}'},
-            'keyword5': {'value': ''},
+            'keyword5': {'value': trade_no},
             'remark': {'value': ''}
         }
         we_message.send_template(openid, cls.MP_ORDER_PAID_TEMPLATE_ID, data, url=None, mini_program=mini_program)

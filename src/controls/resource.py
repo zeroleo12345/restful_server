@@ -5,7 +5,7 @@ from models import Order, Account, Tariff, ResourceChange, User, Platform
 from service.wechat.we_message import WePush
 
 
-def increase_user_resource(total_fee, out_trade_no, transaction_id, attach):
+def increase_user_resource(total_fee: int, out_trade_no: str, transaction_id: str, attach: str):
     # 根据out_trade_no检查数据库订单
     order = Order.get(out_trade_no=out_trade_no)
     assert order
@@ -28,7 +28,8 @@ def increase_user_resource(total_fee, out_trade_no, transaction_id, attach):
         platform = Platform.get(id=account.platform_id)
         user = User.get(id=account.user_id)
         owner = User.get(id=platform.owner_user_id)
-        WePush.notify_owner_order_paid(openid=owner.openid, total_fee=order.total_fee, nickname=user.nickname, paid_at=order.updated_at)
+        WePush.notify_owner_order_paid(openid=owner.openid, total_fee=order.total_fee, nickname=user.nickname,
+                                       paid_at=order.updated_at, trade_no=out_trade_no)
     except Exception as e:
         # TODO 稳定后删除try except
         sentry_sdk.capture_exception(e)
