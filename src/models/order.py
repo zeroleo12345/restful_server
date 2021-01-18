@@ -20,6 +20,8 @@ class Order(models.Model, BaseModel):
 
     id = models.AutoField(primary_key=True)
     user_id = models.IntegerField()
+    platform_id = models.IntegerField()
+    #
     openid = models.CharField(max_length=255)
     out_trade_no = models.CharField(max_length=255)        # 商家订单号
     attach = models.CharField(max_length=255)                           # 附加信息

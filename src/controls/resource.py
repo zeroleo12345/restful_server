@@ -10,7 +10,7 @@ def increase_user_resource(total_fee: int, out_trade_no: str, transaction_id: st
     order = Order.get(out_trade_no=out_trade_no)
     assert order
     assert not order.is_paid()
-    account = Account.get(id=order.user_id)
+    account = Account.get(user_id=order.user_id, platform_id=order.platform_id)
     assert account
     # 计算时长叠加
     tariff = Tariff.attach_to_tariff(attach)

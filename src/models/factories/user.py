@@ -27,7 +27,7 @@ class UserFactory(object):
         assert 'role' in res_dict['data']['user']
         assert 'id' in res_dict['data']['user']
         authorization = res_dict['data']['authorization']
-        #
-        account = Account.get(id=res_dict['data']['user']['id'])
+        # FIXME
+        account = Account.get(user_id=res_dict['data']['user']['id'], platform_id=1)
         assert account
         return account, authorization

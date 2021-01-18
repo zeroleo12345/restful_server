@@ -8,7 +8,7 @@ import sentry_sdk
 from trade.settings import log
 from utils.mydjango import get_client_ip
 from service.wechat.we_pay import WePay
-from models import Order, Tariff
+from models import Order, Tariff, User
 from framework.restful import BihuResponse
 from framework.authorization import JWTAuthentication
 from framework.field import new_uuid
@@ -26,15 +26,16 @@ class OrderView(APIView):
         auth = Authentication(request)
         tariff_name = request.data.get('tariff_name')
         #
+        user = User.get(id=auth.user_id)
         tariff = Tariff.get_object_or_404(tariff_name=tariff_name)
         attach = Tariff.tariff_to_attach(tariff=tariff)
-        if auth.openid == settings.MP_ADMIN_OPENID:
+        if user.openid == settings.MP_ADMIN_OPENID:
             total_fee = 1 * tariff.duration  # 1分钱
         else:
             total_fee = tariff.price
         title = '用户支付提示'
         client_ip = get_client_ip(request)
-        openid = auth.openid
+        openid = user.openid
         out_trade_no = new_uuid()
         response = WePay.create_jsapi_order(
             out_trade_no=out_trade_no,
@@ -43,7 +44,8 @@ class OrderView(APIView):
         prepay_id = response['prepay_id']
         # 订单入库
         order = Order.create(
-            user_id=auth.user_id,
+            user_id=user.id,
+            platform_id=user.bind_platform_id,
             openid=openid,
             out_trade_no=out_trade_no,
             attach=attach,

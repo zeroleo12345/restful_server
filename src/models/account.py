@@ -34,16 +34,9 @@ class Account(models.Model, BaseModel):
     updated_at = models.DateTimeField(auto_now=True)        # auto_now is generated on 每次修改
 
     @classmethod
-    def get(cls, id=None, user_id=None, platform_id=None) -> 'Account':
-        if id:
-            obj = cls.objects.filter(id=id).first()
-        elif user_id and platform_id:
-            obj = cls.objects.filter(user_id=user_id, platform_id=platform_id).first()
-        else:
-            raise Exception('param error')
-        if not obj:
-            return None
-        return obj
+    def get(cls, user_id, platform_id) -> 'Account':
+        obj = cls.objects.filter(user_id=user_id, platform_id=platform_id).first()
+        return obj or None
 
     @classmethod
     def search(cls, nickname__contains):
