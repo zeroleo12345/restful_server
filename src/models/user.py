@@ -26,7 +26,7 @@ class User(models.Model, BaseModel):
 
     @classmethod
     def get(cls, user_id=None, openid=None) -> 'User':
-        if id:
+        if user_id:
             obj = cls.objects.filter(user_id=user_id).first()
         elif openid:
             obj = cls.objects.filter(openid=openid).first()
