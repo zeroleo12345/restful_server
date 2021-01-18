@@ -11,6 +11,7 @@ class ResourceChange(models.Model, BaseModel):
 
     id = models.AutoField(primary_key=True)
     user_id = models.IntegerField()
+    order_id = models.IntegerField()        # TODO 删除
     out_trade_no = models.CharField(max_length=255)        # 商家订单号 out_trade_no
     before = models.DateTimeField()
     after = models.DateTimeField()
