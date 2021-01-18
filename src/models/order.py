@@ -19,11 +19,11 @@ class Order(models.Model, BaseModel):
         EXPIRED = 'expired'     # 已过期
 
     id = models.AutoField(primary_key=True)
-    user_id = models.IntegerField()
-    platform_id = models.IntegerField()
+    user_id = models.BigIntegerField()
+    platform_id = models.BigIntegerField()
     #
     openid = models.CharField(max_length=255)
-    out_trade_no = models.CharField(max_length=255)        # 商家订单号
+    out_trade_no = models.CharField(max_length=255)        # 商家订单号 out_trade_no
     attach = models.CharField(max_length=255)                           # 附加信息
     transaction_id = models.CharField(default='', max_length=255)       # 微信订单号
     total_fee = models.IntegerField()                                   # 单位分

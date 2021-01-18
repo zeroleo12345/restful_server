@@ -32,12 +32,12 @@ class UserView(APIView):
         # 获取用户信息, 不存在则创建
         user = User.get(openid=openid)
         assert user   # TODO 待补充返回码给前端, 提示给用户
-        account = Account.get(user_id=user.id, platform_id=user.bind_platform_id)
+        account = Account.get(user_id=user.user_id, platform_id=user.bind_platform_id)
         if not account:
             username = MyRandom.random_digit(length=8)
             expired_at = Datetime.localtime() + datetime.timedelta(minutes=30)
             user_fields = {
-                'user_id': user.id,
+                'user_id': user.user_id,
                 'platform_id': user.bind_platform_id,
                 'username': username,
                 'password': username,
@@ -48,7 +48,7 @@ class UserView(APIView):
                 account = Account.create(**user_fields)   # create 返回 Model 实例
         if user.nickname != nickname or user.picture_url != avatar:
             user.update(nickname=nickname, picture_url=avatar)
-        platform = Platform.get(owner_user_id=user.id)
+        platform = Platform.get(owner_user_id=user.user_id)
         account_info = account.to_dict()
         user_info = user.to_dict()
         platform_info = platform.to_dict() if platform else None

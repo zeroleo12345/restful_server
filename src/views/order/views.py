@@ -26,7 +26,7 @@ class OrderView(APIView):
         auth = Authentication(request)
         tariff_name = request.data.get('tariff_name')
         #
-        user = User.get(id=auth.user_id)
+        user = User.get(user_id=auth.user_id)
         tariff = Tariff.get_object_or_404(tariff_name=tariff_name)
         attach = Tariff.tariff_to_attach(tariff=tariff)
         if user.openid == settings.MP_ADMIN_OPENID:
@@ -44,7 +44,7 @@ class OrderView(APIView):
         prepay_id = response['prepay_id']
         # 订单入库
         order = Order.create(
-            user_id=user.id,
+            user_id=user.user_id,
             platform_id=user.bind_platform_id,
             openid=openid,
             out_trade_no=out_trade_no,

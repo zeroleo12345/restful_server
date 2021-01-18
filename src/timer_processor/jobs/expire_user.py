@@ -38,6 +38,6 @@ class ExpireUserJob(metaclass=MetaClass):
             expired_at__lte=end_time,
         )
         for account in accounts:
-            user = User.get(id=account.user_id)
+            user = User.get(user_id=account.user_id)
             log.i(f'send wechat template message, openid: {user.openid}, expired_at: {account.expired_at}')
             WePush.notify_account_expire(openid=user.openid, username=account.username, expired_at=account.expired_at)

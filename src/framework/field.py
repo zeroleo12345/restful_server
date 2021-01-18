@@ -3,7 +3,6 @@ from enum import Enum
 # 第三方库
 from django.db import models
 #
-from utils.snowflake import generator
 # from utils.redis_lock import RedisLock
 # from utils.mysignal import SigTerm
 
@@ -13,11 +12,6 @@ from utils.snowflake import generator
 # SigTerm.add_term_handler(lock.stop)
 
 # id_iterator = generator(worker_id=lock.get_worker_id(), data_center_id=1)
-
-
-def new_id() -> str:
-    id_iterator = generator(worker_id=1, data_center_id=1)
-    return str(next(id_iterator))
 
 
 def new_uuid() -> str:

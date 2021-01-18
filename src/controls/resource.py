@@ -22,12 +22,12 @@ def increase_user_resource(total_fee: int, out_trade_no: str, transaction_id: st
         # 变更订单状态 和 微信订单号
         order.update(status=Order.Status.PAID.value, transaction_id=transaction_id)
         # 插入免费资源历史变更表
-        ResourceChange.create(user_id=account.user_id, order_id=order.id, before=before, after=after)
+        ResourceChange.create(user_id=account.user_id, out_trade_no=order.out_trade_no, before=before, after=after)
     try:
         # 公众号消息通知owner
-        platform = Platform.get(id=account.platform_id)
-        user = User.get(id=account.user_id)
-        owner = User.get(id=platform.owner_user_id)
+        platform = Platform.get(platform_id=account.platform_id)
+        user = User.get(user_id=account.user_id)
+        owner = User.get(user_id=platform.owner_user_id)
         WePush.notify_owner_order_paid(openid=owner.openid, total_fee=order.total_fee, nickname=user.nickname,
                                        paid_at=order.updated_at, trade_no=out_trade_no)
     except Exception as e:
