@@ -17,8 +17,7 @@ from utils.snowflake import new_id
 
 class SnowFlakeField(models.BigIntegerField):
     def get_default(self):
-        # return new_id()
-        return None
+        return new_id()
 
 
 def new_uuid() -> str:
