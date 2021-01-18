@@ -22,7 +22,7 @@ def increase_user_resource(total_fee: int, out_trade_no: str, transaction_id: st
         # 变更订单状态 和 微信订单号
         order.update(status=Order.Status.PAID.value, transaction_id=transaction_id)
         # 插入免费资源历史变更表
-        ResourceChange.create(user_id=account.id, order_id=order.id, before=before, after=after)
+        ResourceChange.create(user_id=account.user_id, order_id=order.id, before=before, after=after)
     try:
         # 公众号消息通知owner
         platform = Platform.get(id=account.platform_id)
