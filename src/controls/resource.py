@@ -3,6 +3,7 @@ import sentry_sdk
 # 项目库
 from models import Order, Account, Tariff, ResourceChange, User, Platform
 from service.wechat.we_message import WePush
+from trade.settings import log
 
 
 def increase_user_resource(total_fee: int, out_trade_no: str, transaction_id: str, attach: str):
@@ -23,6 +24,7 @@ def increase_user_resource(total_fee: int, out_trade_no: str, transaction_id: st
         order.update(status=Order.Status.PAID.value, transaction_id=transaction_id)
         # 插入免费资源历史变更表
         ResourceChange.create(user_id=account.user_id, out_trade_no=order.out_trade_no, before=before, after=after)
+    log.i(f"UPDATE orders SET status = '{order.status}', transaction_id = '{transaction_id}' WHERE out_trade_no = '{out_trade_no}'")
     try:
         # 公众号消息通知owner
         platform = Platform.get(platform_id=account.platform_id)
