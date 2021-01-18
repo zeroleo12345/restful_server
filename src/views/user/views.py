@@ -32,7 +32,7 @@ class UserView(APIView):
             WechatCode.set(code, openid=openid, nickname=nickname, avatar=avatar)
         # 获取用户信息, 不存在则创建
         user = User.get(openid=openid)
-        assert user   # TODO 待补充返回码给前端, 提示给用户
+        assert user
         account = Account.get(user_id=user.user_id, platform_id=user.bind_platform_id)
         if not account:
             username = MyRandom.random_digit(length=8)
