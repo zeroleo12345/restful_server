@@ -60,6 +60,6 @@ def generator(worker_id, data_center_id, sleep=lambda x: time.sleep(x/1000.0)):
             sequence)
 
 
-def new_id() -> str:
+def new_id() -> int:
     id_iterator = generator(worker_id=1, data_center_id=1)
-    return str(next(id_iterator))
+    return next(id_iterator)
