@@ -16,7 +16,7 @@ class User(models.Model, BaseModel):
     id = models.AutoField(primary_key=True)
     user_id = models.BigIntegerField(null=True, default=None)         # TODO 删除null=True, default=new_id()
     openid = models.CharField(max_length=255)
-    bind_platform_id = models.IntegerField()
+    bind_platform_id = models.BigIntegerField()
     # 头像: JPEG 格式 http://thirdwx.qlogo.cn/mmopen/vi_32/lRUxxd0YsmibtZKWiaw7g/132
     nickname = models.CharField(max_length=255)
     picture_url = models.URLField(max_length=512)
