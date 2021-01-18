@@ -1,6 +1,7 @@
 from __future__ import annotations
 #
 from framework.database import models, BaseModel
+from framework.field import SnowFlakeField
 
 
 class User(models.Model, BaseModel):
@@ -8,10 +9,12 @@ class User(models.Model, BaseModel):
         app_label = 'trade'
         db_table = 'user'
         unique_together = [
+            ('user_id',),
             ('openid',),
         ]
 
     id = models.AutoField(primary_key=True)
+    user_id = SnowFlakeField()
     openid = models.CharField(max_length=255)
     bind_platform_id = models.IntegerField()
     # 头像: JPEG 格式 http://thirdwx.qlogo.cn/mmopen/vi_32/lRUxxd0YsmibtZKWiaw7g/132
@@ -22,9 +25,9 @@ class User(models.Model, BaseModel):
     updated_at = models.DateTimeField(auto_now=True)        # auto_now is generated on 每次修改
 
     @classmethod
-    def get(cls, id=None, openid=None) -> 'User':
+    def get(cls, user_id=None, openid=None) -> 'User':
         if id:
-            obj = cls.objects.filter(id=id).first()
+            obj = cls.objects.filter(user_id=user_id).first()
         elif openid:
             obj = cls.objects.filter(openid=openid).first()
         else:

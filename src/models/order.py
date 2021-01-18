@@ -23,7 +23,7 @@ class Order(models.Model, BaseModel):
     platform_id = models.IntegerField()
     #
     openid = models.CharField(max_length=255)
-    out_trade_no = models.CharField(max_length=255)        # 商家订单号
+    out_trade_no = models.CharField(max_length=255)        # 商家订单号 out_trade_no
     attach = models.CharField(max_length=255)                           # 附加信息
     transaction_id = models.CharField(default='', max_length=255)       # 微信订单号
     total_fee = models.IntegerField()                                   # 单位分

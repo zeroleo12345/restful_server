@@ -47,17 +47,17 @@ class EchoStrView(APIView):
             # 已关注用户扫描带参数二维码事件
             if isinstance(msg, SubscribeScanEvent) or isinstance(msg, ScanEvent):
                 platform_id = int(msg.scene_id)
-                platform = Platform.get(id=platform_id)
+                platform = Platform.get(platform_id=platform_id)
                 assert platform
                 user = User.get(openid=from_user_openid)
                 if not user:
                     # user 表记录, 不存在
-                    User.create(openid=from_user_openid, bind_platform_id=platform.id)
+                    User.create(openid=from_user_openid, bind_platform_id=platform.platform_id)
                 else:
                     # user 表记录, 存在
-                    if user.bind_platform_id != platform.id:
-                        log.w(f'platform_id change: {user.bind_platform_id} -> {platform.id}, openid: {user.openid}')
-                        user.update(bind_platform_id=platform.id)
+                    if user.bind_platform_id != platform.platform_id:
+                        log.w(f'platform_id change: {user.bind_platform_id} -> {platform.platform_id}, openid: {user.openid}')
+                        user.update(bind_platform_id=platform.platform_id)
                 r = ArticlesReply(source=appid, target=from_user_openid)
                 r.add_article({
                     'title': f'点击进入',
@@ -103,7 +103,7 @@ class EchoStrView(APIView):
                     messages = [
                         f'你的信息:',
                         f'openid: {user.openid}'
-                        f'user_id: {user.id}'
+                        f'user_id: {user.user_id}'
                     ]
                     return TextReply(source=appid, target=from_user_openid, content='\n'.join(messages))
 
@@ -113,17 +113,17 @@ class EchoStrView(APIView):
 
                 elif msg.content.startswith('二维码') and from_user_openid == settings.MP_ADMIN_OPENID:
                     user_id = msg.content.split('二维码')[1].strip()
-                    user = User.get(id=user_id)
+                    user = User.get(user_id=user_id)
                     if not user:
                         return TextReply(source=appid, target=from_user_openid, content=f'用户不存在')
                     else:
-                        platform = Platform.create(owner_user_id=user.id)
-                        qrcode_info = WeClient.create_qrcode(scene_str=str(platform.id), is_permanent=True)
+                        platform = Platform.create(owner_user_id=user.user_id)
+                        qrcode_info = WeClient.create_qrcode(scene_str=str(platform.platform_id), is_permanent=True)
                         log.d(f'qrcode_info: {qrcode_info}')
                         qrcode_content = qrcode_info['url']
-                        log.i(f'create qrcode, platform_id: {platform.id}, qrcode_content: {qrcode_content}')
+                        log.i(f'create qrcode, platform_id: {platform.platform_id}, qrcode_content: {qrcode_content}')
                         platform.update(qrcode_content=qrcode_content)
-                        return TextReply(source=appid, target=from_user_openid, content=f'user_id: {user.id}, qrcode_content: {platform.qrcode_content}')
+                        return TextReply(source=appid, target=from_user_openid, content=f'user_id: {user.user_id}, qrcode_content: {platform.qrcode_content}')
 
                 else:
                     return TextReply(source=appid, target=from_user_openid, content=settings.MP_DEFAULT_REPLY)
