@@ -11,7 +11,8 @@ class WeClient(object):
     we_client = WeChatClient(
         appid=settings.MP_APP_ID, secret=settings.MP_APP_SECRET, session=RedisStorage(redis_client, prefix='wechat')
     )
-    ACCOUNT_VIEW_BTN_EVENT = 'ACCOUNT_VIEW_BTN_EVENT'
+    ACCOUNT_VIEW_BTN_EVENT = 'ACCOUNT_VIEW_BTN_EVENT'       # 账户中心
+    CUSTOMER_SERVICE_BTN_EVENT = 'CUSTOMER_SERVICE_BTN_EVENT'     # 联系客服
     ACCOUNT_VIEW_URI = f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}' \
                        f'&redirect_uri={settings.MP_REDIRECT_URI}&response_type=code&scope=snsapi_userinfo'
 
@@ -27,6 +28,11 @@ class WeClient(object):
                     'type': 'click',
                     'name': 'WIFI账号中心',
                     'key': cls.ACCOUNT_VIEW_BTN_EVENT,
+                },
+                {
+                    'type': 'click',
+                    'name': '联系客服',
+                    'key': cls.CUSTOMER_SERVICE_BTN_EVENT,
                 },
                 # {
                 #     'type': 'view',

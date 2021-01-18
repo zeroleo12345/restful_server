@@ -82,9 +82,11 @@ class EchoStrView(APIView):
                             'url': WeClient.ACCOUNT_VIEW_URI,
                         })
                         return r
+                elif msg.key == WeClient.CUSTOMER_SERVICE_BTN_EVENT:
+                    return TextReply(source=appid, target=from_user_openid, content=settings.MP_DEFAULT_REPLY)
 
             elif isinstance(msg, SubscribeEvent):   # 关注公众号事件
-                return TextReply(source=appid, target=from_user_openid, content=settings.MP_DEFAULT_REPLY)
+                pass
 
             elif isinstance(msg, TextMessage):    # 文本消息
                 if msg.content in ['help', '帮助', '命令']:
