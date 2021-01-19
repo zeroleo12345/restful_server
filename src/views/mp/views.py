@@ -91,19 +91,19 @@ class EchoStrView(APIView):
             elif isinstance(msg, TextMessage):    # 文本消息
                 if msg.content in ['help', '帮助', '命令']:
                     command = [
-                        'openid',
+                        'id',
                         '搜索 $name',
                         '二维码 $user_id'
                     ]
                     message = '命令:\n  ' + '\n  '.join(command)
                     return TextReply(source=appid, target=from_user_openid, content=message)
 
-                elif msg.content == 'openid':
+                elif msg.content == 'id':
                     user = User.get(openid=from_user_openid)
                     messages = [
                         f'你的信息:',
-                        f'openid: {user.openid}'
-                        f'user_id: {user.user_id}'
+                        f'openid: {user.openid}',
+                        f'user_id: {user.user_id}',
                     ]
                     return TextReply(source=appid, target=from_user_openid, content='\n'.join(messages))
 
