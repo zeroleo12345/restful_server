@@ -16,6 +16,3 @@ class TestDebug:
         client = UnitTestAPIClient()
         response = client.get('/heartbeat')
         assert response.status_code == status.HTTP_200_OK
-
-        res_dict = response.json()
-        assert 'ok' == res_dict['code']
