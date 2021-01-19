@@ -123,7 +123,7 @@ class EchoStrView(APIView):
                         qrcode_content = qrcode_info['url']
                         log.i(f'create qrcode, platform_id: {platform.platform_id}, qrcode_content: {qrcode_content}')
                         platform.update(qrcode_content=qrcode_content)
-                        return TextReply(source=appid, target=from_user_openid, content=f'user_id: {user.user_id}, qrcode_content: {platform.qrcode_content}')
+                        return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/platform/{platform.platform_id}')
 
                 else:
                     return TextReply(source=appid, target=from_user_openid, content=settings.MP_DEFAULT_REPLY)
