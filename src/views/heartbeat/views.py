@@ -11,4 +11,4 @@ class HeartBeatView(APIView):
     permission_classes = ()
 
     def get(self, request):
-        return Response()
+        return Response('success')
