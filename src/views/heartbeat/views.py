@@ -5,8 +5,8 @@ from rest_framework.response import Response
 # 项目库
 
 
-# /ping
-class PingView(APIView):
+# /heartbeat
+class HeartBeatView(APIView):
     authentication_classes = ()
     permission_classes = ()
 
