@@ -12,5 +12,7 @@ class PlatformView(APIView):
     # /platform/:platform_id
     def get(self, request, platform_id):
         platform = Platform.get(platform_id=platform_id)
-        data = platform.to_dict()
+        data = {}
+        if platform:
+            data = platform.to_dict()
         return BihuResponse(data=data)
