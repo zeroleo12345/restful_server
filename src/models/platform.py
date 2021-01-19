@@ -9,14 +9,16 @@ class Platform(models.Model, BaseModel):
         app_label = 'trade'
         db_table = 'platform'
         unique_together = [
-            ('owner_user_id',),
             ('platform_id',),
+            ('owner_user_id',),
+            ('ssid',),
         ]
 
     id = models.AutoField(primary_key=True)
     platform_id = models.BigIntegerField(default=new_id)
     owner_user_id = models.BigIntegerField()
     ssid = models.CharField(max_length=255, null=True)
+    #
     qrcode_content = models.URLField(max_length=512, null=True)     # 二维码内容, 例如: http://weixin.qq.com/q/02SE2_xxx
     owner_profit_percent = models.DecimalField(null=True, max_digits=9, decimal_places=6)   # 利润比例.(单位%, 例如 30%)
     #

@@ -122,7 +122,7 @@ class EchoStrView(APIView):
                         log.d(f'qrcode_info: {qrcode_info}')
                         qrcode_content = qrcode_info['url']
                         log.i(f'create qrcode, platform_id: {platform.platform_id}, qrcode_content: {qrcode_content}')
-                        platform.update(qrcode_content=qrcode_content)
+                        platform.update(qrcode_content=qrcode_content, ssid=f'WIFI-{platform.id}')
                         return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/platform/{platform.platform_id}')
 
                 else:
