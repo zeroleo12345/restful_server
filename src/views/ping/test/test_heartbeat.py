@@ -12,7 +12,7 @@ class TestDebug:
     def setup_stuff(self, db):
         pass
 
-    def test_heartbeat_get(self):
+    def test_ping_get(self):
         client = UnitTestAPIClient()
-        response = client.get('/heartbeat')
+        response = client.get('/ping')
         assert response.status_code == status.HTTP_200_OK

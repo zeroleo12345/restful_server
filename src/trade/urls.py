@@ -5,11 +5,11 @@ from views.resource.urls import resource_urls
 from views.order.urls import order_urls
 from views.mp.urls import mp_urls
 from views.search.urls import search_urls
-from views.heartbeat.views import HeartBeatView
+from views.ping.views import PingView
 from views.debug.views import DebugView
 
 urlpatterns = [
-    path(r'heartbeat', HeartBeatView.as_view()),
+    path(r'ping', PingView.as_view()),
     path(r'debug', DebugView.as_view()),
     path(r'mp', include(mp_urls)),
     path(r'user', include(user_urls)),
