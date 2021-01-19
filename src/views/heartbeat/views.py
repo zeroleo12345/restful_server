@@ -1,6 +1,6 @@
 # django 库
 from rest_framework.views import APIView
-from rest_framework.response import Response
+from framework.restful import BihuResponse
 # 第三方库
 # 项目库
 
@@ -11,4 +11,4 @@ class HeartBeatView(APIView):
     permission_classes = ()
 
     def get(self, request):
-        return Response()
+        return BihuResponse()
