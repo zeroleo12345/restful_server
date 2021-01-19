@@ -11,4 +11,4 @@ class PingView(APIView):
     permission_classes = ()
 
     def get(self, request):
-        return Response('success')
+        return Response()
