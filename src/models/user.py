@@ -14,7 +14,7 @@ class User(models.Model, BaseModel):
         ]
 
     id = models.AutoField(primary_key=True)
-    user_id = models.BigIntegerField(default=new_id())
+    user_id = models.BigIntegerField(default=new_id)
     openid = models.CharField(max_length=255)
     bind_platform_id = models.BigIntegerField()
     # 头像: JPEG 格式 http://thirdwx.qlogo.cn/mmopen/vi_32/lRUxxd0YsmibtZKWiaw7g/132

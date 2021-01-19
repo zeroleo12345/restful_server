@@ -14,7 +14,7 @@ class Platform(models.Model, BaseModel):
         ]
 
     id = models.AutoField(primary_key=True)
-    platform_id = models.BigIntegerField(default=new_id())
+    platform_id = models.BigIntegerField(default=new_id)
     owner_user_id = models.BigIntegerField()
     ssid = models.CharField(max_length=255, null=True)
     qrcode_content = models.URLField(max_length=512, null=True)     # 二维码内容, 例如: http://weixin.qq.com/q/02SE2_xxx
