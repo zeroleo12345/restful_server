@@ -118,11 +118,12 @@ class EchoStrView(APIView):
                         return TextReply(source=appid, target=from_user_openid, content=f'用户不存在')
                     else:
                         platform = Platform.create(owner_user_id=user.user_id)
+                        platform.platform_id = platform.id
                         qrcode_info = WeClient.create_qrcode(scene_str=str(platform.platform_id), is_permanent=True)
                         log.d(f'qrcode_info: {qrcode_info}')
                         qrcode_content = qrcode_info['url']
                         log.i(f'create qrcode, platform_id: {platform.platform_id}, qrcode_content: {qrcode_content}')
-                        platform.update(qrcode_content=qrcode_content, ssid=f'WIFI-{platform.id}')
+                        platform.update(qrcode_content=qrcode_content, platform_id=platform.id, ssid=f'WIFI-{platform.platform_id}')
                         return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/platform/{platform.platform_id}')
 
                 else:

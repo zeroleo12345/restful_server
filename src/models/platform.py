@@ -1,7 +1,6 @@
 from __future__ import annotations
 #
 from framework.database import models, BaseModel
-from utils.snowflake import new_id
 
 
 class Platform(models.Model, BaseModel):
@@ -15,7 +14,7 @@ class Platform(models.Model, BaseModel):
         ]
 
     id = models.AutoField(primary_key=True)
-    platform_id = models.BigIntegerField(default=new_id)
+    platform_id = models.BigIntegerField(null=True)
     owner_user_id = models.BigIntegerField(null=True)
     ssid = models.CharField(max_length=255, null=True)
     #
