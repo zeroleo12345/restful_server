@@ -10,7 +10,6 @@ class Platform(models.Model, BaseModel):
         unique_together = [
             ('platform_id',),
             ('owner_user_id',),
-            ('ssid',),
         ]
 
     id = models.AutoField(primary_key=True)
