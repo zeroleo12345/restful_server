@@ -14,7 +14,11 @@ class WeClient(object):
     ACCOUNT_VIEW_BTN_EVENT = 'ACCOUNT_VIEW_BTN_EVENT'       # 账户中心
     CUSTOMER_SERVICE_BTN_EVENT = 'CUSTOMER_SERVICE_BTN_EVENT'     # 联系客服
     ACCOUNT_VIEW_URI = f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}' \
-                       f'&redirect_uri={settings.MP_REDIRECT_URI}&response_type=code&scope=snsapi_userinfo'
+                       f'&redirect_uri={settings.MP_HOST}/&response_type=code&scope=snsapi_userinfo'
+    IOS_VIEW_URI = f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}' \
+                     f'&redirect_uri={settings.MP_HOST}/ios&response_type=code&scope=snsapi_userinfo'
+    ANDROID_VIEW_URI = f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}' \
+                       f'&redirect_uri={settings.MP_HOST}/android&response_type=code&scope=snsapi_userinfo'
 
     @classmethod
     def create_mp_menu(cls):
@@ -34,11 +38,21 @@ class WeClient(object):
                     'name': '联系客服',
                     'key': cls.CUSTOMER_SERVICE_BTN_EVENT,
                 },
-                # {
-                #     'type': 'view',
-                #     'name': '使用教程',
-                #     'url': f'{settings.TUTORIAL_URL}',
-                # },
+                {
+                    'name': '上网教程',
+                    'sub_button': [
+                        {
+                            'type': 'view',
+                            'name': '上网教程 (苹果手机)',
+                            'url': cls.IOS_VIEW_URI,
+                        },
+                        {
+                            'type': 'view',
+                            'name': '上网教程 (安卓手机)',
+                            'url': cls.ANDROID_VIEW_URI,
+                        },
+                    ]
+                }
             ]
         }
         cls.we_client.menu.create(menu_data)

@@ -313,7 +313,8 @@ MP_APP_ID = settings.get('MP_APP_ID')             # 开发者ID
 MP_APP_SECRET = settings.get('MP_APP_SECRET')     # 开发者密码
 MP_TOKEN = settings.get('MP_TOKEN')               # 令牌
 MP_AES_KEY = settings.get('MP_AES_KEY')           # 消息加解密密钥
-MP_REDIRECT_URI = settings.get('MP_REDIRECT_URI')           # 如: http://www.xxx.cn/notify
+MP_HOST = settings.get('MP_HOST')           # 如: http://wechat.xxx.cn
+assert not MP_HOST.endswith('/')
 # 微信支付其他配置
 MP_PAY_SANDBOX = settings.get('MP_PAY_SANDBOX', default=0, cast='@bool')
 MP_PAY_NOTIFY_URL = settings.get('MP_PAY_NOTIFY_URL')         # 微信支付结果通知回调地址:   https://api.xxx.cn/order/notify
