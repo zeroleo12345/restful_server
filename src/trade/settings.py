@@ -337,6 +337,6 @@ MP_ORDER_PAID_TEMPLATE_ID = settings.get('MP_ORDER_PAID_TEMPLATE_ID')
 # MP_KF_PASSWORD = settings.get('MP_KF_PASSWORD')
 MP_DEFAULT_REPLY = settings.get('MP_DEFAULT_REPLY', default='电话联系方式: 18925196056, 或通过电话号码添加微信')
 
-LYN_PLATFORM_ID = settings.get('LYN_PLATFORM_ID')
+ADMIN_PLATFORM_ID = settings.get('ADMIN_PLATFORM_ID', 1)
 #
 TUTORIAL_URL = settings.get('TUTORIAL_URL', default='http://ca1145e4.wiz03.com/share/s/3a4knA3wo4e92gDVx03U7UoV0JuqNU0z3kT629VCU40BeXq6')

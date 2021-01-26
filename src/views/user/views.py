@@ -70,6 +70,6 @@ class UserSyncView(APIView):
     # /user/sync    同步用户列表
     def get(self, request):
         # 查出所有 platform_id = 1 的用户
-        accounts = Account.objects.filter(platform_id=settings.LYN_PLATFORM_ID)
+        accounts = Account.objects.filter(platform_id=settings.ADMIN_PLATFORM_ID)
         data = [account.to_dict() for account in accounts]
         return BihuResponse(data=data)

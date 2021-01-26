@@ -1,5 +1,4 @@
 from django.db import transaction
-import sentry_sdk
 # 项目库
 from models import Order, Account, Tariff, ResourceChange, User, Platform
 from service.wechat.we_message import WePush
@@ -29,5 +28,5 @@ def increase_user_resource(total_fee: int, out_trade_no: str, transaction_id: st
     platform = Platform.get(platform_id=account.platform_id)
     user = User.get(user_id=account.user_id)
     owner = User.get(user_id=platform.owner_user_id)
-    WePush.notify_owner_order_paid(openid=owner.openid, total_fee=order.total_fee, nickname=user.nickname,
-                                   paid_at=order.updated_at, trade_no=out_trade_no)
+    WePush.notify_owner_order_paid(platform_id=platform.platform_id, openid=owner.openid, total_fee=order.total_fee,
+                                   nickname=user.nickname, paid_at=order.updated_at, trade_no=out_trade_no)
