@@ -17,7 +17,8 @@ class Account(models.Model, BaseModel):
 
     class Role(ModelEnum):
         PLATFORM_OWNER = 'platform_owner'   # 平台数珠
-        USER = 'user'                       # 用户
+        PAY_USER = 'pay_user'               # 付费用户
+        FREE_USER = 'free_user'             # 免费用户
 
     id = models.AutoField(primary_key=True)
     user_id = models.BigIntegerField()
@@ -26,7 +27,7 @@ class Account(models.Model, BaseModel):
     username = models.CharField(max_length=255)
     password = models.CharField(max_length=255)
     is_enable = models.BooleanField(default=True)
-    role = models.CharField(max_length=32, choices=Role.choices(), default='user')
+    role = models.CharField(max_length=32, choices=Role.choices(), default=Role.PAY_USER.value)
     #
     expired_at = models.DateTimeField()
     #

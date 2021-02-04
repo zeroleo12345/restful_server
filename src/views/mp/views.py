@@ -140,7 +140,7 @@ class EchoStrView(APIView):
                             platform_id=0,
                             username='free',
                             password='free',
-                            role=Account.Role.USER.value,
+                            role=Account.Role.FREE_USER.value,
                             expired_at=expired_at,
                         )
                     else:

@@ -43,7 +43,7 @@ class UserView(APIView):
                     platform_id=user.bind_platform_id,
                     username=username,
                     password=username,
-                    role=Account.Role.USER.value,
+                    role=Account.Role.PAY_USER.value,
                     expired_at=expired_at,
                 )
         if user.nickname != nickname or user.picture_url != avatar:
