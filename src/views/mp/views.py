@@ -1,4 +1,4 @@
-import traceback
+import datetime
 # 第三方库
 from django.http import HttpResponse
 from rest_framework.views import APIView
@@ -10,9 +10,10 @@ from wechatpy.messages import TextMessage
 from wechatpy.replies import TextReply, ArticlesReply
 from wechatpy import parse_message
 # 项目库
+from utils.time import Datetime
 from trade import settings
 from trade.settings import log
-from models import Platform, User
+from models import Platform, User, Account
 from service.wechat.we_client import WeClient
 
 
@@ -94,11 +95,13 @@ class EchoStrView(APIView):
                         'id',
                         '搜索 $name',
                         '二维码 $user_id'
+                        'free'
                     ]
                     message = '命令:\n  ' + '\n  '.join(command)
                     return TextReply(source=appid, target=from_user_openid, content=message)
 
                 elif msg.content == 'id':
+                    # 查看用户ID
                     user = User.get(openid=from_user_openid)
                     messages = [
                         f'你的信息:',
@@ -108,10 +111,12 @@ class EchoStrView(APIView):
                     return TextReply(source=appid, target=from_user_openid, content='\n'.join(messages))
 
                 elif msg.content.startswith('搜索') and from_user_openid == settings.MP_ADMIN_OPENID:
+                    # 搜索用户信息
                     name = msg.content.split('搜索')[1].strip()
                     return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/search/user?name={name}')
 
                 elif msg.content.startswith('二维码') and from_user_openid == settings.MP_ADMIN_OPENID:
+                    # 生成平台推广码
                     user_id = msg.content.split('二维码')[1].strip()
                     user = User.get(user_id=user_id)
                     if not user:
@@ -125,6 +130,22 @@ class EchoStrView(APIView):
                         log.i(f'create qrcode, platform_id: {platform.platform_id}, qrcode_content: {qrcode_content}')
                         platform.update(qrcode_content=qrcode_content, platform_id=platform.id, ssid=f'WIFI-{platform.platform_id}')
                         return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/platform/{platform.platform_id}')
+
+                elif msg.content.startswith('free') and from_user_openid == settings.MP_ADMIN_OPENID:
+                    expired_at = Datetime.localtime() + datetime.timedelta(minutes=30)
+                    account = Account.get(user_id=0, platform_id=0)
+                    if not account:
+                        account = Account.create(
+                            user_id=0,
+                            platform_id=0,
+                            username='free',
+                            password='free',
+                            role=Account.Role.USER.value,
+                            expired_at=expired_at,
+                        )
+                    else:
+                        account.update(expired_at=expired_at)
+                    return TextReply(source=appid, target=from_user_openid, content=f'用户名: {account.username}, 密码: {account.password}, 失效时间: {expired_at}')
 
                 else:
                     return TextReply(source=appid, target=from_user_openid, content=settings.MP_DEFAULT_REPLY)

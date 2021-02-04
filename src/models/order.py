@@ -1,7 +1,7 @@
 from __future__ import annotations
 # 第三方库
 from framework.database import models, BaseModel
-from framework.field import BaseEnum
+from framework.field import ModelEnum
 
 
 # 宽带订单
@@ -13,7 +13,7 @@ class Order(models.Model, BaseModel):
             ('out_trade_no',),
         ]
 
-    class Status(BaseEnum):
+    class Status(ModelEnum):
         UNPAID = 'unpaid'       # 未支付
         PAID = 'paid'           # 已支付
         EXPIRED = 'expired'     # 已过期
@@ -29,7 +29,7 @@ class Order(models.Model, BaseModel):
     total_fee = models.IntegerField()                                   # 单位分
     appid = models.CharField(max_length=32)                             # appid
     mch_id = models.CharField(max_length=32)                            # 商户号
-    status = models.CharField(default='unpaid', max_length=32, choices=Status.model_choices())
+    status = models.CharField(default='unpaid', max_length=32, choices=Status.choices())
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
