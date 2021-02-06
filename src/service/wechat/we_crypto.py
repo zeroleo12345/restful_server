@@ -18,6 +18,13 @@ class WeCrypto(object):
                 raise e
         return parse_message(xml)
 
+    @classmethod
+    def encrypt_message(cls, xml: str, msg_signature: str, timestamp: str, nonce: str):
+        if msg_signature:
+            return cls.we_crypto.encrypt_message(xml, nonce, timestamp)
+        else:
+            return xml
+
     @staticmethod
     def is_right_signature(signature: str, timestamp: str, nonce: str):
         try:

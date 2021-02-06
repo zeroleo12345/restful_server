@@ -176,6 +176,7 @@ class EchoStrView(APIView):
         reply = get_reply_msg()
         if reply:
             xml = reply.render()
+            xml = WeCrypto.encrypt_message(xml=xml, msg_signature=msg_signature, timestamp=timestamp, nonce=nonce)
             return HttpResponse(content=xml, content_type='text/xml')
         else:
             return Response('success')
