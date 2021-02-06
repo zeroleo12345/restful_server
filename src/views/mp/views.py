@@ -4,17 +4,16 @@ from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.renderers import StaticHTMLRenderer
 from rest_framework.response import Response
-from wechatpy.utils import check_signature
 from wechatpy.events import SubscribeScanEvent, ScanEvent, SubscribeEvent, ClickEvent
 from wechatpy.messages import TextMessage
 from wechatpy.replies import TextReply, ArticlesReply
-from wechatpy import parse_message
 # 项目库
 from utils.time import Datetime
 from trade import settings
 from trade.settings import log
 from models import Platform, User, Account
 from service.wechat.we_client import WeClient
+from service.wechat.we_crypto import WeCrypto
 
 
 class EchoStrView(APIView):
@@ -31,14 +30,36 @@ class EchoStrView(APIView):
         timestamp = request.GET.get('timestamp')
         nonce = request.GET.get('nonce')
         echostr = request.GET.get('echostr')
-        check_signature(settings.MP_TOKEN, signature, timestamp, nonce)
+        if not WeCrypto.is_right_signature(signature=signature, timestamp=timestamp, nonce=nonce):
+            raise Exception('mp platform invalid signature')
         return Response(echostr)
 
     def post(self, request):
-        # 公众号平台事件通知. (note: 使用平台自带的自定义菜单时, 平台不会下发消息)
+        """
+        公众号平台事件通知. (PS: 使用平台自带的自定义菜单时, 平台不会下发消息)
+        加密模式下 request.GET:
+            {
+                'signature': '3b6995754f8910fb784c1a060b17750f67b440a9',
+                'timestamp': '1612607821',
+                'nonce': '1404486768',
+                'openid': 'o0FSR0Zh3rotbOog_b2lytxzKrYo',
+                'encrypt_type': 'aes',
+                'msg_signature': 'e36e86d1c88014e4dc1ced8323bff7ba006e0b0d'
+            }
+        明文模式下 request.GET:
+            {
+                'signature': '8d2e34ffd739d7ae39532f91ce41a48674ee323f',
+                'timestamp': '1612608294',
+                'nonce': '836218769',
+                'openid': 'o0FSR0Zh3rotbOog_b2lytxzKrYo'
+            }
+        """
         xml = request.body
-        msg = parse_message(xml)
-        log.i(f'wechat event: {msg}')
+        msg_signature = request.GET.get('msg_signature', None)
+        timestamp = request.GET.get('timestamp')
+        nonce = request.GET.get('nonce')
+        msg = WeCrypto.decrypt_and_parse_message(xml=xml, msg_signature=msg_signature, timestamp=timestamp, nonce=nonce)
+        log.i(f'wechat event: {msg}, url params: {request.GET}')
         appid = msg.target     # 例如: gh_9225266caeb1
         from_user_openid = msg.source
 
