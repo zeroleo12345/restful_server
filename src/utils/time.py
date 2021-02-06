@@ -124,7 +124,7 @@ class Datetime(object):
         return datetime.combine(dt, datetime.max.time())
 
     @staticmethod
-    def to_str(dt: datetime, fmt='%Y-%m-%d'):
+    def to_str(dt: datetime, fmt='%Y-%m-%d %H:%M:%S'):
         """
         datetime 转换为 string
         :param dt:

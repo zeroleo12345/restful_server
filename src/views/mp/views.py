@@ -94,8 +94,8 @@ class EchoStrView(APIView):
                     command = [
                         'id',
                         '搜索 $name',
-                        '二维码 $user_id',
-                        'free',
+                        '二维码 $user_id'
+                        'free'
                     ]
                     message = '命令:\n  ' + '\n  '.join(command)
                     return TextReply(source=appid, target=from_user_openid, content=message)
@@ -134,6 +134,8 @@ class EchoStrView(APIView):
                 elif msg.content.startswith('free') and from_user_openid == settings.MP_ADMIN_OPENID:
                     expired_at = Datetime.localtime() + datetime.timedelta(minutes=30)
                     account = Account.get(user_id=0, platform_id=0)
+                    if account.expired_at >= expired_at:
+                        expired_at = account.expired_at
                     if not account:
                         account = Account.create(
                             user_id=0,
@@ -145,7 +147,8 @@ class EchoStrView(APIView):
                         )
                     else:
                         account.update(expired_at=expired_at)
-                    return TextReply(source=appid, target=from_user_openid, content=f'用户名: {account.username}, 密码: {account.password}, 失效时间: {expired_at}')
+                    content = f'用户名: {account.username}, 密码: {account.password}, 失效时间: {Datetime.to_str(expired_at, fmt="%Y-%m-%d %H:%M:%S")}'
+                    return TextReply(source=appid, target=from_user_openid, content=content)
 
                 else:
                     return TextReply(source=appid, target=from_user_openid, content=settings.MP_DEFAULT_REPLY)
