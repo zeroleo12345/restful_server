@@ -134,8 +134,6 @@ class EchoStrView(APIView):
                 elif msg.content.startswith('free') and from_user_openid == settings.MP_ADMIN_OPENID:
                     expired_at = Datetime.localtime() + datetime.timedelta(minutes=30)
                     account = Account.get(user_id=0, platform_id=0)
-                    if account.expired_at >= expired_at:
-                        expired_at = account.expired_at
                     if not account:
                         account = Account.create(
                             user_id=0,
