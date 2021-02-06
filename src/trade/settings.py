@@ -308,6 +308,7 @@ ignore_logger(log._logger.name)     # 不忽略的话, log.e会上报消息到se
 
 # API 服务器域名
 API_SERVER_URL = settings.get('API_SERVER_URL')   # https://api.xxx.cn
+
 # 微信公众平台配置
 MP_APP_ID = settings.get('MP_APP_ID')             # 开发者ID
 MP_APP_SECRET = settings.get('MP_APP_SECRET')     # 开发者密码
@@ -336,6 +337,10 @@ MP_ORDER_PAID_TEMPLATE_ID = settings.get('MP_ORDER_PAID_TEMPLATE_ID')
 # MP_KF_NICKNAME = settings.get('MP_KF_NICKNAME')
 # MP_KF_PASSWORD = settings.get('MP_KF_PASSWORD')
 MP_DEFAULT_REPLY = settings.get('MP_DEFAULT_REPLY', default='电话联系方式: 18925196056, 或通过电话号码添加微信')
+
+# 企业微信
+ENTERPRISE_CORP_ID = settings.get('ENTERPRISE_CORP_ID')             # 企业ID
+ENTERPRISE_CONTACT_SECRET = settings.get('ENTERPRISE_CONTACT_SECRET')
 
 ADMIN_PLATFORM_ID = settings.get('ADMIN_PLATFORM_ID', 1)
 #

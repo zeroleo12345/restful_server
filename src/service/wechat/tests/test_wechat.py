@@ -20,6 +20,6 @@ def usage():
 @pytest.mark.django_db
 class Test(object):
 
-    @pytest.mark.skip(reason='公众号推送模板')
+    @pytest.mark.skip(reason='')
     def test_send_template(self, openid, template_id, data, url=None, mini_program=None):
         we_message.send_template(openid, template_id, data, url=url, mini_program=mini_program)
