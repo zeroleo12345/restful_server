@@ -3,7 +3,7 @@ from trade import settings
 from wechatpy.pay import WeChatPay
 from wechatpy.exceptions import WeChatPayException
 # 项目库
-from framework.field import BaseEnum
+from framework.field import ModelEnum
 
 
 class WePay(object):
@@ -22,7 +22,7 @@ class WePay(object):
     def is_right_sign(cls, params) -> bool:
         return cls._pay_api.check_signature(params)
 
-    class TradeState(BaseEnum):
+    class TradeState(ModelEnum):
         PAID = 'SUCCESS'            # 支付成功
         REFUND = 'REFUND'           # 转入退款
         NOTPAY = 'NOTPAY'           # 未支付

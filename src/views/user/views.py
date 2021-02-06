@@ -37,16 +37,15 @@ class UserView(APIView):
         if not account:
             username = MyRandom.random_digit(length=8)
             expired_at = Datetime.localtime() + datetime.timedelta(minutes=30)
-            user_fields = {
-                'user_id': user.user_id,
-                'platform_id': user.bind_platform_id,
-                'username': username,
-                'password': username,
-                'role': 'user',
-                'expired_at': expired_at,
-            }
             with transaction.atomic():
-                account = Account.create(**user_fields)   # create 返回 Model 实例
+                account = Account.create(
+                    user_id=user.user_id,
+                    platform_id=user.bind_platform_id,
+                    username=username,
+                    password=username,
+                    role=Account.Role.PAY_USER.value,
+                    expired_at=expired_at,
+                )
         if user.nickname != nickname or user.picture_url != avatar:
             user.update(nickname=nickname, picture_url=avatar)
         platform = Platform.get(owner_user_id=user.user_id)

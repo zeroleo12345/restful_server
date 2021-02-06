@@ -36,6 +36,7 @@ class BaseModel(object):
 
     @classmethod
     def create(cls, **kwargs):
+        # create 返回 Model 实例
         obj = cls.objects.create(**kwargs)
         return obj
 

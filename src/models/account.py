@@ -2,6 +2,7 @@ from __future__ import annotations
 from django.utils import timezone
 #
 from framework.database import models, BaseModel
+from framework.field import ModelEnum
 
 
 # 账户
@@ -14,10 +15,10 @@ class Account(models.Model, BaseModel):
             ('username',),
         ]
 
-    ROLE = (
-        ('platform_owner', '平台属主'),
-        ('user', '用户'),
-    )
+    class Role(ModelEnum):
+        PLATFORM_OWNER = 'platform_owner'   # 平台数珠
+        PAY_USER = 'pay_user'               # 付费用户
+        FREE_USER = 'free_user'             # 免费用户
 
     id = models.AutoField(primary_key=True)
     user_id = models.BigIntegerField()
@@ -26,7 +27,7 @@ class Account(models.Model, BaseModel):
     username = models.CharField(max_length=255)
     password = models.CharField(max_length=255)
     is_enable = models.BooleanField(default=True)
-    role = models.CharField(max_length=32, choices=ROLE, default='user')
+    role = models.CharField(max_length=32, choices=Role.choices(), default=Role.PAY_USER.value)
     #
     expired_at = models.DateTimeField()
     #
