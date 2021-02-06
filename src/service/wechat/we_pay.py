@@ -7,7 +7,7 @@ from framework.field import ModelEnum
 
 
 class WePay(object):
-    _pay_api = WeChatPay(
+    we_pay = WeChatPay(
         appid=settings.MP_APP_ID,
         api_key=settings.MP_APP_KEY,
         mch_id=settings.MP_MERCHANT_ID,
@@ -20,7 +20,7 @@ class WePay(object):
 
     @classmethod
     def is_right_sign(cls, params) -> bool:
-        return cls._pay_api.check_signature(params)
+        return cls.we_pay.check_signature(params)
 
     class TradeState(ModelEnum):
         PAID = 'SUCCESS'            # 支付成功
@@ -64,7 +64,7 @@ class WePay(object):
         }
 
         # 统一下单, 生成微信支付参数返回给微信浏览器
-        response = cls._pay_api.order.create(**order_params)
+        response = cls.we_pay.order.create(**order_params)
         # OrderedDict([('return_code', 'SUCCESS'),
         #              ('return_msg', 'OK'),
         #              ('appid', 'wx14d296959ee50c0b'),
@@ -109,7 +109,7 @@ class WePay(object):
         }
 
         # 统一下单, 生成微信支付参数返回给微信浏览器
-        response = cls._pay_api.order.create(**order_params)
+        response = cls.we_pay.order.create(**order_params)
         # OrderedDict([('return_code', 'SUCCESS'),
         #              ('return_msg', 'OK'),
         #              ('appid', 'wx54d296959ee50c01'),
@@ -134,7 +134,7 @@ class WePay(object):
         #  'signType': 'MD5',
         #  'timeStamp': '1540391991'}
         """
-        params = cls._pay_api.jsapi.get_jsapi_params(str(prepay_id))
+        params = cls.we_pay.jsapi.get_jsapi_params(str(prepay_id))
         return params
 
     @classmethod
@@ -150,7 +150,7 @@ class WePay(object):
             'fee_type': 'CNY',                  # 可选，货币类型，符合ISO 4217标准的三位字母代码，默认人民币：CNY
             'notify_url': notify_url,           # 可选，异步接收微信支付退款结果通知的回调地址
         }
-        response = cls._pay_api.refund.apply(**refund_params)
+        response = cls.we_pay.refund.apply(**refund_params)
         # >>> print(response)
         # OrderedDict([('return_code', 'SUCCESS'),
         #              ('return_msg', 'OK'),
@@ -204,7 +204,7 @@ class WePay(object):
             'out_trade_no': out_trade_no,
         }
         try:
-            response = cls._pay_api.order.query(**query_params)
+            response = cls.we_pay.order.query(**query_params)
             return response
         except WeChatPayException as e:
             if e.errcode == 'ORDERNOTEXIST':
@@ -216,9 +216,9 @@ class WePay(object):
         query_params = {
             'out_trade_no': out_trade_no,
         }
-        response = cls._pay_api.order.close(**query_params)
+        response = cls.we_pay.order.close(**query_params)
         return response
 
     @classmethod
     def parse_payment_result(cls, xml):
-        return cls._pay_api.parse_payment_result(xml)
+        return cls.we_pay.parse_payment_result(xml)
