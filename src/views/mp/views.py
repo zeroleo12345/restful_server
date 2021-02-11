@@ -149,7 +149,7 @@ class EchoStrView(APIView):
                         log.d(f'qrcode_info: {qrcode_info}')
                         qrcode_content = qrcode_info['url']
                         log.i(f'create qrcode, platform_id: {platform.platform_id}, qrcode_content: {qrcode_content}')
-                        platform.update(qrcode_content=qrcode_content, platform_id=platform.id, ssid=f'WIFI-{platform.platform_id}')
+                        platform.update(qrcode_content=qrcode_content, platform_id=platform.id, ssid=f'WiFi-{platform.platform_id}')
                         return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/platform/{platform.platform_id}')
 
                 elif msg.content.startswith('free') and from_user_openid == settings.MP_ADMIN_OPENID:
