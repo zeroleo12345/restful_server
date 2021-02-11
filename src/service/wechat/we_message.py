@@ -40,7 +40,7 @@ class WePush(object):
         点击查看详情                             {{remark.DATA}}
         """
         data = {
-            'first': {'value': f'房东-{platform_id}, 您有一笔收入'},
+            'first': {'value': f'房东: {platform_id}, 您有一笔收入'},
             'keyword1': {'value': '租户宽带充值'},
             'keyword2': {'value': f'{total_fee / 100}元'},
             'keyword3': {'value': nickname},
@@ -51,7 +51,7 @@ class WePush(object):
         we_message.send_template(openid, cls.MP_ORDER_PAID_TEMPLATE_ID, data, url=None, mini_program=mini_program)
         if platform_id != settings.ADMIN_PLATFORM_ID:
             data = {
-                'first': {'value': f'您有一笔分成: 平台-{platform_id}'},
+                'first': {'value': f'您有一笔分成: 平台: {platform_id}'},
                 'keyword1': {'value': '平台租户宽带充值'},
                 'keyword2': {'value': f'{total_fee / 100}元'},
                 'keyword3': {'value': nickname},

@@ -16,7 +16,7 @@ class WeClient(object):
     ACCOUNT_VIEW_URI = f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}' \
                        f'&redirect_uri={settings.MP_HOST}/&response_type=code&scope=snsapi_userinfo'
     IOS_VIEW_URI = f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}' \
-                     f'&redirect_uri={settings.MP_HOST}/ios&response_type=code&scope=snsapi_userinfo'
+                   f'&redirect_uri={settings.MP_HOST}/ios&response_type=code&scope=snsapi_userinfo'
     ANDROID_VIEW_URI = f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}' \
                        f'&redirect_uri={settings.MP_HOST}/android&response_type=code&scope=snsapi_userinfo'
 
