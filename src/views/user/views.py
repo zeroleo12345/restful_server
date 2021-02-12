@@ -32,7 +32,8 @@ class UserView(APIView):
             WechatCode.set(code, openid=openid, nickname=nickname, avatar=avatar)
         # 获取用户信息, 不存在则创建
         user = User.get(openid=openid)
-        assert user
+        if not user:
+            return BihuResponse({'code': 'invalid_user', 'message': '请用已缴费的微信号登录'}, status=400)
         account = Account.get(user_id=user.user_id, platform_id=user.bind_platform_id)
         if not account:
             username = MyRandom.random_digit(length=8)
