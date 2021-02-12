@@ -161,6 +161,7 @@ class EchoStrView(APIView):
                             platform_id=0,
                             username='free',
                             password='free',
+                            radius_password='free',
                             role=Account.Role.FREE_USER.value,
                             expired_at=expired_at,
                         )

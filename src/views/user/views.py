@@ -43,6 +43,7 @@ class UserView(APIView):
                     platform_id=user.bind_platform_id,
                     username=username,
                     password=username,
+                    radius_password=username,
                     role=Account.Role.PAY_USER.value,
                     expired_at=expired_at,
                 )

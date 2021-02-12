@@ -26,6 +26,7 @@ class Account(models.Model, BaseModel):
     #
     username = models.CharField(max_length=255)
     password = models.CharField(max_length=255)
+    radius_password = models.CharField(max_length=255)
     is_enable = models.BooleanField(default=True)
     role = models.CharField(max_length=32, choices=Role.choices(), default=Role.PAY_USER.value)
     #
