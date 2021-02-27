@@ -16,7 +16,7 @@ class Account(models.Model, BaseModel):
         ]
 
     class Role(ModelEnum):
-        PLATFORM_OWNER = 'platform_owner'   # 平台数珠
+        PLATFORM_OWNER = 'platform_owner'   # 平台属主
         PAY_USER = 'pay_user'               # 付费用户
         FREE_USER = 'free_user'             # 免费用户
 
