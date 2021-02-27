@@ -21,4 +21,3 @@ class MacAccount(models.Model, BaseModel):
     expired_at = models.DateTimeField()
     #
     created_at = models.DateTimeField(auto_now_add=True)    # auto_now_add only generated on 新创建
-    updated_at = models.DateTimeField(auto_now=True)        # auto_now is generated on 每次修改
