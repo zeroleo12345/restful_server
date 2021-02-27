@@ -115,8 +115,8 @@ class EchoStrView(APIView):
                     command = [
                         'id',
                         '搜索 $name',
-                        '二维码 $user_id'
-                        'free'
+                        '二维码 $user_id',
+                        'free',
                     ]
                     message = '命令:\n  ' + '\n  '.join(command)
                     return TextReply(source=appid, target=from_user_openid, content=message)
