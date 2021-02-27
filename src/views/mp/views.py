@@ -98,12 +98,14 @@ class EchoStrView(APIView):
                     else:
                         if Platform.get(owner_user_id=user.user_id):
                             url = WeClient.PLATFORM_VIEW_URI
+                            description = '房东平台二维码'
                         else:
                             url = WeClient.ACCOUNT_VIEW_URI
+                            description = '查询WIFI密码 / WIFI续费'
                         r = ArticlesReply(source=appid, target=from_user_openid)
                         r.add_article({
                             'title': f'点击进入',
-                            'description': '查询WIFI密码 / WIFI续费',
+                            'description': description,
                             'image': 'http://zlxpic.lynatgz.cn/zhuzaiyuan_mini.jpg',
                             'url': url,
                         })
