@@ -1,10 +1,10 @@
 import datetime
 from unittest.mock import MagicMock
 # 第三方库
-from django.conf import settings
 from rest_framework import status
 import pytest
 # 项目库
+from trade import settings
 from utils.time import Datetime
 from framework.unittest import UnitTestAPIClient
 from models.factories.user import UserFactory

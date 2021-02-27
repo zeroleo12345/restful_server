@@ -1,10 +1,10 @@
 # 第三方库
 from rest_framework.views import APIView
 from django.http import HttpResponse
-from django.conf import settings
 from wechatpy.exceptions import InvalidSignatureException
 import sentry_sdk
 # 项目库
+from trade import settings
 from trade.settings import log
 from utils.mydjango import get_client_ip
 from service.wechat.we_pay import WePay
