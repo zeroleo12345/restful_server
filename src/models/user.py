@@ -37,7 +37,7 @@ class User(models.Model, BaseModel):
         return obj
 
     @classmethod
-    def search(cls, nickname__contains) -> 'User':
+    def search(cls, nickname__contains):
         users = cls.objects.filter(nickname__contains=nickname__contains)
         if not users:
             return []

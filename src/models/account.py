@@ -41,11 +41,11 @@ class Account(models.Model, BaseModel):
         return obj or None
 
     @classmethod
-    def search(cls, nickname__contains):
-        users = cls.objects.filter(nickname__contains=nickname__contains)
-        if not users:
+    def search(cls, user_id):
+        accounts = cls.objects.filter(user_id=user_id)
+        if not accounts:
             return []
-        return users
+        return accounts
 
     def get_resource_status(self):
         # expired: 已过期; working: 使用中; inactive: 已停用
