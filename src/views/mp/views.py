@@ -96,12 +96,16 @@ class EchoStrView(APIView):
                         # 用户未经扫码, 进入公众号
                         return TextReply(source=appid, target=from_user_openid, content=f'请先扫描房东的WIFI二维码')
                     else:
+                        if Platform.get(owner_user_id=user.user_id):
+                            url = WeClient.PLATFORM_VIEW_URI
+                        else:
+                            url = WeClient.ACCOUNT_VIEW_URI
                         r = ArticlesReply(source=appid, target=from_user_openid)
                         r.add_article({
                             'title': f'点击进入',
                             'description': '查询WIFI密码 / WIFI续费',
                             'image': 'http://zlxpic.lynatgz.cn/zhuzaiyuan_mini.jpg',
-                            'url': WeClient.ACCOUNT_VIEW_URI,
+                            'url': url,
                         })
                         return r
                 elif msg.key == WeClient.CUSTOMER_SERVICE_BTN_EVENT:
@@ -115,7 +119,7 @@ class EchoStrView(APIView):
                     command = [
                         'id',
                         '搜索 $name',
-                        '二维码 $user_id',
+                        '房东二维码 $user_id',
                         'free',
                     ]
                     message = '命令:\n  ' + '\n  '.join(command)
@@ -136,9 +140,9 @@ class EchoStrView(APIView):
                     name = msg.content.split('搜索')[1].strip()
                     return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/search/user?name={name}')
 
-                elif msg.content.startswith('二维码') and from_user_openid == settings.MP_ADMIN_OPENID:
+                elif msg.content.startswith('房东二维码') and from_user_openid == settings.MP_ADMIN_OPENID:
                     # 生成平台推广码
-                    user_id = msg.content.split('二维码')[1].strip()
+                    user_id = msg.content.split('房东二维码')[1].strip()
                     user = User.get(user_id=user_id)
                     if not user:
                         return TextReply(source=appid, target=from_user_openid, content=f'用户不存在')
