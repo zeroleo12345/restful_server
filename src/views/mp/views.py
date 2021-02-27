@@ -14,6 +14,7 @@ from trade.settings import log
 from models import Platform, User, Account
 from service.wechat.we_client import WeClient
 from service.wechat.we_crypto import WeCrypto
+from framework.database import get_redis
 
 
 class EchoStrView(APIView):
@@ -120,6 +121,7 @@ class EchoStrView(APIView):
                         '搜索 $name',
                         '房东二维码 $user_id',
                         'free',
+                        '放通mac认证',
                     ]
                     message = '命令:\n  ' + '\n  '.join(command)
                     return TextReply(source=appid, target=from_user_openid, content=message)
@@ -134,10 +136,17 @@ class EchoStrView(APIView):
                     ]
                     return TextReply(source=appid, target=from_user_openid, content='\n'.join(messages))
 
+                # 以下命令需要 admin 权限
                 elif msg.content.startswith('搜索') and settings.is_admin(openid=from_user_openid):
                     # 搜索用户信息
                     name = msg.content.split('搜索')[1].strip()
                     return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/search/user?name={name}')
+
+                elif msg.content.startswith('放通mac认证') and settings.is_admin(openid=from_user_openid):
+                    redis = get_redis()
+                    key = 'enable_mac_authentication'
+                    redis.set(key, str(datetime.datetime.now()), ex=60 * 5)
+                    return TextReply(source=appid, target=from_user_openid, content=f'有效时间')
 
                 elif msg.content.startswith('房东二维码') and settings.is_admin(openid=from_user_openid):
                     # 生成平台推广码
