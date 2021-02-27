@@ -145,8 +145,9 @@ class EchoStrView(APIView):
                 elif msg.content.startswith('放通mac认证') and settings.is_admin(openid=from_user_openid):
                     redis = get_redis()
                     key = 'enable_mac_authentication'
-                    redis.set(key, str(datetime.datetime.now()), ex=60 * 5)
-                    return TextReply(source=appid, target=from_user_openid, content=f'有效时间')
+                    ex = 60 * 5
+                    redis.set(key, str(datetime.datetime.now()), ex=ex)
+                    return TextReply(source=appid, target=from_user_openid, content=f'有效时间: {ex}秒')
 
                 elif msg.content.startswith('房东二维码') and settings.is_admin(openid=from_user_openid):
                     # 生成平台推广码
