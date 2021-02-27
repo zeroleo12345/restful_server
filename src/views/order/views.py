@@ -29,7 +29,7 @@ class OrderView(APIView):
         user = User.get(user_id=auth.user_id)
         tariff = Tariff.get_object_or_404(tariff_name=tariff_name)
         attach = Tariff.tariff_to_attach(tariff=tariff)
-        if user.openid == settings.MP_ADMIN_OPENID:
+        if settings.is_admin(openid=user.openid):
             total_fee = 1 * tariff.duration  # 1分钱
         else:
             total_fee = tariff.price

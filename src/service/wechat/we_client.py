@@ -15,6 +15,8 @@ class WeClient(object):
     CUSTOMER_SERVICE_BTN_EVENT = 'CUSTOMER_SERVICE_BTN_EVENT'     # 联系客服
     ACCOUNT_VIEW_URI = f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}' \
                        f'&redirect_uri={settings.MP_HOST}/&response_type=code&scope=snsapi_userinfo'
+    PLATFORM_VIEW_URI = f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}' \
+                        f'&redirect_uri={settings.MP_HOST}/platform&response_type=code&scope=snsapi_userinfo'
     IOS_VIEW_URI = f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}' \
                    f'&redirect_uri={settings.MP_HOST}/ios&response_type=code&scope=snsapi_userinfo'
     ANDROID_VIEW_URI = f'https://open.weixin.qq.com/connect/oauth2/authorize?appid={settings.MP_APP_ID}' \
@@ -50,6 +52,11 @@ class WeClient(object):
                             'type': 'view',
                             'name': '上网教程 (安卓手机)',
                             'url': cls.ANDROID_VIEW_URI,
+                        },
+                        {
+                            'type': 'view',
+                            'name': '房东二维码 (仅房东用)',
+                            'url': cls.PLATFORM_VIEW_URI,
                         },
                     ]
                 }

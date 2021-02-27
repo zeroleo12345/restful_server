@@ -96,6 +96,9 @@ class EchoStrView(APIView):
                         # 用户未经扫码, 进入公众号
                         return TextReply(source=appid, target=from_user_openid, content=f'请先扫描房东的WIFI二维码')
                     else:
+                        if Platform.get(owner_user_id=user.user_id) and not settings.is_admin(openid=from_user_openid):
+                            # 房东不能打开充值页面, 但 admin 可以
+                            return TextReply(source=appid, target=from_user_openid, content=f'房东不允许打开充值页面')
                         r = ArticlesReply(source=appid, target=from_user_openid)
                         r.add_article({
                             'title': f'点击进入',
@@ -115,7 +118,7 @@ class EchoStrView(APIView):
                     command = [
                         'id',
                         '搜索 $name',
-                        '二维码 $user_id',
+                        '房东二维码 $user_id',
                         'free',
                     ]
                     message = '命令:\n  ' + '\n  '.join(command)
@@ -131,14 +134,14 @@ class EchoStrView(APIView):
                     ]
                     return TextReply(source=appid, target=from_user_openid, content='\n'.join(messages))
 
-                elif msg.content.startswith('搜索') and from_user_openid == settings.MP_ADMIN_OPENID:
+                elif msg.content.startswith('搜索') and settings.is_admin(openid=from_user_openid):
                     # 搜索用户信息
                     name = msg.content.split('搜索')[1].strip()
                     return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/search/user?name={name}')
 
-                elif msg.content.startswith('二维码') and from_user_openid == settings.MP_ADMIN_OPENID:
+                elif msg.content.startswith('房东二维码') and settings.is_admin(openid=from_user_openid):
                     # 生成平台推广码
-                    user_id = msg.content.split('二维码')[1].strip()
+                    user_id = msg.content.split('房东二维码')[1].strip()
                     user = User.get(user_id=user_id)
                     if not user:
                         return TextReply(source=appid, target=from_user_openid, content=f'用户不存在')
@@ -152,7 +155,7 @@ class EchoStrView(APIView):
                         platform.update(qrcode_content=qrcode_content, platform_id=platform.id, ssid=f'WIFI-{platform.platform_id}')
                         return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/platform/{platform.platform_id}')
 
-                elif msg.content.startswith('free') and from_user_openid == settings.MP_ADMIN_OPENID:
+                elif msg.content.startswith('free') and settings.is_admin(openid=from_user_openid):
                     expired_at = Datetime.localtime() + datetime.timedelta(minutes=30)
                     account = Account.get(user_id=0, platform_id=0)
                     if not account:
