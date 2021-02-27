@@ -96,18 +96,15 @@ class EchoStrView(APIView):
                         # 用户未经扫码, 进入公众号
                         return TextReply(source=appid, target=from_user_openid, content=f'请先扫描房东的WIFI二维码')
                     else:
-                        if not settings.is_admin(openid=from_user_openid) and Platform.get(owner_user_id=user.user_id):
-                            url = WeClient.PLATFORM_VIEW_URI
-                            description = '房东平台二维码'
-                        else:
-                            url = WeClient.ACCOUNT_VIEW_URI
-                            description = '查询WIFI密码 / WIFI续费'
+                        if Platform.get(owner_user_id=user.user_id) and not settings.is_admin(openid=from_user_openid):
+                            # 房东不能打开充值页面, 但 admin 可以
+                            return TextReply(source=appid, target=from_user_openid, content=f'房东不允许打开充值页面')
                         r = ArticlesReply(source=appid, target=from_user_openid)
                         r.add_article({
                             'title': f'点击进入',
-                            'description': description,
+                            'description': '查询WIFI密码 / WIFI续费',
                             'image': 'http://zlxpic.lynatgz.cn/zhuzaiyuan_mini.jpg',
-                            'url': url,
+                            'url': WeClient.ACCOUNT_VIEW_URI,
                         })
                         return r
                 elif msg.key == WeClient.CUSTOMER_SERVICE_BTN_EVENT:

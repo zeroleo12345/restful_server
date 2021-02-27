@@ -53,6 +53,11 @@ class WeClient(object):
                             'name': '上网教程 (安卓手机)',
                             'url': cls.ANDROID_VIEW_URI,
                         },
+                        {
+                            'type': 'view',
+                            'name': '房东二维码 (仅房东用)',
+                            'url': cls.PLATFORM_VIEW_URI,
+                        },
                     ]
                 }
             ]
