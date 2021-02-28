@@ -156,6 +156,7 @@ class EchoStrView(APIView):
                     if not user:
                         return TextReply(source=appid, target=from_user_openid, content=f'用户不存在')
                     else:
+                        # 成为平台属主
                         platform = Platform.create(owner_user_id=user.user_id)
                         platform.platform_id = platform.id
                         qrcode_info = WeClient.create_qrcode(scene_str=str(platform.platform_id), is_permanent=True)
@@ -164,6 +165,8 @@ class EchoStrView(APIView):
                         log.i(f'create qrcode, platform_id: {platform.platform_id}, qrcode_content: {qrcode_content}')
                         platform.update(qrcode_content=qrcode_content, platform_id=platform.id, ssid=f'WIFI-{platform.platform_id}')
                         user.update(bind_platform_id=platform.platform_id)
+                        account = Account.get(user_id=user.user_id, platform_id=platform.platform_id)
+                        account.update(role=Account.Role.PLATFORM_OWNER.value)
                         return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/platform/{platform.platform_id}')
 
                 elif msg.content.startswith('free') and settings.is_admin(openid=from_user_openid):
