@@ -1,5 +1,6 @@
 import datetime
 # 第三方库
+from django.db import transaction
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.renderers import StaticHTMLRenderer
@@ -8,6 +9,7 @@ from wechatpy.events import SubscribeScanEvent, ScanEvent, SubscribeEvent, Click
 from wechatpy.messages import TextMessage
 from wechatpy.replies import TextReply, ArticlesReply
 # 项目库
+from utils.myrandom import MyRandom
 from utils.time import Datetime
 from trade import settings
 from trade.settings import log
@@ -74,8 +76,21 @@ class EchoStrView(APIView):
                 assert platform
                 user = User.get(openid=from_user_openid)
                 if not user:
-                    # user 表记录, 不存在
-                    User.create(openid=from_user_openid, bind_platform_id=platform.platform_id)
+                    # 创建 user
+                    user = User.create(openid=from_user_openid, bind_platform_id=platform.platform_id)
+                    # 创建 account
+                    username = MyRandom.random_digit(length=8)
+                    expired_at = Datetime.localtime() + datetime.timedelta(days=3)  # 新账户三天内免费
+                    with transaction.atomic():
+                        account = Account.create(
+                            user_id=user.user_id,
+                            platform_id=user.bind_platform_id,
+                            username=username,
+                            password=username,
+                            radius_password=username,
+                            role=Account.Role.PAY_USER.value,
+                            expired_at=expired_at,
+                        )
                 else:
                     # user 表记录, 存在
                     if user.bind_platform_id != platform.platform_id:

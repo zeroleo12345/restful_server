@@ -1,12 +1,8 @@
-import datetime
 # 第三方库
 from rest_framework.views import APIView
-from django.db import transaction
 # 项目库
 from models import Account, User, Platform
 from service.wechat.we_oauth import WeOAuth
-from utils.myrandom import MyRandom
-from utils.time import Datetime
 from framework.exception import GlobalException
 from framework.authorization import JWTAuthentication
 from buffer.token import WechatCode
@@ -36,18 +32,7 @@ class UserView(APIView):
             return BihuResponse({'code': 'resource_gone', 'message': '请用已缴费的微信号登录'}, status=410)
         account = Account.get(user_id=user.user_id, platform_id=user.bind_platform_id)
         if not account:
-            username = MyRandom.random_digit(length=8)
-            expired_at = Datetime.localtime() + datetime.timedelta(minutes=30)
-            with transaction.atomic():
-                account = Account.create(
-                    user_id=user.user_id,
-                    platform_id=user.bind_platform_id,
-                    username=username,
-                    password=username,
-                    radius_password=username,
-                    role=Account.Role.PAY_USER.value,
-                    expired_at=expired_at,
-                )
+            return BihuResponse({'code': 'resource_gone', 'message': '账户不存在, 请联系管理员'}, status=410)
         if user.nickname != nickname or user.picture_url != avatar:
             user.update(nickname=nickname, picture_url=avatar)
         platform = Platform.get(owner_user_id=user.user_id)
