@@ -12,6 +12,8 @@ def create_new_platform(user_id):
     assert account
     platform = Platform.get(owner_user_id=user.user_id)
     if not platform:
+        # SELECT `AUTO_INCREMENT` FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'trade' AND table_name = 'platform';
+        # ALTER TABLE `platform` AUTO_INCREMENT = 3;
         platform = Platform.create(owner_user_id=user.user_id)
     platform.platform_id = platform.id
     qrcode_info = WeClient.create_qrcode(scene_str=str(platform.platform_id), is_permanent=True)
