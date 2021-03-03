@@ -7,11 +7,11 @@ from models import Account, User
 from trade.settings import log
 
 
-class UserResourceView(APIView):
+class AccountView(APIView):
     authentication_classes = (JWTAuthentication, )      # 默认配置
     permission_classes = ()
 
-    # /resource     获取免费资源
+    # /account     获取免费资源
     def get(self, request):
         auth = Authentication(request)
         #

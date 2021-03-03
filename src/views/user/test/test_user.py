@@ -33,5 +33,5 @@ class TestUser:
         user, authorization = UserFactory.new_user_and_authorization(client)
         #
         client = UnitTestAPIClient(authorization=authorization)
-        response = client.get('/resource')
+        response = client.get('/account')
         assert response.status_code == status.HTTP_200_OK

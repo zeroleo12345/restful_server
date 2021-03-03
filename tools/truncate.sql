@@ -1,1 +1,1 @@
-set foreign_key_checks = 0;truncate broadband_order;truncate user;truncate weixin;truncate resource;truncate resource_change;
+set foreign_key_checks = 0;truncate user;truncate account;truncate resource_change;
