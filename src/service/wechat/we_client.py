@@ -32,7 +32,7 @@ class WeClient(object):
             'button': [
                 {
                     'type': 'click',
-                    'name': 'WIFI账号中心',
+                    'name': '账号中心',
                     'key': cls.ACCOUNT_VIEW_BTN_EVENT,
                 },
                 {
@@ -41,7 +41,7 @@ class WeClient(object):
                     'key': cls.CUSTOMER_SERVICE_BTN_EVENT,
                 },
                 {
-                    'name': '上网教程',
+                    'name': 'WIFI连接教程',
                     'sub_button': [
                         {
                             'type': 'view',
