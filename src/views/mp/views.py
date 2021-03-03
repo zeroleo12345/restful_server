@@ -103,6 +103,7 @@ class EchoStrView(APIView):
                         new_platform = create_new_platform(user_id=user.user_id)
                         platform_url = f'{settings.API_SERVER_URL}/platform/{new_platform.platform_id}'
                         sentry_sdk.capture_message(f'房东平台已建立, platform_url: {platform_url}')
+                        redis.delete('enable_platform_register')
                 # 应答
                 r = ArticlesReply(source=appid, target=from_user_openid)
                 r.add_article({
