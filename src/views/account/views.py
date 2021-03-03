@@ -11,7 +11,7 @@ class AccountView(APIView):
     authentication_classes = (JWTAuthentication, )      # 默认配置
     permission_classes = ()
 
-    # /account     获取免费资源
+    # /account     获取账户信息
     def get(self, request):
         auth = Authentication(request)
         #
