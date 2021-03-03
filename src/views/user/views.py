@@ -35,7 +35,7 @@ class UserView(APIView):
             return BihuResponse({'code': 'resource_gone', 'message': '账户不存在, 请联系管理员'}, status=410)
         if user.nickname != nickname or user.picture_url != avatar:
             user.update(nickname=nickname, picture_url=avatar)
-        platform = Platform.get(owner_user_id=user.user_id)
+        platform = Platform.get(platform_id=user.bind_platform_id)
         account_info = account.to_dict()
         user_info = user.to_dict()
         platform_info = platform.to_dict() if platform else None

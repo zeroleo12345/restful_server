@@ -19,5 +19,4 @@ class AccountView(APIView):
         user = User.get(user_id=auth.user_id)
         account = Account.get(user_id=user.user_id, platform_id=user.bind_platform_id)
         data = account.to_dict()
-        data['status'] = account.get_resource_status()
         return BihuResponse(data=data)

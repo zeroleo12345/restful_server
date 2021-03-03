@@ -24,12 +24,9 @@ class Platform(models.Model, BaseModel):
     updated_at = models.DateTimeField(auto_now=True)        # auto_now is generated on 每次修改
 
     @classmethod
-    def get(cls, platform_id=None, owner_user_id=None) -> 'Platform':
-        if platform_id:
-            obj = cls.objects.filter(platform_id=platform_id).first()
-        elif owner_user_id:
-            obj = cls.objects.filter(owner_user_id=owner_user_id).first()
-        else:
-            raise Exception('param error')
-
+    def get(cls, platform_id) -> 'Platform':
+        obj = cls.objects.filter(platform_id=platform_id).first()
         return obj or None
+
+    def is_platform_owner(self, user_id: str) -> bool:
+        return self.owner_user_id == user_id

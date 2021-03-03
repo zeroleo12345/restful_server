@@ -112,7 +112,8 @@ class EchoStrView(APIView):
                         # 用户未经扫码, 进入公众号
                         return TextReply(source=appid, target=from_user_openid, content=f'请先扫描房东的WIFI二维码')
                     else:
-                        if Platform.get(owner_user_id=user.user_id) and not settings.is_admin(openid=from_user_openid):
+                        platform = Platform.get(platform_id=user.bind_platform_id)
+                        if platform.is_platform_owner(user_id=user.user_id) and not settings.is_admin(openid=from_user_openid):
                             # 房东不能打开充值页面, 但 admin 可以
                             return TextReply(source=appid, target=from_user_openid, content=f'房东不允许打开充值页面')
                         r = ArticlesReply(source=appid, target=from_user_openid)

@@ -56,3 +56,8 @@ class Account(models.Model, BaseModel):
             return 'working'
 
         return 'expired'
+
+    def to_dict(self, fields=None, exclude=None):
+        data = super(self.__class__, self).to_dict(fields=fields, exclude=exclude)
+        data['status'] = self.get_resource_status()
+        return data
