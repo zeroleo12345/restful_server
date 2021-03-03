@@ -167,7 +167,7 @@ class EchoStrView(APIView):
                     name = msg.content.split('搜索')[1].strip()
                     return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/search/user?name={name}')
 
-                elif msg.content.startswith('放通mac') and settings.is_admin(openid=from_user_openid):
+                elif msg.content.startswith('放开mac') and settings.is_admin(openid=from_user_openid):
                     redis = get_redis()
                     ex = 60 * 5
                     redis.set('enable_mac_authentication', str(datetime.datetime.now()), ex=ex)
