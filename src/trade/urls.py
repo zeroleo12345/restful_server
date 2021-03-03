@@ -1,7 +1,7 @@
 from django.urls import path, include
 from views.user.urls import user_urls
 from views.platform.urls import platform_urls
-from views.resource.urls import account_urls
+from views.account.urls import account_urls
 from views.order.urls import order_urls
 from views.mp.urls import mp_urls
 from views.search.urls import search_urls
