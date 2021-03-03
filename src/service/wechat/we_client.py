@@ -36,11 +36,6 @@ class WeClient(object):
                     'key': cls.ACCOUNT_VIEW_BTN_EVENT,
                 },
                 {
-                    'type': 'click',
-                    'name': '联系客服',
-                    'key': cls.CUSTOMER_SERVICE_BTN_EVENT,
-                },
-                {
                     'name': 'WIFI连接教程',
                     'sub_button': [
                         {
@@ -52,6 +47,11 @@ class WeClient(object):
                             'type': 'view',
                             'name': '上网教程 (安卓手机)',
                             'url': cls.ANDROID_VIEW_URI,
+                        },
+                        {
+                            'type': 'click',
+                            'name': '联系客服',
+                            'key': cls.CUSTOMER_SERVICE_BTN_EVENT,
                         },
                         {
                             'type': 'view',
