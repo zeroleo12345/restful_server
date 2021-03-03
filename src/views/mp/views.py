@@ -1,6 +1,6 @@
 import datetime
 # 第三方库
-from django.db import transaction
+import sentry_sdk
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.renderers import StaticHTMLRenderer
@@ -14,6 +14,7 @@ from utils.time import Datetime
 from trade import settings
 from trade.settings import log
 from models import Platform, User, Account
+from controls.platform import create_new_platform
 from service.wechat.we_client import WeClient
 from service.wechat.we_crypto import WeCrypto
 from framework.database import get_redis
@@ -68,9 +69,9 @@ class EchoStrView(APIView):
 
         def get_reply_msg():
             # 被动回复 https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Passive_user_reply_message.html
-            # 未关注用户扫描带参数二维码事件 - 订阅关注
-            # 已关注用户扫描带参数二维码事件
             if isinstance(msg, SubscribeScanEvent) or isinstance(msg, ScanEvent):
+                # 未关注用户扫描带参数二维码事件 - 订阅关注
+                # 已关注用户扫描带参数二维码事件
                 platform_id = int(msg.scene_id)
                 platform = Platform.get(platform_id=platform_id)
                 assert platform
@@ -81,21 +82,28 @@ class EchoStrView(APIView):
                     # 创建 account
                     username = MyRandom.random_digit(length=8)
                     expired_at = Datetime.localtime() + datetime.timedelta(days=3)  # 新账户三天内免费
-                    with transaction.atomic():
-                        account = Account.create(
-                            user_id=user.user_id,
-                            platform_id=user.bind_platform_id,
-                            username=username,
-                            password=username,
-                            radius_password=username,
-                            role=Account.Role.PAY_USER.value,
-                            expired_at=expired_at,
-                        )
+                    account = Account.create(
+                        user_id=user.user_id,
+                        platform_id=user.bind_platform_id,
+                        username=username,
+                        password=username,
+                        radius_password=username,
+                        role=Account.Role.PAY_USER.value,
+                        expired_at=expired_at,
+                    )
                 else:
                     # user 表记录, 存在
                     if user.bind_platform_id != platform.platform_id:
                         log.w(f'platform_id change: {user.bind_platform_id} -> {platform.platform_id}, openid: {user.openid}')
                         user.update(bind_platform_id=platform.platform_id)
+                # 判断是否放开房东注册
+                if platform.platform_id == settings.ADMIN_PLATFORM_ID:
+                    redis = get_redis()
+                    if redis.get('enable_platform_register'):
+                        new_platform = create_new_platform(user_id=user.user_id)
+                        platform_url = f'{settings.API_SERVER_URL}/platform/{new_platform.platform_id}'
+                        sentry_sdk.capture_message(f'房东平台已建立, platform_url: {platform_url}')
+                # 应答
                 r = ArticlesReply(source=appid, target=from_user_openid)
                 r.add_article({
                     'title': f'点击进入',
@@ -106,6 +114,7 @@ class EchoStrView(APIView):
                 return r
 
             if isinstance(msg, ClickEvent):
+                # 点击按钮 - 账号中心
                 if msg.key == WeClient.ACCOUNT_VIEW_BTN_EVENT:
                     user = User.get(openid=from_user_openid)
                     if not user or user.bind_platform_id is None:
@@ -135,9 +144,9 @@ class EchoStrView(APIView):
                     command = [
                         'id',
                         '搜索 $name',
-                        '房东二维码 $user_id',
                         'free',
-                        '放通mac认证',
+                        '放开mac',
+                        '放开房东注册',
                     ]
                     message = '命令:\n  ' + '\n  '.join(command)
                     return TextReply(source=appid, target=from_user_openid, content=message)
@@ -158,32 +167,17 @@ class EchoStrView(APIView):
                     name = msg.content.split('搜索')[1].strip()
                     return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/search/user?name={name}')
 
-                elif msg.content.startswith('放通mac认证') and settings.is_admin(openid=from_user_openid):
+                elif msg.content.startswith('放通mac') and settings.is_admin(openid=from_user_openid):
                     redis = get_redis()
-                    key = 'enable_mac_authentication'
                     ex = 60 * 5
-                    redis.set(key, str(datetime.datetime.now()), ex=ex)
+                    redis.set('enable_mac_authentication', str(datetime.datetime.now()), ex=ex)
                     return TextReply(source=appid, target=from_user_openid, content=f'有效时间: {ex}秒')
 
-                elif msg.content.startswith('房东二维码') and settings.is_admin(openid=from_user_openid):
-                    # 生成平台推广码
-                    user_id = msg.content.split('房东二维码')[1].strip()
-                    user = User.get(user_id=user_id)
-                    if not user:
-                        return TextReply(source=appid, target=from_user_openid, content=f'用户不存在')
-                    else:
-                        # 成为平台属主
-                        platform = Platform.create(owner_user_id=user.user_id)
-                        platform.platform_id = platform.id
-                        qrcode_info = WeClient.create_qrcode(scene_str=str(platform.platform_id), is_permanent=True)
-                        log.d(f'qrcode_info: {qrcode_info}')
-                        qrcode_content = qrcode_info['url']
-                        log.i(f'create qrcode, platform_id: {platform.platform_id}, qrcode_content: {qrcode_content}')
-                        platform.update(qrcode_content=qrcode_content, platform_id=platform.id, ssid=f'WIFI-{platform.platform_id}')
-                        user.update(bind_platform_id=platform.platform_id)
-                        account = Account.get(user_id=user.user_id, platform_id=platform.platform_id)
-                        account.update(role=Account.Role.PLATFORM_OWNER.value)
-                        return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/platform/{platform.platform_id}')
+                elif msg.content.startswith('放开房东注册') and settings.is_admin(openid=from_user_openid):
+                    redis = get_redis()
+                    ex = 60 * 5
+                    redis.set('enable_platform_register', str(datetime.datetime.now()), ex=ex)
+                    return TextReply(source=appid, target=from_user_openid, content=f'有效时间: {ex}秒')
 
                 elif msg.content.startswith('free') and settings.is_admin(openid=from_user_openid):
                     expired_at = Datetime.localtime() + datetime.timedelta(minutes=30)
