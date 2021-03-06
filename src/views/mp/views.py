@@ -96,10 +96,12 @@ class EchoStrView(APIView):
                     if user.bind_platform_id != platform.platform_id:
                         log.w(f'platform_id change: {user.bind_platform_id} -> {platform.platform_id}, openid: {user.openid}')
                         user.update(bind_platform_id=platform.platform_id)
+                sentry_sdk.capture_message(f'有用户扫描带参数二维码, platform_id: {platform.platform_id}')
                 # 判断是否放开房东注册
                 if platform.platform_id == settings.ADMIN_PLATFORM_ID:
                     redis = get_redis()
                     if redis.get('enable_platform_register'):
+                        # 新创建平台
                         new_platform = create_new_platform(user_id=user.user_id)
                         platform_url = f'{settings.API_SERVER_URL}/platform/{new_platform.platform_id}'
                         sentry_sdk.capture_message(f'房东平台已建立, platform_url: {platform_url}')
