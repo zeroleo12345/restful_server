@@ -18,6 +18,7 @@ class MacAccount(models.Model, BaseModel):
     radius_password = models.CharField(max_length=255)
     ap_mac = models.CharField(max_length=24)       # 连接符"-", 全部大写. 5E-DA-F9-68-41-2B
     is_enable = models.BooleanField(default=True)
+    bind_username = models.CharField(max_length=255, default='')
     #
     expired_at = models.DateTimeField()
     #
