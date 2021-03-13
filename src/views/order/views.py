@@ -8,7 +8,7 @@ from trade import settings
 from trade.settings import log
 from utils.mydjango import get_client_ip
 from service.wechat.we_pay import WePay
-from models import Order, Tariff, User
+from models import Order, Tariffs, User
 from framework.restful import BihuResponse
 from framework.authorization import JWTAuthentication
 from framework.field import new_uuid
@@ -27,8 +27,10 @@ class OrderView(APIView):
         tariff_name = request.data.get('tariff_name')
         #
         user = User.get(user_id=auth.user_id)
-        tariff = Tariff.get_object_or_404(tariff_name=tariff_name)
-        attach = Tariff.tariff_to_attach(tariff=tariff)
+        tariff = Tariffs.get_tariff(tariff_name=tariff_name)
+        if not tariff:
+            return BihuResponse({'code': 'resource_gone', 'message': '套餐不存在, 请刷新页面'}, status=410)
+        attach = tariff.convert_to_attach()
         if settings.is_admin(openid=user.openid):
             total_fee = 1 * tariff.duration  # 1分钱
         else:
