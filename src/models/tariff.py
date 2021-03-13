@@ -45,33 +45,25 @@ class Tariffs(object):
     """
     tariffs = [
         # 4M
-        [
-            Tariff(speed=4, duration=1, price=50*100),
-            Tariff(speed=4, duration=3, price=150*100),
-            Tariff(speed=4, duration=6, price=300*100),
-            Tariff(speed=4, duration=12, price=600*100),
-        ],
+        Tariff(speed=4, duration=1, price=50*100),
+        Tariff(speed=4, duration=3, price=150*100),
+        Tariff(speed=4, duration=6, price=300*100),
+        Tariff(speed=4, duration=12, price=600*100),
         # 8M
-        [
-            Tariff(speed=8, duration=1, price=50*100),
-            Tariff(speed=8, duration=3, price=150*100),
-            Tariff(speed=8, duration=6, price=300*100),
-            Tariff(speed=8, duration=12, price=600*100),
-        ],
+        Tariff(speed=8, duration=1, price=50*100),
+        Tariff(speed=8, duration=3, price=150*100),
+        Tariff(speed=8, duration=6, price=300*100),
+        Tariff(speed=8, duration=12, price=600*100),
         # 20M
-        [
-            Tariff(speed=20, duration=1, price=50*100),
-            Tariff(speed=20, duration=3, price=150*100),
-            Tariff(speed=20, duration=6, price=300*100),
-            Tariff(speed=20, duration=12, price=600*100),
-        ],
+        Tariff(speed=20, duration=1, price=50*100),
+        Tariff(speed=20, duration=3, price=150*100),
+        Tariff(speed=20, duration=6, price=300*100),
+        Tariff(speed=20, duration=12, price=600*100),
         # 50M
-        [
-            Tariff(speed=50, duration=1, price=50*100),
-            Tariff(speed=50, duration=3, price=150*100),
-            Tariff(speed=50, duration=6, price=300*100),
-            Tariff(speed=50, duration=12, price=600*100),
-        ],
+        Tariff(speed=50, duration=1, price=50*100),
+        Tariff(speed=50, duration=3, price=150*100),
+        Tariff(speed=50, duration=6, price=300*100),
+        Tariff(speed=50, duration=12, price=600*100),
     ]
 
     @classmethod
