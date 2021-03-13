@@ -11,7 +11,7 @@ class Tariff(object):
         self.tariff_name = f'{speed}M_{month}month'      # 套餐ID
         # 价格
         self.price = per_month_price * month                  # 单位: 分
-        self.price_desc = f'{self.price/100}元'
+        self.price_desc = f'{"{:g}".format(self.price/100)}元'
         self.price_red_desc = f'平均{per_month_price//100}元/月'
         # 宽带速度
         self.speed = speed
