@@ -37,13 +37,25 @@ class Tariff(object):
         tariff_name = json.loads(attach)['tariff_name']
         return Tariffs.get_tariff(tariff_name=tariff_name)
 
+    def to_dict(self):
+        return {
+            'tariff_name': self.tariff_name,
+            'price': self.price,
+            'price_desc': self.price_desc,
+            'price_red_desc': self.price_red_desc,
+            'speed': self.speed,
+            'speed_desc': self.speed_desc,
+            'duration': self.duration,
+            'duration_desc': self.duration_desc,
+        }
+
 
 class Tariffs(object):
     """
     1Byte = 8bit
     1M = 1000 Kbit/s -> 1000 / 8 KByte
     """
-    tariffs = [
+    all = [
         # 4M
         Tariff(speed=4, duration=1, price=50*100),
         Tariff(speed=4, duration=3, price=150*100),
@@ -68,7 +80,7 @@ class Tariffs(object):
 
     @classmethod
     def get_tariff(cls, tariff_name: str) -> 'Tariff':
-        for t in cls.tariffs:
+        for t in cls.all:
             if t.tariff_name == tariff_name:
                 return t
         return None
