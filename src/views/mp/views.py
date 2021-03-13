@@ -98,7 +98,7 @@ class EchoStrView(APIView):
                         role=Account.Role.PAY_USER.value,
                         expired_at=expired_at,
                     )
-                sentry_sdk.capture_message(f'有用户扫描带参数二维码, platform_id: {platform.platform_id}')
+                sentry_sdk.capture_message(f'有用户扫描带参数二维码, platform_id: {platform.platform_id}, openid: {from_user_openid}')
                 # 判断是否放开房东注册
                 if platform.platform_id == settings.ADMIN_PLATFORM_ID:
                     redis = get_redis()
