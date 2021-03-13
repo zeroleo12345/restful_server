@@ -79,9 +79,16 @@ class EchoStrView(APIView):
                 if not user:
                     # 创建 user
                     user = User.create(openid=from_user_openid, bind_platform_id=platform.platform_id)
+                else:
+                    # user 表记录, 存在
+                    if user.bind_platform_id != platform.platform_id:
+                        log.w(f'platform_id change: {user.bind_platform_id} -> {platform.platform_id}, openid: {user.openid}')
+                        user.update(bind_platform_id=platform.platform_id)
+                account = Account.get(user_id=user.user_id, platform_id=user.bind_platform_id)
+                if not account:
                     # 创建 account
                     username = MyRandom.random_digit(length=8)
-                    expired_at = Datetime.localtime() + datetime.timedelta(days=3)  # 新账户三天内免费
+                    expired_at = Datetime.localtime() + datetime.timedelta(days=1)  # 新账户一天内免费
                     account = Account.create(
                         user_id=user.user_id,
                         platform_id=user.bind_platform_id,
@@ -91,11 +98,6 @@ class EchoStrView(APIView):
                         role=Account.Role.PAY_USER.value,
                         expired_at=expired_at,
                     )
-                else:
-                    # user 表记录, 存在
-                    if user.bind_platform_id != platform.platform_id:
-                        log.w(f'platform_id change: {user.bind_platform_id} -> {platform.platform_id}, openid: {user.openid}')
-                        user.update(bind_platform_id=platform.platform_id)
                 sentry_sdk.capture_message(f'有用户扫描带参数二维码, platform_id: {platform.platform_id}')
                 # 判断是否放开房东注册
                 if platform.platform_id == settings.ADMIN_PLATFORM_ID:
@@ -107,14 +109,7 @@ class EchoStrView(APIView):
                         sentry_sdk.capture_message(f'房东平台已建立, platform_url: {platform_url}')
                         redis.delete('enable_platform_register')
                 # 应答
-                r = ArticlesReply(source=appid, target=from_user_openid)
-                r.add_article({
-                    'title': f'点击进入',
-                    'description': '查询WIFI密码 / WIFI续费',
-                    'image': 'http://zlxpic.lynatgz.cn/zhuzaiyuan_mini.jpg',
-                    'url': WeClient.ACCOUNT_VIEW_URI,
-                })
-                return r
+                return TextReply(source=appid, target=from_user_openid, content=f'账号: {account.username}\n密码: {account.password}')
 
             if isinstance(msg, ClickEvent):
                 # 点击按钮 - 账号中心
