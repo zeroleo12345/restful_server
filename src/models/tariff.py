@@ -7,18 +7,18 @@ from dateutil.relativedelta import relativedelta
 
 # 资费
 class Tariff(object):
-    def __init__(self, price, speed, duration):
-        self.tariff_name = f'{speed}M_{duration}month'      # 套餐ID
+    def __init__(self, per_month_price, speed, month):
+        self.tariff_name = f'{speed}M_{month}month'      # 套餐ID
         # 价格
-        self.price = price                  # 单位: 分
-        self.price_desc = f'{price/100}元'
-        self.price_red_desc = f'优惠!仅{price//duration}元/月'
+        self.price = per_month_price * month                  # 单位: 分
+        self.price_desc = f'{self.price/100}元'
+        self.price_red_desc = f'平均{per_month_price//100}元/月'
         # 宽带速度
         self.speed = speed
         self.speed_desc = f'{speed}M'
         # 时长
-        self.duration = duration
-        self.duration_desc = f'充值{duration}个月'
+        self.duration = month
+        self.duration_desc = f'充值{month}个月'
 
     def increase_duration(self, start_datetime):
         # 如果有效期 < 当前时间, 则重置为当前时间再叠加有效期
@@ -57,25 +57,17 @@ class Tariffs(object):
     """
     all = [
         # 4M
-        Tariff(speed=4, duration=1, price=50*100),
-        Tariff(speed=4, duration=3, price=150*100),
-        Tariff(speed=4, duration=6, price=300*100),
-        Tariff(speed=4, duration=12, price=600*100),
+        Tariff(speed=4, month=3, per_month_price=70*100),
+        Tariff(speed=4, month=6, per_month_price=50*100),
         # 8M
-        Tariff(speed=8, duration=1, price=50*100),
-        Tariff(speed=8, duration=3, price=150*100),
-        Tariff(speed=8, duration=6, price=300*100),
-        Tariff(speed=8, duration=12, price=600*100),
+        Tariff(speed=8, month=3, per_month_price=90*100),
+        Tariff(speed=8, month=6, per_month_price=60*100),
         # 20M
-        Tariff(speed=20, duration=1, price=50*100),
-        Tariff(speed=20, duration=3, price=150*100),
-        Tariff(speed=20, duration=6, price=300*100),
-        Tariff(speed=20, duration=12, price=600*100),
+        Tariff(speed=20, month=3, per_month_price=120*100),
+        Tariff(speed=20, month=6, per_month_price=80*100),
         # 50M
-        Tariff(speed=50, duration=1, price=50*100),
-        Tariff(speed=50, duration=3, price=150*100),
-        Tariff(speed=50, duration=6, price=300*100),
-        Tariff(speed=50, duration=12, price=600*100),
+        Tariff(speed=50, month=3, per_month_price=150*100),
+        Tariff(speed=50, month=6, per_month_price=100*100),
     ]
 
     @classmethod
