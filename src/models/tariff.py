@@ -27,15 +27,16 @@ class Tariff(object):
             raise exceptions.ValidationError('时长单位错误', 'invalid_unit')
 
     @staticmethod
-    def get_object_or_404(tariff_name):
-        objects = {
-           'month1': Tariff.Instance(tariff_name='month1', price=50*100, duration=1, unit='month'),     # 单位分
-           'month3': Tariff.Instance(tariff_name='month3', price=150*100, duration=3, unit='month'),    # 单位分
-           'month6': Tariff.Instance(tariff_name='month6', price=300*100, duration=6, unit='month'),    # 单位分
-        }
-        if tariff_name not in objects:
-            raise Http404('No Tariff matches the given query.')
-        return objects[tariff_name]
+    def get_object_or_404(tariff_name: str):
+        tariffs = [
+           Tariff.Instance(tariff_name='month1', price=50*100, duration=1, unit='month'),     # 单位分
+           Tariff.Instance(tariff_name='month3', price=150*100, duration=3, unit='month'),    # 单位分
+           Tariff.Instance(tariff_name='month6', price=300*100, duration=6, unit='month'),    # 单位分
+        ]
+        for t in tariffs:
+            if t.tariff_name == tariff_name:
+                return t
+        raise Http404('No Tariff matches the given query.')
 
     @staticmethod
     def tariff_to_attach(tariff):
@@ -44,7 +45,7 @@ class Tariff(object):
         return attach
 
     @staticmethod
-    def attach_to_tariff(attach):
+    def convert_from_attach(attach: str):
         tariff_name = json.loads(attach)['tariff_name']
         tariff = Tariff.get_object_or_404(tariff_name=tariff_name)
         return tariff
