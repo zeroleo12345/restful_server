@@ -47,10 +47,11 @@ class Account(models.Model, BaseModel):
             return []
         return accounts
 
-    def get_resource_status(self):
-        # expired: 已过期; working: 使用中; inactive: 已停用
+    @property
+    def status(self):
+        # expired: 已过期; working: 使用中; disable: 已停用
         if not self.is_enable:
-            return 'inactive'
+            return 'disable'
 
         if self.expired_at > timezone.localtime():
             return 'working'
@@ -59,5 +60,5 @@ class Account(models.Model, BaseModel):
 
     def to_dict(self, fields=None, exclude=None):
         data = super(self.__class__, self).to_dict(fields=fields, exclude=exclude)
-        data['status'] = self.get_resource_status()
+        data['status'] = self.status
         return data

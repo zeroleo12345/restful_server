@@ -109,7 +109,7 @@ class EchoStrView(APIView):
                         sentry_sdk.capture_message(f'房东平台已建立, platform_url: {platform_url}')
                         redis.delete('enable_platform_register')
                 # 应答
-                return TextReply(source=appid, target=from_user_openid, content=f'账号: {account.username}\n密码: {account.password}')
+                return TextReply(source=appid, target=from_user_openid, content=f'账号: {account.username}\n密码: {account.password}\n状态: {account.status}')
 
             if isinstance(msg, ClickEvent):
                 # 点击按钮 - 账号中心
