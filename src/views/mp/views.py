@@ -99,7 +99,7 @@ class EchoStrView(APIView):
                         expired_at=expired_at,
                     )
                 sentry_sdk.capture_message(f'有用户扫描带参数二维码, platform_id: {platform.platform_id}, openid: {from_user_openid}')
-                # 判断是否放开房东注册
+                # 判断是否允许房东注册
                 if platform.platform_id == settings.ADMIN_PLATFORM_ID:
                     redis = get_redis()
                     if redis.get('enable_platform_register'):
@@ -143,8 +143,8 @@ class EchoStrView(APIView):
                         'id',
                         '搜索 $name',
                         'free',
-                        '放开mac',
-                        '放开房东注册',
+                        '放通mac',
+                        '房东注册',
                     ]
                     message = '命令:\n  ' + '\n  '.join(command)
                     return TextReply(source=appid, target=from_user_openid, content=message)
@@ -165,13 +165,13 @@ class EchoStrView(APIView):
                     name = msg.content.split('搜索')[1].strip()
                     return TextReply(source=appid, target=from_user_openid, content=f'{settings.API_SERVER_URL}/search/user?name={name}')
 
-                elif msg.content.startswith('放开mac') and settings.is_admin(openid=from_user_openid):
+                elif msg.content.startswith('放通mac') and settings.is_admin(openid=from_user_openid):
                     redis = get_redis()
                     ex = 60 * 5
                     redis.set('enable_mac_authentication', str(datetime.datetime.now()), ex=ex)
                     return TextReply(source=appid, target=from_user_openid, content=f'有效时间: {ex}秒')
 
-                elif msg.content.startswith('放开房东注册') and settings.is_admin(openid=from_user_openid):
+                elif msg.content.startswith('房东注册') and settings.is_admin(openid=from_user_openid):
                     redis = get_redis()
                     ex = 60 * 5
                     redis.set('enable_platform_register', str(datetime.datetime.now()), ex=ex)
