@@ -20,4 +20,4 @@ qiniu==7.2.2
 sentry_sdk==0.8.0
 # https://github.com/lincolnloop/python-qrcode (可不依赖pillow库运行)
 qrcode==6.1
-pillow==8.0.1
+pillow==8.1.1
