@@ -2,7 +2,7 @@
 cryptography==2.7
 wechatpy==1.8.3
 django==2.1.13
-djangorestframework==3.9.4
+djangorestframework==3.11.2
 PyJWT==1.7.1
 PyMySQL==0.9.3
 greenlet==0.4.15
