@@ -62,12 +62,12 @@ class Tariffs(object):
         # 8M
         Tariff(speed=8, month=6, per_month_price=60*100),
         Tariff(speed=8, month=3, per_month_price=75*100),
-        # 20M
-        Tariff(speed=20, month=6, per_month_price=80*100),
-        Tariff(speed=20, month=3, per_month_price=100*100),
+        # 12M
+        Tariff(speed=12, month=6, per_month_price=70*100),
+        Tariff(speed=12, month=3, per_month_price=90*100),
         # 50M
-        Tariff(speed=50, month=6, per_month_price=100*100),
-        Tariff(speed=50, month=3, per_month_price=125*100),
+        Tariff(speed=50, month=6, per_month_price=90*100),
+        Tariff(speed=50, month=3, per_month_price=120*100),
     ]
 
     @classmethod
