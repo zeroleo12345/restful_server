@@ -76,3 +76,13 @@ docker-compose exec api  python src/manage.py migrate --database=default
 ``` bash
 mysqldump --default-character-set=utf8mb4 -h 127.0.0.1 -P 33333 -u root --password=root -c --databases trade > ./dump.sql
 ```
+
+## SQL
+```
+# 统计AP在线
+select * from stat_ap where created_at > '2021-03-20 11:11:11';
+
+# 统计用户绑定AP
+select count(*), ap_mac, username from stat_user where created_at > '2021-03-20 11:11:11' group by ap_mac, username order by count(*) desc;
+select username, user_mac, ap_mac, count(*) from stat_user where created_at > '2021-03-20 11:11:11' group by username, user_mac, ap_mac;
+```
