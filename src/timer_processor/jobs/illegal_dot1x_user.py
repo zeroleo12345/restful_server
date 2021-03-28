@@ -8,6 +8,7 @@ from framework.database import dict_fetchall
 from utils.slack import send_slack_message
 from utils.decorators import promise_do_once
 from trade.settings import log
+from pprint import pprint
 
 
 class IllegalDot1xUserJob(metaclass=MetaClass):
@@ -41,7 +42,6 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
 
         # 按username统计连接最多的AP, 作为用户绑定的常用AP. 需排除is_public的AP
         username_ap = dict()
-        ap_username = dict()
         # TODO 加上时间筛选, 30天内
         sql = f"""
         SELECT username, ap_mac, count(*) AS accept_count FROM stat_user GROUP BY username, ap_mac ORDER BY accept_count DESC;
@@ -55,11 +55,10 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
                 if ap_mac in public_ap:
                     continue
                 #
-                if ap_mac in ap_username:
+                if username in username_ap:
                     continue
                 else:
                     username_ap[username] = f'{ap_mac}:{accept_count}'
-                    ap_username[ap_mac] = username
 
         # 按 username, user_mac 统计, 告警: 不等于该ap_owner的username
         username_usermac_ap = dict()
@@ -81,8 +80,8 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
                 else:
                     username_usermac_ap[f'{username}:{user_mac}'] = ap_mac
 
-        log.i(f'username_ap: {username_ap}')
-        log.i(f'username_usermac_ap: {username_usermac_ap}')
+        pprint(f'username_ap: {username_ap}')
+        pprint(f'username_usermac_ap: {username_usermac_ap}')
         for key, value in username_usermac_ap.items():
             username, user_mac = key.split(':')
             ap_mac = value
