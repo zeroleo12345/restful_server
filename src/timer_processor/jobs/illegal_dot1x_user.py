@@ -41,6 +41,7 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
 
         # 按username统计连接最多的AP, 作为用户绑定的常用AP. 需排除is_public的AP
         username_ap = dict()
+        ap_username = dict()
         # TODO 加上时间筛选, 30天内
         sql = f"""
         SELECT username, ap_mac, count(*) AS accept_count FROM stat_user GROUP BY username, ap_mac ORDER BY accept_count DESC;
@@ -53,10 +54,12 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
                 accept_count = row['accept_count']
                 if ap_mac in public_ap:
                     continue
-                if ap_mac in username_ap:
+                #
+                if ap_mac in ap_username:
                     continue
                 else:
                     username_ap[username] = f'{ap_mac}:{accept_count}'
+                    ap_username[ap_mac] = username
 
         # 按 username, user_mac 统计, 告警: 不等于该ap_owner的username
         username_usermac_ap = dict()
