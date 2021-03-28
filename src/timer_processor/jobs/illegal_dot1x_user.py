@@ -61,7 +61,7 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
         # 按 username, user_mac 统计, 告警: 不等于该ap_owner的username
         username_usermac_ap = dict()
         sql = f"""
-        SELECT username, user_mac, ap_mac, count(*) AS accept_count FROM stat_user GROUP BY username, uer_mac, ap_mac ORDER BY accept_count DESC;
+        SELECT username, user_mac, ap_mac, count(*) AS accept_count FROM stat_user GROUP BY username, user_mac, ap_mac ORDER BY accept_count DESC;
         """
         with connection.cursor() as cursor:
             cursor.execute(sql)
