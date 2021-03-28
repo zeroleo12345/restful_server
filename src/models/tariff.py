@@ -53,7 +53,7 @@ class Tariff(object):
 class Tariffs(object):
     """
     1Byte = 8bit
-    电信宽带1M = 1000 Kbit/s = 1000 / 8 KByte/s = 125KB/s
+    电信宽带1M = 1000 Kbit/s = 1000 / 8 KByte/s = 125KB/s = 125*8 kbps = 125*8*1000 bit/s
     """
     all = [
         # 4M
