@@ -14,9 +14,9 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
     next_time = timezone.localtime()
 
     @classmethod
-    def start(cls):
+    def start(cls, force=False):
         now = timezone.localtime()
-        if now < cls.next_time:
+        if not force and now < cls.next_time:
             return
         # 隔天早上7点
         tomorrow = (now + datetime.timedelta(days=1)).replace(hour=7, minute=0, second=0, microsecond=0)
@@ -78,15 +78,15 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
                 else:
                     username_usermac_ap[f'{username}:{user_mac}'] = ap_mac
 
-        log.info(f'username_ap: {username_ap}')
-        log.info(f'username_usermac_ap: {username_usermac_ap}')
+        log.i(f'username_ap: {username_ap}')
+        log.i(f'username_usermac_ap: {username_usermac_ap}')
         for key, value in username_usermac_ap.items():
             username, user_mac = key.split(':')
             ap_mac = value
             correct_ap_mac = username_ap[username]
             if ap_mac == correct_ap_mac:
                 continue
-            log.error(f'username: {username}, user_mac: {user_mac} 应该绑定AP: {correct_ap_mac}, 现连接: {ap_mac}')
+            log.e(f'username: {username}, user_mac: {user_mac} 应该绑定AP: {correct_ap_mac}, 现连接: {ap_mac}')
             # 发送slack统计消息
             # text = f'昨天充值金额: {today_sum/100} 元, 历史累计充值金额: {total_sum/100} 元'
             # send_slack_message(text=text)
