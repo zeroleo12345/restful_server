@@ -27,7 +27,7 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
         cls.doing(start_time=start_time, end_time=end_time)
 
     @classmethod
-    @promise_do_once(file_name='expire_user', func_name='doing')
+    @promise_do_once(file_name='illegal_dot1x_user', func_name='doing')
     def doing(cls, start_time, end_time):
         # 所有public的AP
         public_ap = set()
