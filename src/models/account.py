@@ -30,6 +30,7 @@ class Account(models.Model, BaseModel):
     is_enable = models.BooleanField(default=True)
     role = models.CharField(max_length=32, choices=Role.choices(), default=Role.PAY_USER.value)
     #
+    speed = models.IntegerField()
     expired_at = models.DateTimeField()
     #
     created_at = models.DateTimeField(auto_now_add=True)    # auto_now_add only generated on 新创建
