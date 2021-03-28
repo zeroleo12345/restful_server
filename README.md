@@ -85,4 +85,7 @@ select * from stat_ap where created_at > '2021-03-20 11:11:11';
 # 统计用户绑定AP
 select count(*), ap_mac, username from stat_user where created_at > '2021-03-20 11:11:11' group by ap_mac, username order by count(*) desc;
 select username, user_mac, ap_mac, count(*) from stat_user where created_at > '2021-03-20 11:11:11' group by username, user_mac, ap_mac;
+
+# 插入用户
+insert into account (user_id, platform_id, username, password, is_enable, role, expired_at, created_at, updated_at,radius_password) values (666, 1, 'testuser', 'testuser', 1, 'pay_user', '2099-12-25 12:00:00', '2021-03-01 00:00:00', '2021-03-01 00:00:00', 'testuser');
 ```
