@@ -1,0 +1,92 @@
+import datetime
+# 第三方类
+from django.utils import timezone
+from django.db import connection
+# 自己的类
+from . import MetaClass
+from framework.database import dict_fetchall
+from utils.slack import send_slack_message
+from utils.decorators import promise_do_once
+from trade.settings import log
+
+
+class IllegalDot1xUserJob(metaclass=MetaClass):
+    next_time = timezone.localtime()
+
+    @classmethod
+    def start(cls):
+        now = timezone.localtime()
+        if now < cls.next_time:
+            return
+        # 隔天早上7点
+        tomorrow = (now + datetime.timedelta(days=1)).replace(hour=7, minute=0, second=0, microsecond=0)
+        cls.next_time = tomorrow
+        #
+        start_time = timezone.localtime().replace(hour=0, minute=0, second=0, microsecond=0)
+        end_time = start_time - datetime.timedelta(days=1)
+        cls.doing(start_time=start_time, end_time=end_time)
+
+    @classmethod
+    @promise_do_once(file_name='expire_user', func_name='doing')
+    def doing(cls, start_time, end_time):
+        # 所有public的AP
+        public_ap = set()
+        sql = f"""
+        SELECT ap_mac FROM ap_owner WHERE is_public = 1;
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            for row in dict_fetchall(cursor):
+                public_ap.add(row['ap_mac'])
+
+        # 按username统计连接最多的AP, 作为用户绑定的常用AP. 需排除is_public的AP
+        username_ap = dict()
+        # TODO 加上时间筛选, 30天内
+        sql = f"""
+        SELECT username, ap_mac, count(*) AS accept_count FROM stat_user GROUP BY username, ap_mac ORDER BY accept_count DESC;
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            for row in dict_fetchall(cursor):
+                username = row['username']
+                ap_mac = row['ap_mac']
+                accept_count = row['accept_count']
+                if ap_mac in public_ap:
+                    continue
+                if ap_mac in username_ap:
+                    continue
+                else:
+                    username_ap[username] = ap_mac
+
+        # 按 username, user_mac 统计, 告警: 不等于该ap_owner的username
+        username_usermac_ap = dict()
+        sql = f"""
+        SELECT username, user_mac, ap_mac, count(*) AS accept_count FROM stat_user GROUP BY username, uer_mac, ap_mac ORDER BY accept_count DESC;
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            for row in dict_fetchall(cursor):
+                username = row['username']
+                user_mac = row['user_mac']
+                ap_mac = row['ap_mac']
+                accept_count = row['accept_count']
+                #
+                if ap_mac in public_ap:
+                    continue
+                if f'{username}:{user_mac}' in username_usermac_ap:
+                    continue
+                else:
+                    username_usermac_ap[f'{username}:{user_mac}'] = ap_mac
+
+        log.info(f'username_ap: {username_ap}')
+        log.info(f'username_usermac_ap: {username_usermac_ap}')
+        for key, value in username_usermac_ap.items():
+            username, user_mac = key.split(':')
+            ap_mac = value
+            correct_ap_mac = username_ap[username]
+            if ap_mac == correct_ap_mac:
+                continue
+            log.error(f'username: {username}, user_mac: {user_mac} 应该绑定AP: {correct_ap_mac}, 现连接: {ap_mac}')
+            # 发送slack统计消息
+            # text = f'昨天充值金额: {today_sum/100} 元, 历史累计充值金额: {total_sum/100} 元'
+            # send_slack_message(text=text)
