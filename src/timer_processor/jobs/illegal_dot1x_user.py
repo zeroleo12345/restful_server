@@ -56,7 +56,7 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
                 if ap_mac in username_ap:
                     continue
                 else:
-                    username_ap[username] = ap_mac
+                    username_ap[username] = f'{ap_mac}:{accept_count}'
 
         # 按 username, user_mac 统计, 告警: 不等于该ap_owner的username
         username_usermac_ap = dict()
@@ -83,10 +83,10 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
         for key, value in username_usermac_ap.items():
             username, user_mac = key.split(':')
             ap_mac = value
-            correct_ap_mac = username_ap[username]
+            correct_ap_mac, correct_accept_count = username_ap[username].split(':')
             if ap_mac == correct_ap_mac:
                 continue
-            log.e(f'username: {username}, user_mac: {user_mac} 应该绑定AP: {correct_ap_mac}, 现连接: {ap_mac}')
+            log.e(f'username: {username}, user_mac: {user_mac} 应绑定AP: {correct_ap_mac}, 次数: {correct_accept_count}. 但现连接: {ap_mac}')
             # 发送slack统计消息
             # text = f'昨天充值金额: {today_sum/100} 元, 历史累计充值金额: {total_sum/100} 元'
             # send_slack_message(text=text)
