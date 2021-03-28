@@ -39,3 +39,4 @@ class ApOwner(models.Model, BaseModel):
     username = models.CharField(max_length=255)
     ap_mac = models.CharField(max_length=24)       # 连接符"-", 全部大写. 5E-DA-F9-68-41-2B
     is_public = models.BooleanField(default=False)
+    tips = models.CharField(max_length=32)
