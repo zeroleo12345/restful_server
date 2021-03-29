@@ -44,9 +44,10 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
                 is_public = row['is_public']
                 if is_public:
                     public_ap.add(ap_mac)
-                if ap_mac not in ap_owner:
-                    ap_owner[ap_mac] = set()
-                ap_owner[ap_mac].add(username)
+                else:
+                    if ap_mac not in ap_owner:
+                        ap_owner[ap_mac] = set()
+                    ap_owner[ap_mac].add(username)
 
         # 按username统计连接最多的AP, 作为用户绑定的常用AP. 需排除is_public的AP
         username_ap = dict()
