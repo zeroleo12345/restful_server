@@ -97,6 +97,7 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
                 else:
                     username_usermac_ap[f'{username}:{user_mac}'] = ap_mac
 
+        pprint(f'public_ap: {public_ap}')
         pprint(f'ap_owner: {ap_owner}')
         pprint(f'username_ap: {username_ap}')
         pprint(f'username_usermac_ap: {username_usermac_ap}')
