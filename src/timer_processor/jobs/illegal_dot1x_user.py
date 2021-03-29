@@ -55,6 +55,7 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
         sql = f"""
         SELECT username, ap_mac, count(*) AS accept_count FROM stat_user GROUP BY username, ap_mac ORDER BY accept_count DESC;
         """
+        log.i(f'sql: {sql}')
         with connection.cursor() as cursor:
             cursor.execute(sql)
             for row in dict_fetchall(cursor):
@@ -77,6 +78,7 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
         sql = f"""
         SELECT username, user_mac, ap_mac, count(*) AS accept_count FROM stat_user GROUP BY username, user_mac, ap_mac ORDER BY accept_count DESC;
         """
+        log.i(f'sql: {sql}')
         with connection.cursor() as cursor:
             cursor.execute(sql)
             for row in dict_fetchall(cursor):
