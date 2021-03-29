@@ -32,13 +32,21 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
     def doing(cls, start_time, end_time):
         # 所有public的AP
         public_ap = set()
+        ap_owner = dict()
         sql = f"""
-        SELECT ap_mac FROM ap_owner WHERE is_public = 1;
+        SELECT * FROM ap_owner WHERE is_public = 1;
         """
         with connection.cursor() as cursor:
             cursor.execute(sql)
             for row in dict_fetchall(cursor):
-                public_ap.add(row['ap_mac'])
+                username = row['username']
+                ap_mac = row['ap_mac']
+                is_public = row['is_public']
+                if is_public:
+                    public_ap.add(ap_mac)
+                if ap_mac not in ap_owner:
+                    ap_owner[ap_mac] = set()
+                ap_owner[ap_mac].add(username)
 
         # 按username统计连接最多的AP, 作为用户绑定的常用AP. 需排除is_public的AP
         username_ap = dict()
@@ -54,8 +62,11 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
                 accept_count = row['accept_count']
                 if ap_mac in public_ap:
                     continue
-                #
+                if ap_mac in ap_owner:
+                    # 跳过已绑定用户的AP
+                    continue
                 if username in username_ap:
+                    # 绑定关系已处理
                     continue
                 else:
                     username_ap[username] = f'{ap_mac}:{accept_count}'
@@ -73,9 +84,14 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
                 ap_mac = row['ap_mac']
                 accept_count = row['accept_count']
                 #
+                if ap_mac in ap_owner:
+                    # 跳过已绑定用户的AP
+                    continue
                 if ap_mac in public_ap:
+                    # 公用AP跳过
                     continue
                 if f'{username}:{user_mac}' in username_usermac_ap:
+                    # 绑定关系已处理
                     continue
                 else:
                     username_usermac_ap[f'{username}:{user_mac}'] = ap_mac
