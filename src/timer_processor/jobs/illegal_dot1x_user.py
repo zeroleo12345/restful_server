@@ -32,7 +32,7 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
     def doing(cls, start_time, end_time):
         # 所有public的AP
         public_ap = set()
-        ap_owner = dict()
+        owner_ap = dict()
         sql = f"""
         SELECT * FROM ap_owner;
         """
@@ -45,9 +45,9 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
                 if is_public:
                     public_ap.add(ap_mac)
                 else:
-                    if ap_mac not in ap_owner:
-                        ap_owner[ap_mac] = set()
-                    ap_owner[ap_mac].add(username)
+                    if username not in owner_ap:
+                        owner_ap[username] = set()
+                    owner_ap[username].add(ap_mac)
 
         # 按username统计连接最多的AP, 作为用户绑定的常用AP. 需排除is_public的AP
         username_ap = dict()
@@ -63,7 +63,7 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
                 accept_count = row['accept_count']
                 if ap_mac in public_ap:
                     continue
-                if ap_mac in ap_owner:
+                if username in owner_ap:
                     # 跳过已绑定用户的AP
                     continue
                 if username in username_ap:
@@ -85,7 +85,7 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
                 ap_mac = row['ap_mac']
                 accept_count = row['accept_count']
                 #
-                if ap_mac in ap_owner:
+                if username in owner_ap:
                     # 跳过已绑定用户的AP
                     continue
                 if ap_mac in public_ap:
@@ -98,7 +98,7 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
                     username_usermac_ap[f'{username}:{user_mac}'] = ap_mac
 
         pprint(f'public_ap: {public_ap}')
-        pprint(f'ap_owner: {ap_owner}')
+        pprint(f'owner_ap: {owner_ap}')
         pprint(f'username_ap: {username_ap}')
         pprint(f'username_usermac_ap: {username_usermac_ap}')
         for key, value in username_usermac_ap.items():
