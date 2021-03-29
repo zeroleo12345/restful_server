@@ -34,7 +34,7 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
         public_ap = set()
         ap_owner = dict()
         sql = f"""
-        SELECT * FROM ap_owner WHERE is_public = 1;
+        SELECT * FROM ap_owner;
         """
         with connection.cursor() as cursor:
             cursor.execute(sql)
