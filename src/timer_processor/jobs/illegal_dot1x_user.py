@@ -8,7 +8,6 @@ from framework.database import dict_fetchall
 from utils.slack import send_slack_message
 from utils.decorators import promise_do_once
 from trade.settings import log
-from pprint import pprint
 
 
 class IllegalDot1xUserJob(metaclass=MetaClass):
@@ -99,10 +98,10 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
                 else:
                     username_usermac_ap[f'{username}:{user_mac}'] = ap_mac
 
-        pprint(f'public_ap: {public_ap}')
-        pprint(f'owner_ap: {owner_ap}')
-        pprint(f'username_ap: {username_ap}')
-        pprint(f'username_usermac_ap: {username_usermac_ap}')
+        log.i(f'public_ap: {public_ap}')
+        log.i(f'owner_ap: {owner_ap}')
+        log.i(f'username_ap: {username_ap}')
+        log.i(f'username_usermac_ap: {username_usermac_ap}')
         for key, value in username_usermac_ap.items():
             username, user_mac = key.split(':')
             ap_mac = value
