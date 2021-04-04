@@ -54,6 +54,8 @@ services:
   redis:
     container_name: restful_server_redis
     image: redis:alpine
+    ports:
+      - "66666:6379"
     volumes:    # 挂载盘: - 主机路径:docker内部路径
       - ./data/redisdata:/data
     restart: unless-stopped
