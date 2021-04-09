@@ -7,6 +7,28 @@ pppoe用户充值系统 (基于 python3 + django 2.1.13 + docker)
 公众号调试地址: `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx54d296959ee50c0b&redirect_uri=http://wechat.lynatgz.cn&response_type=code&scope=snsapi_userinfo`
 
 
+## TODO
+```
+目录结构:
+framework/
+utils/
+trade/
+    migrations/
+    views/
+    buffer/
+    models/
+    controls/
+    urls.py
+timer_processor/
+service/
+urls.py
+settings.py
+wsgi.py
+conftest.py
+manage.py
+```
+
+
 ## 环境变量说明
 ``` bash
 ENVIRONMENT:
