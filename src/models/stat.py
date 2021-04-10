@@ -28,3 +28,15 @@ class StatAp(models.Model, BaseModel):
     last_auth_date = models.DateField()
     #
     created_at = models.DateTimeField(auto_now_add=True)    # auto_now_add only generated on 新创建
+
+
+class ApOwner(models.Model, BaseModel):
+    class Meta:
+        app_label = 'trade'
+        db_table = 'ap_owner'
+
+    id = models.AutoField(primary_key=True)
+    username = models.CharField(max_length=255)
+    ap_mac = models.CharField(max_length=24)       # 连接符"-", 全部大写. 5E-DA-F9-68-41-2B
+    is_public = models.BooleanField(default=False)
+    remark = models.CharField(max_length=32)
