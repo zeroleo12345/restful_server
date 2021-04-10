@@ -10,7 +10,7 @@ from gevent.queue import LifoQueue
 from redis.connection import Connection, BlockingConnectionPool
 from redis import Redis
 # 项目库
-from trade import settings
+import settings
 from utils.time import Datetime
 
 

@@ -11,7 +11,7 @@ from rest_framework import exceptions
 import sentry_sdk
 # 项目库
 from framework.exception import GlobalException
-from trade.settings import log
+from settings import log
 
 
 class BihuResponse(HttpResponse):

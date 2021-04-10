@@ -3,7 +3,7 @@ from datetime import datetime
 #
 from service.wechat.we_client import WeClient
 from utils.time import Datetime
-from trade import settings
+import settings
 
 we_message = WeChatMessage(client=WeClient.we_client)
 

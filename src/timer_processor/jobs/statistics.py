@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.db.models import Sum
 # 自己的类
 from . import MetaClass
-from models import Order
+from trade.models import Order
 from utils.slack import send_slack_message
 from utils.decorators import promise_do_once
 

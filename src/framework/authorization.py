@@ -6,7 +6,7 @@ from rest_framework.authentication import BaseAuthentication
 from rest_framework.settings import APISettings
 import jwt
 # 项目库
-from trade import settings
+import settings
 from framework.exception import GlobalException
 
 jwt_settings = APISettings(user_settings=settings.JWT_AUTH, defaults=settings.JWT_AUTH)
