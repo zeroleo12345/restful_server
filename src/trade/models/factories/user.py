@@ -6,10 +6,10 @@ from trade.models import Account
 class UserFactory(object):
     @classmethod
     def new_user_and_authorization(cls, client):
-        # 发送注册验证码
         data = {
             'code': '001yROix1KtF1c0waVgx1k6Bix1yROiR'
         }
+        # TODO 注册流程 改为 扫描带参数二维码!
         response = client.get('/user', data=data)
         assert response.status_code == status.HTTP_200_OK
         #
