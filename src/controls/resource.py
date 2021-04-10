@@ -13,7 +13,8 @@ def increase_user_resource(total_fee: int, out_trade_no: str, transaction_id: st
     account = Account.get(user_id=order.user_id, platform_id=order.platform_id)
     assert account
     # 计算时长叠加
-    tariff = Tariff.attach_to_tariff(attach)
+    tariff = Tariff.convert_from_attach(attach)
+    assert tariff
     before = account.expired_at
     after = tariff.increase_duration(before)
     with transaction.atomic():
