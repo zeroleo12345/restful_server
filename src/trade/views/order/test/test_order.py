@@ -1,6 +1,6 @@
 # 项目库
 from framework.unittest import UnitTestAPIClient
-from trade.models.factories import UserFactory
+from trade.models.factories.user import UserFactory
 from trade.models.factories.order import OrderFactory
 
 

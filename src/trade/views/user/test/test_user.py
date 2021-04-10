@@ -7,7 +7,7 @@ import pytest
 import settings
 from utils.time import Datetime
 from framework.unittest import UnitTestAPIClient
-from trade.models.factories import UserFactory
+from trade.models.factories.user import UserFactory
 from service.wechat.we_client import WeClient
 
 WeClient.create_mp_menu = MagicMock()

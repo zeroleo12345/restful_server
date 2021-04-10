@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 # 项目库
 from framework.field import new_uuid
 from framework.unittest import UnitTestAPIClient
-from trade.models.factories import UserFactory
+from trade.models.factories.user import UserFactory
 from trade.models.factories.order import OrderFactory
 
 
