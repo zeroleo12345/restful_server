@@ -7,7 +7,7 @@ from . import MetaClass
 from framework.database import dict_fetchall
 from utils.slack import send_slack_message
 from utils.decorators import promise_do_once
-from trade.settings import log
+from settings import log
 
 
 class IllegalDot1xUserJob(metaclass=MetaClass):
