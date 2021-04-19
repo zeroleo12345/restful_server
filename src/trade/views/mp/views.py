@@ -98,7 +98,9 @@ class EchoStrView(APIView):
                         role=Account.Role.PAY_USER.value,
                         expired_at=expired_at,
                     )
-                content = f'有用户扫描带参数二维码, platform_id: {platform.platform_id}, openid: {from_user_openid}\n' \
+                content = f'有用户扫描带参数二维码\n' \
+                          f'platform_id: {platform.platform_id}\n' \
+                          f'openid: {from_user_openid}\n' \
                           f'账户: {account.username}\n' \
                           f'密码: {account.password}'
                 Feishu.send_groud_msg(receiver_id=Feishu.FEISHU_NOTIFY_GROUP, content=content)
@@ -109,7 +111,7 @@ class EchoStrView(APIView):
                         # 新创建平台
                         new_platform = create_new_platform(user_id=user.user_id)
                         platform_url = f'{settings.API_SERVER_URL}/platform/{new_platform.platform_id}'
-                        content = f'房东平台已建立, platform_url: {platform_url}'
+                        content = f'房东平台已建立\nplatform_url: {platform_url}'
                         Feishu.send_groud_msg(receiver_id=Feishu.FEISHU_NOTIFY_GROUP, content=content)
                         redis.delete('enable_platform_register')
                 # 应答
