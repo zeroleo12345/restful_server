@@ -1,6 +1,6 @@
 import datetime
 # 第三方库
-import sentry_sdk
+from utils.feishu import Feishu
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.renderers import StaticHTMLRenderer
@@ -98,7 +98,10 @@ class EchoStrView(APIView):
                         role=Account.Role.PAY_USER.value,
                         expired_at=expired_at,
                     )
-                sentry_sdk.capture_message(f'有用户扫描带参数二维码, platform_id: {platform.platform_id}, openid: {from_user_openid}')
+                content = f'有用户扫描带参数二维码, platform_id: {platform.platform_id}, openid: {from_user_openid}\n' \
+                          f'账户: {account.username}\n' \
+                          f'密码: {account.password}'
+                Feishu.send_groud_msg(receiver_id=Feishu.FEISHU_NOTIFY_GROUP, content=content)
                 # 判断是否允许房东注册
                 if platform.platform_id == settings.ADMIN_PLATFORM_ID:
                     redis = get_redis()
@@ -106,7 +109,8 @@ class EchoStrView(APIView):
                         # 新创建平台
                         new_platform = create_new_platform(user_id=user.user_id)
                         platform_url = f'{settings.API_SERVER_URL}/platform/{new_platform.platform_id}'
-                        sentry_sdk.capture_message(f'房东平台已建立, platform_url: {platform_url}')
+                        content = f'房东平台已建立, platform_url: {platform_url}'
+                        Feishu.send_groud_msg(receiver_id=Feishu.FEISHU_NOTIFY_GROUP, content=content)
                         redis.delete('enable_platform_register')
                 # 应答
                 return TextReply(source=appid, target=from_user_openid, content=f'账号: {account.username}\n密码: {account.password}\n状态: {account.status}')
