@@ -5,7 +5,6 @@ from django.db import connection
 # 自己的类
 from . import MetaClass
 from framework.database import dict_fetchall
-from utils.slack import send_slack_message
 from utils.decorators import promise_do_once
 from settings import log
 
@@ -111,4 +110,4 @@ class IllegalDot1xUserJob(metaclass=MetaClass):
             log.e(f'username: {username}, user_mac: {user_mac} 应绑定AP: {correct_ap_mac}, 次数: {correct_accept_count}. 但现连接: {ap_mac}')
             # 发送slack统计消息
             # text = f'昨天充值金额: {today_sum/100} 元, 历史累计充值金额: {total_sum/100} 元'
-            # send_slack_message(text=text)
+            # Feishu.send_groud_msg(receiver_id=Feishu.FEISHU_NOTIFY_GROUP, text=text)

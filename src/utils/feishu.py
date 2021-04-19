@@ -10,7 +10,7 @@ class Feishu(object):
     FEISHU_NOTIFY_GROUP = settings.get('FEISHU_NOTIFY_GROUP', default='oc_a4bc2f10dd9ec84f08f2bbcaa82e08cd')
 
     @classmethod
-    def send_groud_msg(cls, receiver_id: str, content: str):
+    def send_groud_msg(cls, receiver_id: str, text: str):
         data = {
             'app_id': cls.FEISHU_APP_ID,
             'app_secret': cls.FEISHU_APP_SECRET,
@@ -29,7 +29,7 @@ class Feishu(object):
             'chat_id': receiver_id,
             'msg_type': 'text',
             'content': {
-                'text': content,
+                'text': text,
             }
         }
         response = requests.post('https://open.feishu.cn/open-apis/message/v4/send/', json=data, headers=headers)
