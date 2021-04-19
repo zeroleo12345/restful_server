@@ -1,5 +1,5 @@
 # 第三方库
-from trade import settings
+import settings
 from wechatpy.pay import WeChatPay
 from wechatpy.exceptions import WeChatPayException
 # 项目库

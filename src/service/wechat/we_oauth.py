@@ -1,4 +1,4 @@
-from trade import settings
+import settings
 #
 from wechatpy.oauth import WeChatOAuth, WeChatOAuthException
 import sentry_sdk

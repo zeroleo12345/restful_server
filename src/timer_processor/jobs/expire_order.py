@@ -3,10 +3,10 @@ import datetime
 from django.utils import timezone
 # 项目库
 from . import MetaClass
-from models import Order, get_redis
+from trade.models import Order, get_redis
 from service.wechat.we_pay import WePay
-from trade.settings import log
-from controls.resource import increase_user_resource
+from settings import log
+from trade.controls.resource import increase_user_resource
 from utils.time import Datetime
 
 

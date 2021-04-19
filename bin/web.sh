@@ -9,5 +9,5 @@ python src/manage.py migrate
 if [[ "$DEBUG" == "True" || "$DEBUG" == "1" ]]; then
     exec python src/manage.py runserver 0.0.0.0:8000
 else
-    exec gunicorn trade.wsgi --threads 4 -b :8000 --access-logfile - --access-logformat '%(h)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(a)s" %(L)s'
+    exec gunicorn wsgi --threads 4 -b :8000 --access-logfile - --access-logformat '%(h)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(a)s" %(L)s'
 fi

@@ -1,4 +1,4 @@
-from trade import settings
+import settings
 #
 from wechatpy.exceptions import InvalidSignatureException, InvalidAppIdException
 from wechatpy.utils import check_signature

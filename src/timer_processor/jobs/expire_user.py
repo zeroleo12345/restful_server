@@ -4,8 +4,8 @@ from django.utils import timezone
 # 项目库
 from . import MetaClass
 from utils.decorators import promise_do_once
-from trade.settings import log
-from models import Account, User
+from settings import log
+from trade.models import Account, User
 from service.wechat.we_message import WePush
 
 

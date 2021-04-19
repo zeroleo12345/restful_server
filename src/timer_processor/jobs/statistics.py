@@ -4,8 +4,8 @@ from django.utils import timezone
 from django.db.models import Sum
 # 自己的类
 from . import MetaClass
-from models import Order
-from utils.slack import send_slack_message
+from trade.models import Order
+from utils.feishu import Feishu
 from utils.decorators import promise_do_once
 
 
@@ -43,4 +43,4 @@ class StatisticsJob(metaclass=MetaClass):
 
         # 发送slack统计消息
         text = f'昨天充值金额: {today_sum/100} 元, 历史累计充值金额: {total_sum/100} 元'
-        send_slack_message(text=text)
+        Feishu.send_groud_msg(receiver_id=Feishu.FEISHU_NOTIFY_GROUP, text=text)

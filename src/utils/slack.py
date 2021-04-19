@@ -2,13 +2,17 @@ import requests
 # 第三方库
 from dynaconf import settings
 
-SLACK_WEB_HOOK = settings.get('SLACK_WEB_HOOK')
 
+class Slack(object):
+    SLACK_WEB_HOOK = settings.get('SLACK_WEB_HOOK', default='')
 
-def send_slack_message(text):
-    message = {
-        'text': text
-    }
-    response = requests.post(SLACK_WEB_HOOK, json=message)
-    response.raise_for_status()
-    return response
+    @classmethod
+    def send_message(cls, text):
+        assert cls.SLACK_WEB_HOOK
+        #
+        message = {
+            'text': text
+        }
+        response = requests.post(cls.SLACK_WEB_HOOK, json=message)
+        response.raise_for_status()
+        return response

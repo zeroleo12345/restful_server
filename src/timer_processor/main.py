@@ -6,7 +6,7 @@ import sentry_sdk
 # 项目库
 from framework.database import close_old_connections
 from utils.redis_lock import RedisLock
-from trade.settings import log
+from settings import log
 from .jobs import MetaClass
 from . import jobs
 for importer, modname, ispkg in pkgutil.iter_modules(jobs.__path__, prefix=jobs.__loader__.name+'.'):

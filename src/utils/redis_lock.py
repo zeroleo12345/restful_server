@@ -3,8 +3,8 @@ import time
 # 第三方库
 import sentry_sdk
 # 项目库
-from trade.settings import log
-from trade import settings
+from settings import log
+import settings
 from framework.database import get_redis
 from utils.mysignal import SigTerm
 
